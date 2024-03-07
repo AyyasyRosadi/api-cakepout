@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import BaseRouter from "../../router/base";
 import logic from "./logic";
+import validator from "./validator";
 
 class DisbursementOfFundRouter extends BaseRouter {
     routes(): void {
@@ -31,7 +32,7 @@ class DisbursementOfFundRouter extends BaseRouter {
             const allDisbursementOfFund = await logic.getDisbursementOfFundByWithDraw(parseInt(req.params?.withdraw))
             return res.status(200).json(allDisbursementOfFund)
         })
-        this.router.post('/', async (req: Request, res: Response): Promise<Response> => {
+        this.router.post('/',validator.add(), async (req: Request, res: Response): Promise<Response> => {
             const { activity } = req.body
             const addDisbursementOfFund = await logic.addDisbursementOfFund(activity)
             console.log(addDisbursementOfFund)
@@ -44,13 +45,20 @@ class DisbursementOfFundRouter extends BaseRouter {
             }
             return res.status(200).json({ msg: approveStatusDisbursementOfFund.message })
         })
-        this.router.put('/withdraw/:uuid', async (req: Request, res: Response): Promise<Response> => {
+        this.router.put('/withdraw/:uuid',validator.withdraw(), async (req: Request, res: Response): Promise<Response> => {
             const { ptk_id, recipient } = req.body;
             const approveWithDrawDisbursementOfFund = await logic.approveWithDrawDisbursementOfFund(req.params?.uuid, ptk_id, recipient)
             if (!approveWithDrawDisbursementOfFund.status) {
                 return res.status(400).json({ msg: approveWithDrawDisbursementOfFund.message })
             }
             return res.status(200).json({ msg: approveWithDrawDisbursementOfFund.message })
+        })
+        this.router.delete('/:uuid',async(req:Request,res:Response):Promise<Response>=>{
+            const deleteDisbursementOfFund = await logic.deleteDisbursementOfFund(req.params?.uuid)
+            if(!deleteDisbursementOfFund){
+                return res.status(400).json({msg:"bad request"})
+            }
+            return res.status(200).json({msg:"delete succes"})
         })
     }
 }

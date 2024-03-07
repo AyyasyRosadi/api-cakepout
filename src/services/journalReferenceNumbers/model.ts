@@ -3,7 +3,10 @@ import db from "../../config/database";
 import JournalReferenceNumberAttributes from "./dto";
 
 interface JournalReferenceNumberCreationAttributes extends Optional<JournalReferenceNumberAttributes,'uuid'>{};
-interface JournalReferenceNumberInstance extends Model<JournalReferenceNumberAttributes,JournalReferenceNumberCreationAttributes>,JournalReferenceNumberAttributes{};
+interface JournalReferenceNumberInstance extends Model<JournalReferenceNumberAttributes,JournalReferenceNumberCreationAttributes>,JournalReferenceNumberAttributes{
+    created_at:Date;
+    updated_at:Date;
+};
 
 const JournalReferenceNumber = db.define<JournalReferenceNumberInstance>('journal_reference_number',{
     uuid:{

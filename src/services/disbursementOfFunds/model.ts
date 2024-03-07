@@ -3,11 +3,15 @@ import db from "../../config/database";
 import DisbursementOfFundAttributes from "./dto";
 import DetailOfActivity from "../detailOfActivities/model";
 import Ptk from "../ptk/model";
+import PtkAttributes from "../ptk/dto";
+import DetailOfActivityAttributes from "../detailOfActivities/dto";
 
 interface DisbursementOfFundCreationAttributes extends Optional<DisbursementOfFundAttributes,'uuid'|'reference_of_jurnal'|'recipient'|'ptk_id'>{}
 interface DisbursementOfFundInstance extends Model<DisbursementOfFundAttributes,DisbursementOfFundCreationAttributes>, DisbursementOfFundAttributes{
-    created_at:Date,
-    updated_at:Date
+    created_at:Date;
+    updated_at:Date;
+    ptk:PtkAttributes;
+    detailOfActivity:DetailOfActivityAttributes;
 };
 
 const DisbursementOfFunds = db.define<DisbursementOfFundInstance>('disbursement_of_funds',{

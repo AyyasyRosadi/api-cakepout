@@ -1,4 +1,5 @@
 import Account from "../services/accounts/model"
+import BlacklistToken from "../services/blacklistTokens/model"
 import DetailOfActivity from "../services/detailOfActivities/model"
 import DisbursementOfFunds from "../services/disbursementOfFunds/model"
 import JournalReferenceNumber from "../services/journalReferenceNumbers/model"
@@ -12,6 +13,7 @@ export const Synchronize = async () => {
         await db.authenticate()
         await Ptk.sync()
         await DetailOfActivity.sync()
+        await BlacklistToken.sync()
         await JournalReferenceNumber.sync({ alter: true })
         await Account.sync({ alter: true })
         await Journal.sync({ alter: true })

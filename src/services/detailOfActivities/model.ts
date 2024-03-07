@@ -1,9 +1,14 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import db from "../../config/database";
 import DetailOfActivityAttributes from "./dto";
+import DisbursementOfFundAttributes from "../disbursementOfFunds/dto";
 
 interface DetailOfActivityCreationAttributes extends Optional<DetailOfActivityAttributes,'uuid'|'no_sub_kegiatan'>{}
-interface DetailOfActivityInstance extends Model<DetailOfActivityAttributes,DetailOfActivityCreationAttributes>,DetailOfActivityAttributes{};
+interface DetailOfActivityInstance extends Model<DetailOfActivityAttributes,DetailOfActivityCreationAttributes>,DetailOfActivityAttributes{
+    created_at:Date;
+    updated_at:Date;
+    DisbursementOfFunds:Array<DisbursementOfFundAttributes>
+};
 
 const DetailOfActivity = db.define<DetailOfActivityInstance>('rincian_kegiatan',{
     uuid:{

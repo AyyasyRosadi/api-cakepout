@@ -55,29 +55,37 @@ class DisbursementOfFundLogic {
         }
         return []
     }
-    public async approveStatusDisbursementOfFund(uuid: string): Promise<{status:boolean,message:string}> {
+    public async approveStatusDisbursementOfFund(uuid: string): Promise<{ status: boolean, message: string }> {
         const oneDisbursementOfFund = await this.getDisbursementOfFundByUuid(uuid)
         if (oneDisbursementOfFund) {
             const checkRemainingAmount_ = await detailOfActivities.checkRemainingAmount(oneDisbursementOfFund.activity_id, oneDisbursementOfFund.amount)
             if (!checkRemainingAmount_.status) {
-                return {status:false,message:"amount out of range"}
+                return { status: false, message: "amount out of range" }
             }
             !oneDisbursementOfFund?.status && await detailOfActivities.updateReceivedAmountDetailOfActivity(oneDisbursementOfFund.activity_id, oneDisbursementOfFund.amount)
             await DisbursementOfFunds.update({ status: true }, { where: { uuid } })
             if (oneDisbursementOfFund.sharing_program) {
                 // TODO: add to sharing_program table
             }
-            return {status:true,message:"update status succes"}
+            return { status: true, message: "update status succes" }
         }
-        return {status:false,message:"disbursement of fund not found"}
+        return { status: false, message: "disbursement of fund not found" }
     }
-    public async approveWithDrawDisbursementOfFund(uuid: string, ptk_id: string | null, recipient: string | null): Promise<{status:boolean,message:string}> {
+    public async approveWithDrawDisbursementOfFund(uuid: string, ptk_id: string | null, recipient: string | null): Promise<{ status: boolean, message: string }> {
         const oneDisbursementOfFund = await this.getDisbursementOfFundByUuid(uuid)
         if (oneDisbursementOfFund && oneDisbursementOfFund.status) {
             await DisbursementOfFunds.update({ withdraw: true, ptk_id: ptk_id, recipient: recipient }, { where: { uuid } })
-            return {status:true,message:"update withdraw succes"}
+            return { status: true, message: "update withdraw succes" }
         }
-        return {status:false,message:"cannot update withdraw because the status is still false"}
+        return { status: false, message: "cannot update withdraw because the status is still false" }
+    }
+    public async deleteDisbursementOfFund(uuid: string): Promise<boolean> {
+        const oneDisbursementOfFund = await this.getDisbursementOfFundByUuid(uuid)
+        if (oneDisbursementOfFund) {
+            await DisbursementOfFunds.destroy({ where: { uuid } })
+            return true
+        }
+        return false
     }
 }
 

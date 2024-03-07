@@ -2,9 +2,14 @@ import { DataTypes, Model, Optional } from "sequelize";
 import db from "../../config/database";
 import JournalAttributes from "./dto";
 import Account from "../accounts/model";
+import AccountAttributes from "../accounts/dto";
 
 interface JournalCreationAttributes extends Optional<JournalAttributes,'uuid'>{};
-interface JournalInstance extends Model<JournalAttributes,JournalCreationAttributes>,JournalAttributes{};
+interface JournalInstance extends Model<JournalAttributes,JournalCreationAttributes>,JournalAttributes{
+    created_at:Date;
+    updated_at:Date;
+    Account:AccountAttributes;
+};
 
 const Journal = db.define<JournalInstance>('journal',{
     uuid:{
