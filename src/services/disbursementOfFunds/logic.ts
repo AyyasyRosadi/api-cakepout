@@ -85,7 +85,7 @@ class DisbursementOfFundLogic {
             await DisbursementOfFunds.destroy({ where: { uuid } })
             return true
         }
-        return false
+        return false    
     }
 }
 
