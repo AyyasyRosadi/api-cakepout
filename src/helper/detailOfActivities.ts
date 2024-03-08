@@ -9,7 +9,7 @@ class DetailOfActivityHelper {
         }
         return { amount: oneDetailOfActivity?.total, receivedAmount: oneDetailOfActivity?.total_realisasi }
     }
-    public async checkRemainingAmount(uuid: string, amount: number): Promise<{ status: boolean, remainingAmount: number }> {
+    public async checkRemainingAmountDetailOfActivity(uuid: string, amount: number): Promise<{ status: boolean, remainingAmount: number }> {
         const oneActivity = await this.getAmountDetailOfActivity(uuid)
         // get amount & receivedAmount
         if (oneActivity && oneActivity.amount >= (oneActivity.receivedAmount + amount)) {

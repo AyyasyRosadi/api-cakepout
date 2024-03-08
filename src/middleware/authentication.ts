@@ -3,13 +3,13 @@ import jwt from "jsonwebtoken"
 import BlacklistToken from "../services/blacklistTokens/model";
 import UserAttributes from "../services/users/dto";
 import User from "../services/users/model";
-import PtkAttributes from "../services/ptk/dto";
-import Ptk from "../services/ptk/model";
 import UserSystem from "../services/userSystems/model";
 import System from "../services/systems/model";
 import Role from "../services/roles/model";
 import SystemAttributes from "../services/systems/dto";
 import RoleAttributes from "../services/roles/dto";
+// import PtkAttributes from "../services/ptk/dto";
+// import Ptk from "../services/ptk/model";
 
 interface UserSystemAttributes {
     id: number;
