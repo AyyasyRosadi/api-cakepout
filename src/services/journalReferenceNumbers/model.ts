@@ -8,7 +8,7 @@ interface JournalReferenceNumberInstance extends Model<JournalReferenceNumberAtt
     updated_at:Date;
 };
 
-const JournalReferenceNumber = db.define<JournalReferenceNumberInstance>('journal_reference_number',{
+const JournalReferenceNumber = db.define<JournalReferenceNumberInstance>('journal_reference_numbers',{
     uuid:{
         type:DataTypes.STRING,
         primaryKey:true,

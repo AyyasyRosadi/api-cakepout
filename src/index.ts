@@ -1,4 +1,4 @@
-import express,{ Application, json } from "express";
+import express, { Application, json } from "express";
 import cors from "cors";
 import morgan from "morgan";
 import compression from "compression";
@@ -6,9 +6,10 @@ import helmet from "helmet";
 import { Synchronize } from "./config/synchronize";
 import { cache } from "./middleware/cache";
 import routes from "./router";
+import accountingYear from "./helper/accountingYear";
 
 
-const app : Application = express();
+const app: Application = express();
 
 app.use(cache)
 app.use(json())
@@ -19,11 +20,19 @@ app.use(helmet())
 
 app.use(routes)
 
-app.listen(9191,async()=>{
-    try{
+
+app.listen(9191, async () => {
+    try {
         await Synchronize()
         console.log(`Hello iam running on port: 9191`)
-    }catch(err){
+    } catch (err) {
         console.log(err)
     }
 })
+
+// const year = async () => {
+//     const year_ = await accountingYear.getActiveAccountingYear()
+//     console.log(year_)
+//     return year_
+// }
+// year()

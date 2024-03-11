@@ -1,3 +1,4 @@
+import accountingYear from "../../helper/accountingYear";
 import detailOfActivities from "../../helper/detailOfActivities";
 import DetailOfActivity from "../detailOfActivities/model";
 import { ActionAttributes } from "../interfaces";
@@ -8,27 +9,33 @@ import DisbursementOfFunds from "./model";
 
 class DisbursementOfFundLogic {
     public async getAllDisbursementOfFund(): Promise<Array<DisbursementOfFundAttributes>> {
-        const allDisbursementOfFund = await DisbursementOfFunds.findAll({ include: { model: DetailOfActivity } })
+        const activeYear = await accountingYear.getActiveAccountingYear()
+        const allDisbursementOfFund = await DisbursementOfFunds.findAll({ where: { accounting_year: activeYear?.tahun }, include: { model: DetailOfActivity }, order: [["createdAt", "ASC"]] })
         return allDisbursementOfFund
     }
     public async getDisbursementOfFundByUuid(uuid: string): Promise<DisbursementOfFundAttributes | null> {
-        const oneDisbursementOfFund = await DisbursementOfFunds.findOne({ where: { uuid: uuid }, include: { model: DetailOfActivity } })
+        const activeYear = await accountingYear.getActiveAccountingYear()
+        const oneDisbursementOfFund = await DisbursementOfFunds.findOne({ where: { uuid, accounting_year: activeYear?.tahun }, include: { model: DetailOfActivity }, order: [["createdAt", "ASC"]] })
         return oneDisbursementOfFund ? oneDisbursementOfFund : null
     }
     public async getDisbursementOfFundByActivityId(activity_id: string): Promise<Array<DisbursementOfFundAttributes>> {
-        const allDisbursementOfFund = await DisbursementOfFunds.findAll({ where: { activity_id: activity_id }, include: { model: DetailOfActivity } })
+        const activeYear = await accountingYear.getActiveAccountingYear()
+        const allDisbursementOfFund = await DisbursementOfFunds.findAll({ where: { activity_id: activity_id, accounting_year: activeYear?.tahun }, include: { model: DetailOfActivity }, order: [["createdAt", "ASC"]] })
         return allDisbursementOfFund
     }
     public async getDisbursementOfFundByPtk_id(ptk_id: string): Promise<Array<DisbursementOfFundAttributes>> {
-        const allDisbursementOfFund = await DisbursementOfFunds.findAll({ where: { ptk_id: ptk_id }, include: { model: DetailOfActivity } })
+        const activeYear = await accountingYear.getActiveAccountingYear()
+        const allDisbursementOfFund = await DisbursementOfFunds.findAll({ where: { ptk_id: ptk_id, accounting_year: activeYear?.tahun }, include: { model: DetailOfActivity }, order: [["createdAt", "ASC"]] })
         return allDisbursementOfFund
     }
     public async getDisbursementOfFundByStatus(status: number): Promise<Array<DisbursementOfFundAttributes>> {
-        const allDisbursementOfFund = await DisbursementOfFunds.findAll({ where: { status }, include: { model: DetailOfActivity } })
+        const activeYear = await accountingYear.getActiveAccountingYear()
+        const allDisbursementOfFund = await DisbursementOfFunds.findAll({ where: { status, accounting_year: activeYear?.tahun }, include: { model: DetailOfActivity }, order: [["createdAt", "ASC"]] })
         return allDisbursementOfFund
     }
     public async getDisbursementOfFundByWithDraw(withdraw: number): Promise<Array<DisbursementOfFundAttributes>> {
-        const allDisbursementOfFund = await DisbursementOfFunds.findAll({ where: { withdraw }, include: { model: DetailOfActivity } })
+        const activeYear = await accountingYear.getActiveAccountingYear()
+        const allDisbursementOfFund = await DisbursementOfFunds.findAll({ where: { withdraw, accounting_year: activeYear?.tahun }, include: { model: DetailOfActivity }, order: [["createdAt", "ASC"]] })
         return allDisbursementOfFund
     }
     public async addDisbursementOfFund(activity: Array<{ activity_id: string, amount: number, accounting_year: string, month_index: number, sharing_program: boolean }>): Promise<Array<{ activity_id: string, remainingAmount: number }>> {

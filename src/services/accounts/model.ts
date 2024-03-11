@@ -13,7 +13,7 @@ interface AccountInstance extends Model<AccountAttributes, AccountCreationsAttri
     Journals: Array<JournalAttributes>
 };
 
-const Account = db.define<AccountInstance>('account', {
+const Account = db.define<AccountInstance>('accounts', {
     uuid: {
         type: DataTypes.STRING,
         primaryKey: true,

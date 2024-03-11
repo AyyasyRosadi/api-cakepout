@@ -11,7 +11,7 @@ interface JournalInstance extends Model<JournalAttributes,JournalCreationAttribu
     Account:AccountAttributes;
 };
 
-const Journal = db.define<JournalInstance>('journal',{
+const Journal = db.define<JournalInstance>('journals',{
     uuid:{
         type:DataTypes.STRING,
         primaryKey:true,

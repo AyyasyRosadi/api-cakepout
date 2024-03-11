@@ -1,3 +1,4 @@
+import AccountingYear from "../services/accountingYears/model"
 import Account from "../services/accounts/model"
 import BlacklistToken from "../services/blacklistTokens/model"
 import DetailOfActivity from "../services/detailOfActivities/model"
@@ -20,6 +21,7 @@ export const Synchronize = async () => {
         await Role.sync()
         await User.sync()
         await UserSystem.sync()
+        await AccountingYear.sync()
         await DetailOfActivity.sync()
         await BlacklistToken.sync()
         await JournalReferenceNumber.sync({ alter: true })
