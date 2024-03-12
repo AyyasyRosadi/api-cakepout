@@ -11,4 +11,7 @@ class MonthlyAccountCalculationLogic {
         const oneMonthlyAccountCalculation = await MonthlyAccountCalulation.findOne({ where: { uuid } })
         return oneMonthlyAccountCalculation
     }
+    
 }
+
+export default new MonthlyAccountCalculationLogic;

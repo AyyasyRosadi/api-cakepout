@@ -16,7 +16,7 @@ class DisbursementOfFundLogic {
     public async getDisbursementOfFundByUuid(uuid: string): Promise<DisbursementOfFundAttributes | null> {
         const activeYear = await accountingYear.getActiveAccountingYear()
         const oneDisbursementOfFund = await DisbursementOfFunds.findOne({ where: { uuid, accounting_year: activeYear?.tahun }, include: { model: DetailOfActivity }, order: [["createdAt", "ASC"]] })
-        return oneDisbursementOfFund ? oneDisbursementOfFund : null
+        return oneDisbursementOfFund
     }
     public async getDisbursementOfFundByActivityId(activity_id: string): Promise<Array<DisbursementOfFundAttributes>> {
         const activeYear = await accountingYear.getActiveAccountingYear()
@@ -30,7 +30,7 @@ class DisbursementOfFundLogic {
     }
     public async getDisbursementOfFundByStatus(status: number): Promise<Array<DisbursementOfFundAttributes>> {
         const activeYear = await accountingYear.getActiveAccountingYear()
-        const allDisbursementOfFund = await DisbursementOfFunds.findAll({ where: { status, accounting_year: activeYear?.tahun }, include: { model: DetailOfActivity }, order: [["createdAt", "ASC"]] })
+        const allDisbursementOfFund = await DisbursementOfFunds.findAll({ where: { status, withdraw: false, accounting_year: activeYear?.tahun }, include: { model: DetailOfActivity }, order: [["createdAt", "ASC"]] })
         return allDisbursementOfFund
     }
     public async getDisbursementOfFundByWithDraw(withdraw: number): Promise<Array<DisbursementOfFundAttributes>> {
