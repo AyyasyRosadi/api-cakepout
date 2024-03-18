@@ -5,7 +5,7 @@ import DetailOfActivity from "../detailOfActivities/model";
 import DetailOfActivityAttributes from "../detailOfActivities/dto";
 import JournalAttributes from "../journals/dto";
 
-interface AccountCreationsAttributes extends Optional<AccountAttributes, 'uuid'> { };
+interface AccountCreationsAttributes extends Optional<AccountAttributes, 'uuid' | 'activity_id'> { };
 interface AccountInstance extends Model<AccountAttributes, AccountCreationsAttributes>, AccountAttributes {
     created_at: Date;
     updated_at: Date;
@@ -22,22 +22,20 @@ const Account = db.define<AccountInstance>('accounts', {
     name: {
         type: DataTypes.STRING
     },
-    group_account: {
-        type: DataTypes.INTEGER,
-    },
-    group_account_label: {
-        type: DataTypes.INTEGER
+    group_account_id: {
+        type: DataTypes.STRING
     },
     account_number: {
         type: DataTypes.STRING
     },
     activity_id: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        allowNull: true
     }
 })
 
-DetailOfActivity.hasOne(Account, { foreignKey: 'activity_id', as: 'detail_of_activity' })
-Account.belongsTo(DetailOfActivity, { foreignKey: 'activity_id', as: 'account' })
+DetailOfActivity.hasOne(Account, { foreignKey: 'activity_id', as: 'account' })
+Account.belongsTo(DetailOfActivity, { foreignKey: 'activity_id', as: 'detail_of_activity' })
 
 
 export default Account

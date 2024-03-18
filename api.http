@@ -4,7 +4,10 @@
 GET {{host}}/ptk
 
 ###
-GET {{host}}/detailOfActivity/a4d57988-11dd-4859-b973-88d207444908
+GET {{host}}/
+
+###
+GET {{host}}/detail-of-activity/a4d57988-11dd-4859-b973-88d207444908
 
 ###
 GET {{host}}/disbursement_of_fund/status/0

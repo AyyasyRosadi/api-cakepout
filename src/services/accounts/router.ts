@@ -26,9 +26,9 @@ class AccountRouter extends BaseRouter {
                 return res.status(200).json(allAccount)
             }
         )
-        this.router.get('/group_account/:group_account',
+        this.router.get('/group_account/:group_account_id',
             async (req: Request, res: Response): Promise<Response> => {
-                const oneAccount = await logic.getAccountByGroupAccount(parseInt(req.params?.group_account))
+                const oneAccount = await logic.getAccountByGroupAccount(req.params?.group_account_id)
                 if (!oneAccount) {
                     return res.status(404).json({ msg: 'account not found' })
                 }
@@ -45,10 +45,10 @@ class AccountRouter extends BaseRouter {
             }
         )
         this.router.post('/',
-            validaor.type(),
+            validaor.add(),
             async (req: Request, res: Response): Promise<Response> => {
-                const { name, group_account, group_account_label, account_number, activity_id } = req.body
-                const addAccount = await logic.addAccount(name, group_account, group_account_label, account_number, activity_id)
+                const { name, group_account, group_account_label, activity_id, group_account_name } = req.body
+                const addAccount = await logic.addAccount(name, group_account, group_account_label, activity_id, group_account_name)
                 if (!addAccount.status) {
                     return res.status(400).json({ msg: addAccount.message })
                 }
@@ -56,10 +56,10 @@ class AccountRouter extends BaseRouter {
             }
         )
         this.router.put('/:uuid',
-            validaor.type(),
+            validaor.update(),
             async (req: Request, res: Response): Promise<Response> => {
-                const { name, group_account, group_account_label, account_number, activity_id } = req.body
-                const updateAccount = await logic.updateAccount(req.params?.uuid, name, group_account, group_account_label, account_number, activity_id)
+                const { name, activity_id } = req.body
+                const updateAccount = await logic.updateAccount(req.params?.uuid, name, activity_id)
                 if (!updateAccount.status) {
                     return res.status(400).json({ msg: updateAccount.message })
                 }
