@@ -1,5 +1,5 @@
 import express, { Router } from 'express';
-import service from '../services';
+import service from '../service';
 const routes: Router = express();
 
 routes.use('', service);

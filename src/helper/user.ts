@@ -1,10 +1,10 @@
-import RoleAttributes from "../services/roles/dto"
-import Role from "../services/roles/model"
-import SystemAttributes from "../services/systems/dto"
-import System from "../services/systems/model"
-import UserSystem from "../services/userSystems/model"
-import UserAttributes from "../services/users/dto"
-import User from "../services/users/model"
+import RoleAttributes from "../service/roles/dto"
+import Role from "../service/roles/model"
+import SystemAttributes from "../service/systems/dto"
+import System from "../service/systems/model"
+import UserSystem from "../service/userSystems/model"
+import UserAttributes from "../service/users/dto"
+import User from "../service/users/model"
 
 interface UserSystemAttributes {
     id: number;
