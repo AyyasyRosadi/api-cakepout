@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken"
-import BlacklistToken from "../services/blacklistTokens/model";
+import BlacklistToken from "../service/blacklistTokens/model";
 import userHelper from "../helper/user";
 
 class Authentication {

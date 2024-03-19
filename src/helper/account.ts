@@ -1,5 +1,5 @@
-import Account from "../services/accounts/model";
-import GroupAccount from "../services/groupAccounts/model";
+import Account from "../service/accounts/model";
+import GroupAccount from "../service/groupAccounts/model";
 
 
 class AccountHelper {

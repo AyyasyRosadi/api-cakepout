@@ -1,5 +1,5 @@
-import GroupAccountAttributes from "../services/groupAccounts/dto"
-import GroupAccount from "../services/groupAccounts/model"
+import GroupAccountAttributes from "../service/groupAccounts/dto"
+import GroupAccount from "../service/groupAccounts/model"
 
 
 class GroupAccountHelper {
