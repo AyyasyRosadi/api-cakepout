@@ -19,6 +19,10 @@ class DetailOfActivityRouter extends BaseRouter {
             const allDetailOfActivity = await logic.getAllDetailOfActivityByYear(req.params?.accounting_year)
             return res.status(200).json(allDetailOfActivity)
         })
+        this.router.post('/institution', async (req: Request, res: Response): Promise<Response> => {
+            const allDetailOfActivity = await logic.getAllDetailOfActivityByInstitution(req.body?.institutionId)
+            return res.status(200).json(allDetailOfActivity)
+        })
     }
 }
 

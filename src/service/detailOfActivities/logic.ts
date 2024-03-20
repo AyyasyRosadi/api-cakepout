@@ -41,6 +41,32 @@ class DetailOfActivityLogic {
         const allDetailOfActivity = await DetailOfActivity.findAll({ where: { tahun_ajar: accounting_year }, include: include })
         return allDetailOfActivity
     }
+    public async getAllDetailOfActivityByInstitution(institutionId: number): Promise<Array<DetailOfActivityAttributes>> {
+        const allDetailOfActivity = await DetailOfActivity.findAll({
+            include: {
+                model: Activity,
+                required: true,
+                attributes: ['no_komponen'],
+                include: [{
+                    model: Component,
+                    required: true,
+                    attributes: ['no_program'],
+                    include: [{
+                        model: Program,
+                        required: true,
+                        attributes: ['no_lembaga'],
+                        include: [{
+                            model: Institution,
+                            where: { no_lembaga: institutionId },
+                            required: true,
+                            attributes: { exclude: ['createdAt', 'updatedAt'] }
+                        }]
+                    }]
+                }]
+            }
+        })
+        return allDetailOfActivity
+    }
 }
 
 export default new DetailOfActivityLogic;

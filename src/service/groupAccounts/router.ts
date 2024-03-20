@@ -10,7 +10,6 @@ class GroupAccountRouter extends BaseRouter {
             return res.status(200).json(allGroupAccount)
         })
         this.router.post('/', async (req: Request, res: Response): Promise<Response> => {
-            console.log(req.body?.group_account)
             const allGroupAccount = await logic.getGroupAccountByGroup(parseInt(req.body.group_account))
             return res.status(200).json(allGroupAccount)
         })

@@ -29,10 +29,3 @@ app.listen(9191, async () => {
         console.log(err)
     }
 })
-
-// const year = async () => {
-//     const year_ = await accountingYear.getActiveAccountingYear()
-//     console.log(year_)
-//     return year_
-// }
-// year()

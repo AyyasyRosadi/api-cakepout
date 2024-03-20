@@ -12,7 +12,6 @@ class GroupAccountHelper {
             const addGroupAccount = await GroupAccount.create({ group_account, group_account_label, name })
             return { status: true, uuid: addGroupAccount.uuid }
         } catch (_) {
-            console.log(_)
             return { status: false, uuid: null }
         }
     }

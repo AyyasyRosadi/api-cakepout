@@ -12,7 +12,7 @@ class AuthenticationRouter extends BaseRouter {
             }
             return res.status(200).json(login)
         })
-        this.router.get('/logout', authentication.authenticationUser([], []), async (req: Request, res: Response): Promise<Response> => {
+        this.router.get('/logout', async (req: Request, res: Response): Promise<Response> => {
             const logout = await logic.logout(req.app?.locals?.token?.jti)
             if (!logout.status) {
                 return res.status(403).json({ msg: logout.message })

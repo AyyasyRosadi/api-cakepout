@@ -25,9 +25,7 @@ class AuthenticationLogic {
     public async login(username: string, password: string): Promise<ActionAttributes | LoginAttributes> {
         try {
             const user = await userHelper.getUserByUsername(username)
-            console.log(user?.password,password)
             if (!user || !await bcrypt.compare(password, user.password)) {
-                console.log('noo')
                 return { status: false, message: 'user not found' }
             }
             const jti = v4()

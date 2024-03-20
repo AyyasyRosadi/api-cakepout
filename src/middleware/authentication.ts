@@ -3,13 +3,10 @@ import jwt from "jsonwebtoken"
 import BlacklistToken from "../service/blacklistTokens/model";
 import userHelper from "../helper/user";
 
-class Authentication {
-    // private async getPtk(nupy: string): Promise<PtkAttributes | null> {
-    //     const onePtk = Ptk.findOne({ where: { nupy } })
-    //     return onePtk
-    // }
+const systemName = 'cakepout'
 
-    public authenticationUser(allowedSystem: string[], allowedRole: string[]): (req: Request, res: Response, next: NextFunction) => Promise<Response | void> {
+class Authentication {
+    public authenticationUser(allowedRole: string[]): (req: Request, res: Response, next: NextFunction) => Promise<Response | void> {
         return async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
             const splitter = req.headers.authorization?.split(' ')
             if (splitter?.length !== 2 || splitter[0] !== "Bearer") {
@@ -25,9 +22,8 @@ class Authentication {
                 if (blacklistToken || !user) {
                     return res.status(401).json({ msg: "Unauthorized" })
                 }
-                // const ptk = await this.getPtk(user.username)
                 const userSystem = await userHelper.getUserSystemByUuidUser(user.uuid)
-                if (!userSystem.some((e) => allowedSystem.includes(e.sistem.nama_sistem) && allowedRole.includes(e.role.nama_role))) {
+                if (!userSystem.some((e) => e.sistem.nama_sistem === systemName && allowedRole.includes(e.role.nama_role))) {
                     return res.status(401).json({ msg: "Unauthorized" })
                 }
                 req.app.locals.token = token;

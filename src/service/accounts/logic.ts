@@ -1,5 +1,6 @@
 import account from "../../helper/account";
 import groupAccount from "../../helper/groupAccount";
+import message from "../../helper/message";
 import DetailOfActivity from "../detailOfActivities/model";
 import GroupAccount from "../groupAccounts/model";
 import { ActionAttributes } from "../interfaces";
@@ -43,26 +44,25 @@ class AccountLogic {
                 const oneGroupAccount = await groupAccount.getGroupAccount(group_account, group_account_label)
                 lastAccountNumber && oneGroupAccount && await Account.create({ account_number: `${lastAccountNumber}`, name, activity_id, group_account_id: oneGroupAccount.uuid })
             }
-            return { status: true, message: 'add account succes' }
+            return message.sendMessage(true)
         } catch (_) {
-            console.log(_)
-            return { status: false, message: 'bad request' }
+            return message.sendMessage(false)
         }
     }
-    public async updateAccount(uuid: string, name: string, activity_id: string): Promise<ActionAttributes> {
+    public async updateAccount(uuid: string, name: string): Promise<ActionAttributes> {
         try {
-            await Account.update({ name, activity_id }, { where: { uuid } })
-            return { status: true, message: 'update account succes' }
+            await Account.update({ name }, { where: { uuid } })
+            return message.sendMessage(true)
         } catch {
-            return { status: false, message: 'bad request' }
+            return message.sendMessage(false)
         }
     }
     public async deleteAccount(uuid: string): Promise<ActionAttributes> {
         try {
             await Account.destroy({ where: { uuid } })
-            return { status: true, message: 'delete account succes' }
+            return message.sendMessage(true)
         } catch {
-            return { status: false, message: 'bad request' }
+            return message.sendMessage(false)
         }
     }
 }

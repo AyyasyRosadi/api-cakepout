@@ -40,7 +40,6 @@ class DisbursementOfFundRouter extends BaseRouter {
         this.router.post('/', validator.add(), async (req: Request, res: Response): Promise<Response> => {
             const { activity } = req.body
             const addDisbursementOfFund = await logic.addDisbursementOfFund(activity)
-            console.log(addDisbursementOfFund)
             return res.status(200).json({ msg: addDisbursementOfFund })
         })
         this.router.put('/status/:uuid', async (req: Request, res: Response): Promise<Response> => {

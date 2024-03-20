@@ -2,16 +2,21 @@ import { Request, Response } from "express";
 import BaseRouter from "../../router/base";
 import logic from "./logic";
 import validaor from "./validaor";
+import authentication from "../../middleware/authentication";
+import { ALLROLE, SUPERADMIN } from "../constant";
 
 class AccountRouter extends BaseRouter {
     routes(): void {
         this.router.get('/',
+            authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const allAccount = await logic.getAllAccount()
                 return res.status(200).json(allAccount)
             }
         )
         this.router.get('/:uuid',
+            authentication.authenticationUser(ALLROLE),
+
             async (req: Request, res: Response): Promise<Response> => {
                 const oneAccount = await logic.getAccountByUuid(req.params?.uuid)
                 if (!oneAccount) {
@@ -21,12 +26,14 @@ class AccountRouter extends BaseRouter {
             }
         )
         this.router.get('/activity/:activity_id',
+            authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const allAccount = await logic.getAccountByActivity(req.params?.activity_id)
                 return res.status(200).json(allAccount)
             }
         )
         this.router.get('/group_account/:group_account_id',
+            authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const oneAccount = await logic.getAccountByGroupAccount(req.params?.group_account_id)
                 if (!oneAccount) {
@@ -36,6 +43,7 @@ class AccountRouter extends BaseRouter {
             }
         )
         this.router.get('/account_number/:account_number',
+            authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const oneAccount = await logic.getAccountByAccountNumber(req.params?.account_number)
                 if (!oneAccount) {
@@ -45,7 +53,8 @@ class AccountRouter extends BaseRouter {
             }
         )
         this.router.post('/',
-            validaor.add(),
+            authentication.authenticationUser(ALLROLE),
+            validaor.create(),
             async (req: Request, res: Response): Promise<Response> => {
                 const { name, group_account, group_account_label, activity_id, group_account_name } = req.body
                 const addAccount = await logic.addAccount(name, group_account, group_account_label, activity_id, group_account_name)
@@ -56,10 +65,11 @@ class AccountRouter extends BaseRouter {
             }
         )
         this.router.put('/:uuid',
+            authentication.authenticationUser(ALLROLE),
             validaor.update(),
             async (req: Request, res: Response): Promise<Response> => {
-                const { name, activity_id } = req.body
-                const updateAccount = await logic.updateAccount(req.params?.uuid, name, activity_id)
+                const { name } = req.body
+                const updateAccount = await logic.updateAccount(req.params?.uuid, name)
                 if (!updateAccount.status) {
                     return res.status(400).json({ msg: updateAccount.message })
                 }
@@ -67,6 +77,7 @@ class AccountRouter extends BaseRouter {
             }
         )
         this.router.delete('/:uuid',
+            authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const deleteAccount = await logic.deleteAccount(req.params?.uuid)
                 if (!deleteAccount.status) {

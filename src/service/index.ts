@@ -7,6 +7,7 @@ import JournalReferenceNumber from "./journalReferenceNumbers/router";
 import Authentication from "./authentication/router"
 import AccountingYear from "./accountingYears/router";
 import GroupAccount from "./groupAccounts/router";
+import Institution from "./institutions/router";
 
 const serviceRouter: Router = express();
 
@@ -18,6 +19,7 @@ serviceRouter.use('/account', Account)
 serviceRouter.use('/journal-reference-number', JournalReferenceNumber)
 serviceRouter.use('/accounting-year', AccountingYear)
 serviceRouter.use('/group-account', GroupAccount)
+serviceRouter.use('/institution', Institution)
 
 
 export default serviceRouter

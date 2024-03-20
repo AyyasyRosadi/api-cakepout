@@ -27,10 +27,11 @@ class UserHelper {
         try {
             const userSystemByUser = await UserSystem.findAll({
                 where: { uuid_user },
+                attributes:['uuid_user'],
                 include: [
                     { model: System, attributes: ["uuid", "nama_sistem"] },
-                    { model: Role, include: ["uuid", "nama_role"] },
-                    { model: User, include: ["uuid", "username", "nama", "general_user"] }]
+                    { model: Role, attributes: ["uuid", "nama_role"] },
+                    { model: User, attributes: ["uuid", "username", "nama", "general_user"] }]
             })
             return userSystemByUser
         } catch (r) {
@@ -45,7 +46,14 @@ class UserHelper {
                 },
                 include: [{
                     model: UserSystem,
-                    attributes: { exclude: ['user_sistem'] },
+                    attributes: ['super_admin'],
+                    include: [{
+                        model: System,
+                        attributes: ['nama_sistem']
+                    }, {
+                        model: Role,
+                        attributes: ['nama_role']
+                    }]
                 }]
             })
             return oneUser
