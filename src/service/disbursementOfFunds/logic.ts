@@ -1,5 +1,6 @@
 import accountingYear from "../../helper/accountingYear";
 import detailOfActivities from "../../helper/detailOfActivities";
+import message from "../../helper/message";
 import DetailOfActivity from "../detailOfActivities/model";
 import { ActionAttributes } from "../interfaces";
 import DisbursementOfFundAttributes from "./dto";
@@ -76,11 +77,11 @@ class DisbursementOfFundLogic {
                 if (oneDisbursementOfFund.sharing_program) {
                     // TODO: add to sharing_program table
                 }
-                return { status: true, message: "update status succes" }
+                return message.sendMessage(true)
             }
-            return { status: false, message: "disbursement of fund not found" }
+            return message.sendMessage(false)
         } catch (_) {
-            return { status: false, message: 'bad request' }
+            return message.sendMessage(false)
         }
     }
     public async approveWithDrawDisbursementOfFund(uuid: string, ptk_id: string | null, recipient: string | null): Promise<ActionAttributes> {
@@ -90,21 +91,17 @@ class DisbursementOfFundLogic {
                 await DisbursementOfFunds.update({ withdraw: true, ptk_id: ptk_id, recipient: recipient }, { where: { uuid } })
                 return { status: true, message: "update withdraw succes" }
             }
-            return { status: false, message: "cannot update withdraw because the status is still false" }
+            return message.sendMessage(false)
         } catch (_) {
-            return { status: false, message: 'bad request' }
+            return message.sendMessage(false)
         }
     }
     public async deleteDisbursementOfFund(uuid: string): Promise<ActionAttributes> {
         try {
-            const oneDisbursementOfFund = await this.getDisbursementOfFundByUuid(uuid)
-            if (oneDisbursementOfFund) {
-                await DisbursementOfFunds.destroy({ where: { uuid } })
-                return { status: true, message: 'delete disbursementOfFund succes' }
-            }
-            return { status: false, message: 'disbursementOfFun not found' }
+            await DisbursementOfFunds.destroy({ where: { uuid } })
+            return message.sendMessage(true)
         } catch (_) {
-            return { status: false, message: 'bad request' }
+            return message.sendMessage(false)
         }
     }
 }

@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken'
 import UserSystemAttributes from "../userSystems/dto";
 import RoleAttributes from "../roles/dto";
 import BlacklistToken from "../blacklistTokens/model";
+import message from "../../helper/message";
 
 interface LoginAttributes {
     status: boolean,
@@ -44,9 +45,9 @@ class AuthenticationLogic {
     public async logout(jti: string): Promise<ActionAttributes> {
         try {
             await BlacklistToken.create({ jti })
-            return { status: true, message: 'logout succes' }
+            return message.sendMessage(true)
         } catch (_) {
-            return { status: false, message: 'bad request' }
+            return message.sendMessage(false)
         }
     }
 }

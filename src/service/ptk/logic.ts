@@ -7,11 +7,8 @@ class PtkLogic {
         const allPtk = await Ptk.findAll()
         return allPtk
     }
-    public async getPtkByUuid(uuid: string): Promise<PtkAttributes | boolean> {
+    public async getPtkByUuid(uuid: string): Promise<PtkAttributes | null> {
         const onePtk = await Ptk.findOne({ where: { uuid: uuid } })
-        if (!onePtk) {
-            return false
-        }
         return onePtk
     }
 }

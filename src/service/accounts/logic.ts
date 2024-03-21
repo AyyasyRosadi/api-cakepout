@@ -14,7 +14,9 @@ const include = [
 
 class AccountLogic {
     public async getAllAccount(): Promise<Array<AccountAttributes>> {
-        const allAccount = await Account.findAll({ include: include })
+        const allAccount = await Account.findAll({
+            include: include,
+        })
         return allAccount
     }
     public async getAccountByUuid(uuid: string): Promise<AccountAttributes | null> {

@@ -3,7 +3,7 @@ import BaseRouter from "../../router/base";
 import logic from "./logic";
 import validaor from "./validaor";
 import authentication from "../../middleware/authentication";
-import { ALLROLE, SUPERADMIN } from "../constant";
+import { ALLROLE } from "../constant";
 
 class AccountRouter extends BaseRouter {
     routes(): void {

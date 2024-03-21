@@ -8,6 +8,7 @@ import Authentication from "./authentication/router"
 import AccountingYear from "./accountingYears/router";
 import GroupAccount from "./groupAccounts/router";
 import Institution from "./institutions/router";
+import MonthlyAccountCalulation from "./monthlyAccountCalculations/router";
 
 const serviceRouter: Router = express();
 
@@ -20,6 +21,7 @@ serviceRouter.use('/journal-reference-number', JournalReferenceNumber)
 serviceRouter.use('/accounting-year', AccountingYear)
 serviceRouter.use('/group-account', GroupAccount)
 serviceRouter.use('/institution', Institution)
+serviceRouter.use('/monthly-account-calculation', MonthlyAccountCalulation)
 
 
 export default serviceRouter

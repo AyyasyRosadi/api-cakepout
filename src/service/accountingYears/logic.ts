@@ -1,3 +1,4 @@
+import message from "../../helper/message";
 import { ActionAttributes } from "../interfaces";
 import AccountingYearAttributes from "./dto";
 import AccountingYear from "./model";
@@ -15,25 +16,25 @@ class AccountingYearLogic {
     public async addAccountingYear(year: string, active: boolean): Promise<ActionAttributes> {
         try {
             await AccountingYear.create({ tahun: year, active: active })
-            return { status: true, message: 'create accounting year succes' }
+            return message.sendMessage(true)
         } catch (_) {
-            return { status: false, message: 'bad request' }
+            return message.sendMessage(false)
         }
     }
     public async updateStatusAccountingYear(year: string, status: boolean): Promise<ActionAttributes> {
         try {
             await AccountingYear.update({ active: status }, { where: { tahun: year } })
-            return { status: true, message: 'update accounting year succes' }
+            return message.sendMessage(true)
         } catch (_) {
-            return { status: false, message: 'bad request' }
+            return message.sendMessage(false)
         }
     }
     public async deleteAccountingYear(year: string): Promise<ActionAttributes> {
         try {
             await AccountingYear.destroy({ where: { tahun: year } })
-            return { status: true, message: 'delete accounting year succes' }
+            return message.sendMessage(true)
         } catch (_) {
-            return { status: false, message: 'bad request' }
+            return message.sendMessage(false)
 
         }
     }

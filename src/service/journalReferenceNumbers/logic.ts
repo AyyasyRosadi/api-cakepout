@@ -1,3 +1,4 @@
+import message from "../../helper/message";
 import { ActionAttributes } from "../interfaces";
 import JournalReferenceNumberAttributes from "./dto";
 import JournalReferenceNumber from "./model";
@@ -18,25 +19,25 @@ class JournalReferenceNumberLogic {
     public async addJournalReferenceNumber(number: number, accounting_year: string): Promise<ActionAttributes> {
         try {
             await JournalReferenceNumber.create({ number, accounting_year })
-            return { status: true, message: 'create journal reference number succes' }
+            return message.sendMessage(true)
         } catch (_) {
-            return { status: false, message: 'bad request' }
+            return message.sendMessage(false)
         }
     }
     public async updateJournalReferenceNumber(number: number, accounting_year: string, uuid: string): Promise<ActionAttributes> {
         try {
             await JournalReferenceNumber.update({ number, accounting_year }, { where: { uuid } })
-            return { status: true, message: 'update journal reference number succes' }
+            return message.sendMessage(true)
         } catch (_) {
-            return { status: false, message: 'bad request' }
+            return message.sendMessage(false)
         }
     }
     public async deleteJournalReferenceNumber(uuid: string): Promise<ActionAttributes> {
         try {
             await JournalReferenceNumber.destroy({ where: { uuid } })
-            return { status: true, message: 'delete journal reference number succes' }
+            return message.sendMessage(true)
         } catch (_) {
-            return { status: false, message: 'bad request' }
+            return message.sendMessage(false)
         }
     }
 }
