@@ -8,9 +8,16 @@ import { ALLROLE } from "../constant";
 class AccountRouter extends BaseRouter {
     routes(): void {
         this.router.get('/',
+        authentication.authenticationUser(ALLROLE),
+        async(req:Request,res:Response):Promise<Response>=>{
+            const allAccount = await logic.getAllAccount()
+            return res.status(200).json(allAccount)
+        })
+        this.router.get('/page',
             authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
-                const allAccount = await logic.getAllAccount()
+                const { page, size } = req.query;
+                const allAccount = await logic.getAllAccountByPage(Number(page), Number(size))
                 return res.status(200).json(allAccount)
             }
         )
@@ -32,10 +39,10 @@ class AccountRouter extends BaseRouter {
                 return res.status(200).json(allAccount)
             }
         )
-        this.router.get('/group_account/:group_account_id',
+        this.router.get('/group_account/:group_account',
             authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
-                const oneAccount = await logic.getAccountByGroupAccount(req.params?.group_account_id)
+                const oneAccount = await logic.getAccountByGroupAccount(parseInt(req.params?.group_account))
                 if (!oneAccount) {
                     return res.status(404).json({ msg: 'account not found' })
                 }

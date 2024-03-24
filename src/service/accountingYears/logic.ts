@@ -3,14 +3,15 @@ import { ActionAttributes } from "../interfaces";
 import AccountingYearAttributes from "./dto";
 import AccountingYear from "./model";
 
+const attributes = ['tahun', 'active']
 
 class AccountingYearLogic {
     public async getAllAccountYear(): Promise<Array<AccountingYearAttributes>> {
-        const allAccountingYear = await AccountingYear.findAll()
+        const allAccountingYear = await AccountingYear.findAll({ attributes: attributes,order:[['active','DESC'],['createdAt','DESC']] })
         return allAccountingYear
     }
     public async getAccountingYearByStatus(status: number): Promise<Array<AccountingYearAttributes>> {
-        const allAccountingYear = await AccountingYear.findAll({ where: { active: status } })
+        const allAccountingYear = await AccountingYear.findAll({ where: { active: status }, attributes: attributes,order:[['active','DESC'],['createdAt','DESC']] })
         return allAccountingYear
     }
     public async addAccountingYear(year: string, active: boolean): Promise<ActionAttributes> {

@@ -1,5 +1,5 @@
 @host = http://localhost:9191
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiZDJlMDhkZjgtYjkxNy00NDM2LWI3N2UtNmRjNDBlYWI1MGFkIiwiaWF0IjoxNzEwOTA0MzY2LCJleHAiOjE3MTA5MjU5NjYsImp0aSI6IjRlM2E4ZWEwLTI4NjctNDhiNC05YThkLTE1Y2VmNDBmMzBjZCJ9.ueHKe9dfDpMyZ9lqg2yKkPWmi8nyE5Y4yu-a5LJdjno
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiZDJlMDhkZjgtYjkxNy00NDM2LWI3N2UtNmRjNDBlYWI1MGFkIiwiaWF0IjoxNzExMjU0MzkwLCJleHAiOjE3MTEyNzU5OTAsImp0aSI6IjdmYmI4Y2I2LTY3MDgtNDdiZi05MzQyLTEzNjNiOTJlYzAzOSJ9.sVQoaedmaAJhS_ONz4EURHJ9o6bfv3YOMfClyS19EfA
 
 ###
 POST {{host}}/authentication/login
@@ -16,6 +16,11 @@ GET {{host}}/ptk
 ###
 GET {{host}}/account
 Authorization: Bearer {{token}}
+
+###
+GET {{host}}/account/group_account/1
+Authorization: Bearer {{token}}
+
 
 ###
 GET {{host}}/detail-of-activity/institution
@@ -42,3 +47,7 @@ Content-Type: application/json
 {
     "institutionId":1
 }
+
+###
+GET {{host}}/journal/all?page=2
+Authorization: Bearer {{token}}

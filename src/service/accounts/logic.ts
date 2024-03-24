@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import account from "../../helper/account";
 import groupAccount from "../../helper/groupAccount";
 import message from "../../helper/message";
@@ -7,17 +8,37 @@ import { ActionAttributes } from "../interfaces";
 import AccountAttributes from "./dto";
 import Account from "./model";
 
+interface AccountPaginationAttributes {
+    page: number;
+    totalPages: number;
+    totalItems: number;
+    data: Array<AccountAttributes>;
+}
+
 const include = [
     { model: DetailOfActivity, as: 'detail_of_activity' },
     { model: GroupAccount }
 ]
 
+
 class AccountLogic {
-    public async getAllAccount(): Promise<Array<AccountAttributes>> {
-        const allAccount = await Account.findAll({
+    public async getAllAccount():Promise<Array<AccountAttributes>>{
+        const allAccount = await Account.findAll({include:include})
+        return allAccount
+    }
+    public async getAllAccountByPage(page: number, size: number): Promise<AccountPaginationAttributes> {
+        const offset = (page - 1) * size
+        const allAccount = await Account.findAndCountAll({
+            limit: size,
+            offset: offset,
             include: include,
         })
-        return allAccount
+        return {
+            page,
+            totalPages: Math.ceil(allAccount.count / size),
+            totalItems: allAccount.count,
+            data: allAccount.rows
+        }
     }
     public async getAccountByUuid(uuid: string): Promise<AccountAttributes | null> {
         const oneAccount = await Account.findOne({ where: { uuid }, include: include })
@@ -27,8 +48,15 @@ class AccountLogic {
         const allAccount = await Account.findAll({ where: { activity_id }, include: include })
         return allAccount
     }
-    public async getAccountByGroupAccount(group_account_id: string): Promise<AccountAttributes | null> {
-        const oneAccount = await Account.findOne({ where: { group_account_id }, include: include })
+    public async getAccountByGroupAccount(group_account: number): Promise<Array<AccountAttributes>> {
+        console.log(group_account)
+        const queryGroupAccount = group_account === 4 ? { [Op.not]: { group_account } } : { group_account }
+        const oneAccount = await Account.findAll({
+            include: [
+                { model: DetailOfActivity, as: 'detail_of_activity' },
+                { model: GroupAccount, where: queryGroupAccount }
+            ]
+        })
         return oneAccount
     }
     public async getAccountByAccountNumber(account_number: string): Promise<AccountAttributes | null> {

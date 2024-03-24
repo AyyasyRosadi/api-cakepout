@@ -1,3 +1,4 @@
+import AccountAttributes from "../service/accounts/dto";
 import Account from "../service/accounts/model";
 import GroupAccount from "../service/groupAccounts/model";
 
@@ -9,6 +10,15 @@ class AccountHelper {
             return 1
         }
         return parseInt(oneAccount[0].account_number) + 1
+    }
+    public async getAccountByUuid(uuid: string): Promise<AccountAttributes | null> {
+        try {
+            const oneAccount = await Account.findOne({ where: { uuid }, include: [{ model: GroupAccount }] })
+            return oneAccount
+        } catch (r) {
+            console.log(r)
+            return null
+        }
     }
 }
 
