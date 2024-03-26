@@ -60,7 +60,7 @@ class JournalLogic {
                 return message.sendMessage(false)
             }
             for (let i in to_account) {
-                journal.generateJournal(oneAccount, to_account[i])
+                await journal.generateJournal(oneAccount, to_account[i])
             }
             return message.sendMessage(true)
         } catch (r) {
