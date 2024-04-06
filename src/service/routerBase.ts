@@ -1,8 +1,7 @@
 import { Router } from "express";
-import InterfaceRouter from "./interfaces";
 
 
-abstract class BaseRouter implements InterfaceRouter{
+abstract class BaseRouter {
     public router:Router;
     constructor(){
         this.router=Router();

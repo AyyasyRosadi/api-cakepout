@@ -1,5 +1,5 @@
-import AccountingYearAttributes from "../service/accountingYears/dto";
-import AccountingYear from "../service/accountingYears/model";
+import AccountingYearAttributes from "../service/accountingYear/dto";
+import AccountingYear from "../service/accountingYear/model";
 
 
 class AccountingYearHelper {

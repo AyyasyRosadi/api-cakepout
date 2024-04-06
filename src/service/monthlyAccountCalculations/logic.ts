@@ -1,6 +1,6 @@
 import accountingYear from "../../helper/accountingYear";
 import message from "../../helper/message";
-import Account from "../accounts/model";
+import Account from "../account/model";
 import { ActionAttributes } from "../interfaces";
 import MonthlyAccountCalculationAttributes from "./dto";
 import MonthlyAccountCalulation from "./model";

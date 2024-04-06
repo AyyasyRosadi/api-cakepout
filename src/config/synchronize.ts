@@ -1,5 +1,5 @@
-import AccountingYear from "../service/accountingYears/model"
-import Account from "../service/accounts/model"
+import AccountingYear from "../service/accountingYear/model"
+import Account from "../service/account/model"
 import Activity from "../service/activities/model"
 import BlacklistToken from "../service/blacklistTokens/model"
 import Component from "../service/components/model"

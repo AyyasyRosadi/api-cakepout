@@ -1,5 +1,5 @@
 import { Op } from "sequelize";
-import Account from "../accounts/model";
+import Account from "../account/model";
 import JournalAttributes from "./dto";
 import Journal from "./model";
 import { ActionAttributes } from "../interfaces";

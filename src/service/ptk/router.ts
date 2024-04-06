@@ -1,5 +1,5 @@
 import logic from "./logic";
-import BaseRouter from "../../router/base";
+import BaseRouter from "../routerBase";
 import { Request, Response } from "express";
 import authentication from "../../middleware/authentication";
 import { ALLROLE } from "../constant";

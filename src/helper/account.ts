@@ -1,5 +1,5 @@
-import AccountAttributes from "../service/accounts/dto";
-import Account from "../service/accounts/model";
+import AccountAttributes from "../service/account/dto";
+import Account from "../service/account/model";
 import GroupAccount from "../service/groupAccounts/model";
 
 

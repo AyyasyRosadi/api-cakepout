@@ -1,5 +1,5 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import AccountAttributes from "../accounts/dto";
+import AccountAttributes from "../account/dto";
 import db from "../../config/database";
 import AccountingYearAttributes from "./dto";
 

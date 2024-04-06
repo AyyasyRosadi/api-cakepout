@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import authentication from "../../middleware/authentication";
-import BaseRouter from "../../router/base";
+import BaseRouter from "../routerBase";
 import { ALLROLE, SUPERADMIN } from "../constant";
 import logic from "./logic";
 import validator from "./validator";
