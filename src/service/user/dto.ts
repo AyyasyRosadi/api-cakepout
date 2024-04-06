@@ -1,4 +1,4 @@
-import UserSystemAttributes from "../userSystems/dto";
+import UserSystemAttributes from "../userSystem/dto";
 
 export default interface UserAttributes {
     uuid: string;

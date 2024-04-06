@@ -1,8 +1,8 @@
 import accountingYear from "../../helper/accountingYear";
-import Activity from "../activities/model";
-import Component from "../components/model";
-import Institution from "../institutions/model";
-import Program from "../programs/model";
+import Activity from "../activity/model";
+import Component from "../component/model";
+import Institution from "../institution/model";
+import Program from "../program/model";
 import DetailOfActivityAttributes from "./dto";
 import DetailOfActivity from "./model";
 

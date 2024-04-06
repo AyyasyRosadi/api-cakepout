@@ -1,4 +1,4 @@
-import GroupAccountAttributes from "../groupAccounts/dto";
+import GroupAccountAttributes from "../groupAccount/dto";
 
 export default interface AccountAttributes {
     uuid: string;

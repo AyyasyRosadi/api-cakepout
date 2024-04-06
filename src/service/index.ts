@@ -1,15 +1,15 @@
 import express, { Router } from "express";
 import Ptk from "./ptk/router";
-import DisbursementOfFunds from "./disbursementOfFunds/router";
-import DetailOfActivity from "./detailOfActivities/router";
+import DisbursementOfFunds from "./disbursementOfFund/router";
+import DetailOfActivity from "./detailOfActivity/router";
 import Account from "./account/router";
-import JournalReferenceNumber from "./journalReferenceNumbers/router";
+import JournalReferenceNumber from "./journalReferenceNumber/router";
 import Authentication from "./authentication/router"
 import AccountingYear from "./accountingYear/router";
-import GroupAccount from "./groupAccounts/router";
-import Institution from "./institutions/router";
-import MonthlyAccountCalulation from "./monthlyAccountCalculations/router";
-import Journal from "./journals/router";
+import GroupAccount from "./groupAccount/router";
+import Institution from "./institution/router";
+import MonthlyAccountCalulation from "./monthlyAccountCalculation/router";
+import Journal from "./journal/router";
 
 const serviceRouter: Router = express();
 

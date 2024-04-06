@@ -1,7 +1,7 @@
 import { DataTypes,Optional,Model } from "sequelize";
 import db from "../../config/database";
 import UserAttributes from "./dto";
-import UserSystemAttributes from "../userSystems/dto";
+import UserSystemAttributes from "../userSystem/dto";
 
 interface UserCreationAttributes extends Optional<UserAttributes,'uuid'>{};
 interface UserInstance extends Model<UserAttributes,UserCreationAttributes>,UserAttributes{

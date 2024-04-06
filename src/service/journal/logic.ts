@@ -5,7 +5,7 @@ import Journal from "./model";
 import { ActionAttributes } from "../interfaces";
 import message from "../../helper/message";
 import account from "../../helper/account";
-import GroupAccount from "../groupAccounts/model";
+import GroupAccount from "../groupAccount/model";
 import journal from "../../helper/journal";
 
 interface JournalPaginationAttributes {

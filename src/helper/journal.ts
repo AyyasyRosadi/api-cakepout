@@ -1,6 +1,6 @@
 import AccountAttributes from "../service/account/dto";
 import { ActionAttributes } from "../service/interfaces";
-import Journal from "../service/journals/model";
+import Journal from "../service/journal/model";
 import account from "./account";
 import accountingYear from "./accountingYear";
 import message from "./message";

@@ -1,7 +1,7 @@
 import { DataTypes, Optional, Model } from "sequelize";
 import db from "../../config/database";
 import RoleAttributes from "./dto";
-import SystemAttributes from "../systems/dto";
+import SystemAttributes from "../system/dto";
 
 interface RoleCreationAttributes extends Optional<RoleAttributes, 'uuid'> { };
 interface RoleInstance extends Model<RoleAttributes, RoleCreationAttributes>, RoleAttributes {

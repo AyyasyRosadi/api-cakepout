@@ -1,4 +1,4 @@
-import DetailOfActivity from "../service/detailOfActivities/model";
+import DetailOfActivity from "../service/detailOfActivity/model";
 
 
 class DetailOfActivityHelper {

@@ -1,8 +1,8 @@
 import db from "../../config/database";
 import { DataTypes, Model } from "sequelize";
 import ActivityAttributes from "./dto";
-import DetailOfActivityAttributes from "../detailOfActivities/dto";
-import DetailOfActivity from "../detailOfActivities/model";
+import DetailOfActivityAttributes from "../detailOfActivity/dto";
+import DetailOfActivity from "../detailOfActivity/model";
 
 interface ActivityInstance extends Model<ActivityAttributes>, ActivityAttributes {
     created_at: Date;

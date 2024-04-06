@@ -1,12 +1,12 @@
 import { DataTypes, Optional, Model } from "sequelize";
 import db from "../../config/database";
 import UserSystemAttributes from "./dto";
-import User from "../users/model";
-import System from "../systems/model";
-import Role from "../roles/model";
-import SystemAttributes from "../systems/dto";
-import RoleAttributes from "../roles/dto";
-import UserAttributes from "../users/dto";
+import User from "../user/model";
+import System from "../system/model";
+import Role from "../role/model";
+import SystemAttributes from "../system/dto";
+import RoleAttributes from "../role/dto";
+import UserAttributes from "../user/dto";
 
 interface UserSystemCreationAttributes extends Optional<UserSystemAttributes, 'id'> { };
 interface UserSystemInstance extends Model<UserSystemAttributes, UserSystemCreationAttributes>, UserSystemAttributes {

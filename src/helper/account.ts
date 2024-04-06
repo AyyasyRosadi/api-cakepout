@@ -1,6 +1,6 @@
 import AccountAttributes from "../service/account/dto";
 import Account from "../service/account/model";
-import GroupAccount from "../service/groupAccounts/model";
+import GroupAccount from "../service/groupAccount/model";
 
 
 class AccountHelper {

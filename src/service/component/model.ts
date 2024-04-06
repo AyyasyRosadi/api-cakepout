@@ -1,9 +1,9 @@
 import { DataTypes, Model } from "sequelize";
 import db from "../../config/database";
 import ComponentAttributes from "./dto";
-import ActivityAttributes from "../activities/dto";
-import Activity from "../activities/model";
-import ProgramAttributes from "../programs/dto";
+import ActivityAttributes from "../activity/dto";
+import Activity from "../activity/model";
+import ProgramAttributes from "../program/dto";
 
 
 interface ComponentInstance extends Model<ComponentAttributes>, ComponentAttributes {

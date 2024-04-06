@@ -1,8 +1,8 @@
 import { DataTypes,Optional,Model } from "sequelize";
 import db from "../../config/database";
 import SystemAttributes from "./dto";
-import Role from "../roles/model";
-import RoleAttributes from "../roles/dto";
+import Role from "../role/model";
+import RoleAttributes from "../role/dto";
 
 interface SystemCreationAttributes extends Optional<SystemAttributes,'uuid'>{};
 interface SystemInstance extends Model<SystemAttributes,SystemCreationAttributes>,SystemAttributes{

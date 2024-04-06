@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken"
-import BlacklistToken from "../service/blacklistTokens/model";
+import BlacklistToken from "../service/blacklistToken/model";
 import userHelper from "../helper/user";
 
 const systemName = 'cakepout'

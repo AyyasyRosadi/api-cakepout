@@ -3,9 +3,9 @@ import { ActionAttributes } from "../interfaces";
 import bcrypt from "bcrypt"
 import { v4 } from "uuid";
 import jwt from 'jsonwebtoken'
-import UserSystemAttributes from "../userSystems/dto";
-import RoleAttributes from "../roles/dto";
-import BlacklistToken from "../blacklistTokens/model";
+import UserSystemAttributes from "../userSystem/dto";
+import RoleAttributes from "../role/dto";
+import BlacklistToken from "../blacklistToken/model";
 import message from "../../helper/message";
 
 interface LoginAttributes {

@@ -1,9 +1,9 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import db from "../../config/database";
 import AccountAttributes from "./dto";
-import DetailOfActivity from "../detailOfActivities/model";
-import DetailOfActivityAttributes from "../detailOfActivities/dto";
-import JournalAttributes from "../journals/dto";
+import DetailOfActivity from "../detailOfActivity/model";
+import DetailOfActivityAttributes from "../detailOfActivity/dto";
+import JournalAttributes from "../journal/dto";
 
 interface AccountCreationsAttributes extends Optional<AccountAttributes, 'uuid' | 'activity_id'> { };
 interface AccountInstance extends Model<AccountAttributes, AccountCreationsAttributes>, AccountAttributes {

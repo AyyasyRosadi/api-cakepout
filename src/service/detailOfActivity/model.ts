@@ -1,7 +1,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import db from "../../config/database";
 import DetailOfActivityAttributes from "./dto";
-import DisbursementOfFundAttributes from "../disbursementOfFunds/dto";
+import DisbursementOfFundAttributes from "../disbursementOfFund/dto";
 
 interface DetailOfActivityCreationAttributes extends Optional<DetailOfActivityAttributes,'uuid'|'no_sub_kegiatan'>{}
 interface DetailOfActivityInstance extends Model<DetailOfActivityAttributes,DetailOfActivityCreationAttributes>,DetailOfActivityAttributes{

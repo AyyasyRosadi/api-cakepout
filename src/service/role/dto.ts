@@ -1,4 +1,4 @@
-import SystemAttributes from "../systems/dto";
+import SystemAttributes from "../system/dto";
 
 export default interface RoleAttributes{
     uuid:string;

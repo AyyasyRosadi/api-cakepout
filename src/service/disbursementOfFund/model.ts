@@ -1,10 +1,10 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import db from "../../config/database";
 import DisbursementOfFundAttributes from "./dto";
-import DetailOfActivity from "../detailOfActivities/model";
+import DetailOfActivity from "../detailOfActivity/model";
 import Ptk from "../ptk/model";
 import PtkAttributes from "../ptk/dto";
-import DetailOfActivityAttributes from "../detailOfActivities/dto";
+import DetailOfActivityAttributes from "../detailOfActivity/dto";
 
 interface DisbursementOfFundCreationAttributes extends Optional<DisbursementOfFundAttributes,'uuid'|'reference_of_jurnal'|'recipient'|'ptk_id'>{}
 interface DisbursementOfFundInstance extends Model<DisbursementOfFundAttributes,DisbursementOfFundCreationAttributes>, DisbursementOfFundAttributes{

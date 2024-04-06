@@ -1,7 +1,7 @@
 import accountingYear from "../../helper/accountingYear";
 import detailOfActivities from "../../helper/detailOfActivities";
 import message from "../../helper/message";
-import DetailOfActivity from "../detailOfActivities/model";
+import DetailOfActivity from "../detailOfActivity/model";
 import { ActionAttributes } from "../interfaces";
 import DisbursementOfFundAttributes from "./dto";
 import DisbursementOfFunds from "./model";

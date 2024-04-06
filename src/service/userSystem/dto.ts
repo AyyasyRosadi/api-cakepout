@@ -1,5 +1,5 @@
-import RoleAttributes from "../roles/dto";
-import SystemAttributes from "../systems/dto";
+import RoleAttributes from "../role/dto";
+import SystemAttributes from "../system/dto";
 
 export default interface UserSystemAttributes {
     role?: RoleAttributes;

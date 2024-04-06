@@ -1,8 +1,8 @@
 import db from "../../config/database";
 import { DataTypes, Model } from "sequelize";
 import ProgramAttributes from "./dto";
-import ComponentAttributes from "../components/dto";
-import Component from "../components/model";
+import ComponentAttributes from "../component/dto";
+import Component from "../component/model";
 
 interface ProgramInstance extends Model<ProgramAttributes>, ProgramAttributes {
     created_at: Date;
