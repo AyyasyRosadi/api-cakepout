@@ -5,7 +5,7 @@ import compression from "compression";
 import helmet from "helmet";
 import { Synchronize } from "./config/synchronize";
 import { cache } from "./middleware/cache";
-import routes from "./router";
+import routes from "./service";
 import accountingYear from "./helper/accountingYear";
 
 
