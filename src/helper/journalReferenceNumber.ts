@@ -14,23 +14,38 @@ class JournalReferenceNumberHelper {
             return false
         }
     }
+    private async updateJournalReferenceNumber(year: string, number: number): Promise<boolean> {
+        try {
+            await JournalReferenceNumber.update({
+                number
+            }, {
+                where: {
+                    accounting_year: year
+                }
+            })
+            return true
+        } catch {
+            return false
+        }
+    }
     public async generateReference(): Promise<string | null> {
         try {
             const activeYear = await accountingYear.getActiveAccountingYear()
             const oneJournalReferenceNumber = await this.getOneJournalReferenceNumberByYear(activeYear!.tahun)
             let referenceNumber = ""
             let prefix = ""
-            let yaerPrefix = activeYear!.tahun.split('/')[1].substring(2)
+            let yearPrefix = activeYear!.tahun.split('/')[1].substring(2)
             if (!oneJournalReferenceNumber) {
                 await this.createJournalReferenceNumber(activeYear!.tahun)
                 referenceNumber = "1"
             } else {
+                await this.updateJournalReferenceNumber(activeYear!.tahun, oneJournalReferenceNumber.number + 1)
                 referenceNumber = `${oneJournalReferenceNumber.number + 1}`
             }
             for (let i = 0; i < 5 - referenceNumber.length; i++) {
                 prefix += "0"
             }
-            return `${yaerPrefix}-${prefix + referenceNumber}`
+            return `${yearPrefix}-${prefix + referenceNumber}`
         } catch {
             return null
         }
