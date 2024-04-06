@@ -37,10 +37,10 @@ class JournalRouter extends BaseRouter {
                 return res.status(200).json(allJournal)
             }
         )
-        this.router.get('/account-id/:accountId',
+        this.router.get('/account-id/:account_id',
             authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
-                const allJournal = await logic.getJournalByAccountId(req.params?.accountId)
+                const allJournal = await logic.getJournalByAccountId(req.params?.account_id)
                 return res.status(200).json(allJournal)
             }
         )

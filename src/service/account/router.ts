@@ -39,7 +39,7 @@ class AccountRouter extends BaseRouter {
                 return res.status(200).json(allAccount)
             }
         )
-        this.router.get('/group_account/:group_account',
+        this.router.get('/group-account/:group_account',
             authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const oneAccount = await logic.getAccountByGroupAccount(parseInt(req.params?.group_account))
@@ -49,7 +49,7 @@ class AccountRouter extends BaseRouter {
                 return res.status(200).json(oneAccount)
             }
         )
-        this.router.get('/account_number/:account_number',
+        this.router.get('/account-number/:account_number',
             authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const oneAccount = await logic.getAccountByAccountNumber(req.params?.account_number)
