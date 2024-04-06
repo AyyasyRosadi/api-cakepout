@@ -1,4 +1,4 @@
-import AccountAttributes from "../service/accounts/dto";
+import AccountAttributes from "../service/account/dto";
 import { ActionAttributes } from "../service/interfaces";
 import Journal from "../service/journals/model";
 import account from "./account";

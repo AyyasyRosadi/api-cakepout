@@ -1,5 +1,5 @@
 import authentication from "../../middleware/authentication";
-import BaseRouter from "../../router/base";
+import BaseRouter from "../routerBase";
 import { ALLROLE } from "../constant";
 import controller from "./controller";
 import validator from "./validator";

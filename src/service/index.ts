@@ -2,10 +2,10 @@ import express, { Router } from "express";
 import Ptk from "./ptk/router";
 import DisbursementOfFunds from "./disbursementOfFunds/router";
 import DetailOfActivity from "./detailOfActivities/router";
-import Account from "./accounts/router";
+import Account from "./account/router";
 import JournalReferenceNumber from "./journalReferenceNumbers/router";
 import Authentication from "./authentication/router"
-import AccountingYear from "./accountingYears/router";
+import AccountingYear from "./accountingYear/router";
 import GroupAccount from "./groupAccounts/router";
 import Institution from "./institutions/router";
 import MonthlyAccountCalulation from "./monthlyAccountCalculations/router";

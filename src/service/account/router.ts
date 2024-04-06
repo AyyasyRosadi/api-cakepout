@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import BaseRouter from "../../router/base";
+import BaseRouter from "../routerBase";
 import logic from "./logic";
 import validaor from "./validaor";
 import authentication from "../../middleware/authentication";
