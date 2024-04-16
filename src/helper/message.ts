@@ -2,8 +2,8 @@ import { ActionAttributes } from "../service/interfaces";
 
 
 class MessageHelper {
-    public sendMessage(status: boolean): ActionAttributes {
-        return status ? { status: true, message: 'succes' } : { status: false, message: 'bad request' }
+    public sendMessage(status: boolean, message?: string): ActionAttributes {
+        return status ? { status: true, message: message ? message : 'succes' } : { status: false, message: message ? message :  'bad request' }
     }
 }
 

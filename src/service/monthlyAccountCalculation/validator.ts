@@ -4,9 +4,10 @@ import Validator from "../../middleware/validator";
 
 class MonthlyAccountCalculationValidator extends Validator{
     public create = ()=>[
-        check('monthIndex').isInt().withMessage('index bulan tidak boleh kosong'),
-        check('accountingYear').isString().withMessage('tahun akutansi tidak boleh kosong'),
-        check('accountId').isString().withMessage('id akun tidak boleh kosong'),
+        check('month_index').isInt().withMessage('index bulan tidak boleh kosong'),
+        check('accounting_year').isString().withMessage('tahun akutansi tidak boleh kosong'),
+        check('account_id').isString().withMessage('id akun tidak boleh kosong'),
+        check('open').isBoolean().withMessage('status tidak boleh kosong'),
         this.validate
     ]
     public updateTotal = ()=>[

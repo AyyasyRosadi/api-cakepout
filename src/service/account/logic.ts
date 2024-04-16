@@ -49,7 +49,6 @@ class AccountLogic {
         return allAccount
     }
     public async getAccountByGroupAccount(group_account: number): Promise<Array<AccountAttributes>> {
-        console.log(group_account)
         const queryGroupAccount = group_account === 4 ? { [Op.not]: { group_account } } : { group_account }
         const oneAccount = await Account.findAll({
             include: [

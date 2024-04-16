@@ -32,9 +32,9 @@ class JournalReferenceNumberHelper {
         try {
             const activeYear = await accountingYear.getActiveAccountingYear()
             const oneJournalReferenceNumber = await this.getOneJournalReferenceNumberByYear(activeYear!.tahun)
-            let referenceNumber = ""
-            let prefix = ""
             let yearPrefix = activeYear!.tahun.split('/')[1].substring(2)
+            let prefix = ""
+            let referenceNumber = ""
             if (!oneJournalReferenceNumber) {
                 await this.createJournalReferenceNumber(activeYear!.tahun)
                 referenceNumber = "1"

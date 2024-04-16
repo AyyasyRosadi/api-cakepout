@@ -1,6 +1,8 @@
+import account from "../../helper/account";
 import accountingYear from "../../helper/accountingYear";
 import detailOfActivities from "../../helper/detailOfActivities";
 import message from "../../helper/message";
+import monthlyAccountCalculation from "../../helper/monthlyAccountCalculation";
 import DetailOfActivity from "../detailOfActivity/model";
 import { ActionAttributes } from "../interfaces";
 import DisbursementOfFundAttributes from "./dto";
@@ -77,7 +79,7 @@ class DisbursementOfFundLogic {
                 if (oneDisbursementOfFund.sharing_program) {
                     // TODO: add to sharing_program table
                 }
-                return message.sendMessage(true)
+                return message.sendMessage(true,'Update status succes')
             }
             return message.sendMessage(false)
         } catch (_) {
@@ -87,11 +89,12 @@ class DisbursementOfFundLogic {
     public async approveWithDrawDisbursementOfFund(uuid: string, ptk_id: string | null, recipient: string | null): Promise<ActionAttributes> {
         try {
             const oneDisbursementOfFund = await this.getDisbursementOfFundByUuid(uuid)
-            if (oneDisbursementOfFund && oneDisbursementOfFund.status) {
+            const oneAccount = await account.getAccountByActivityId(oneDisbursementOfFund?.activity_id!)
+            if (oneDisbursementOfFund!.status && oneAccount) {
                 await DisbursementOfFunds.update({ withdraw: true, ptk_id: ptk_id, recipient: recipient }, { where: { uuid } })
-                return { status: true, message: "update withdraw succes" }
+                return message.sendMessage(true, "update withdraw succes")
             }
-            return message.sendMessage(false)
+            return message.sendMessage(false,'Account not found')
         } catch (_) {
             return message.sendMessage(false)
         }

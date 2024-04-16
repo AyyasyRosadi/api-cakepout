@@ -55,7 +55,7 @@ class DisbursementOfFundRouter extends BaseRouter {
                 return res.status(200).json({ msg: addDisbursementOfFund })
             })
         this.router.put('/status/:uuid',
-            authentication.authenticationUser(SUPERADMIN),
+            authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const approveStatusDisbursementOfFund = await logic.approveStatusDisbursementOfFund(req.params?.uuid)
                 if (!approveStatusDisbursementOfFund.status) {

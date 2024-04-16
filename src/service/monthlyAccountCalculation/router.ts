@@ -11,7 +11,8 @@ class MonthlyAccountCalculationRouter extends BaseRouter {
         this.router.get('/',
             authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
-                const allMonthlyAccountCalculation = await logic.getAllMonthlyAccountCalculation()
+                const { page, size } = req.query
+                const allMonthlyAccountCalculation = await logic.getAllMonthlyAccountCalculation(Number(page), Number(size))
                 return res.status(200).json(allMonthlyAccountCalculation)
             }
         )
@@ -40,8 +41,8 @@ class MonthlyAccountCalculationRouter extends BaseRouter {
             authentication.authenticationUser(ALLROLE),
             validator.create(),
             async (req: Request, res: Response): Promise<Response> => {
-                const { monthIndex, accountingYear, accountId } = req.body;
-                const addMonthlyAccountCalculation = await logic.addMonthlyAccountCalculation(monthIndex, accountingYear, 0, accountId, true)
+                const { month_index, accounting_year, account_id, open } = req.body;
+                const addMonthlyAccountCalculation = await logic.addMonthlyAccountCalculation(month_index, accounting_year, 0, account_id, open)
                 if (!addMonthlyAccountCalculation.status) {
                     return res.status(400).json({ msg: addMonthlyAccountCalculation.message })
                 }
@@ -59,9 +60,9 @@ class MonthlyAccountCalculationRouter extends BaseRouter {
                 return res.status(200).json({ msg: updateTotalMonthlyAccountCalculation.message })
             }
         )
-        this.router.purge('/open/:uuid',
+        this.router.put('/open/:uuid',
             validator.updateOpen(),
-            authentication.authenticationUser(SUPERADMIN),
+            authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const updateOpenMonthlyAccountCalculation = await logic.updateOpenMonthlyAccountCalculation(req.body?.open, req.params?.uuid)
                 if (!updateOpenMonthlyAccountCalculation.status) {
