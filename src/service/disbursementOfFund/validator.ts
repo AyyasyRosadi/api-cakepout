@@ -14,6 +14,8 @@ class DisbursementOfFundValidator extends Validator {
     public updateWithdraw = () => [
         check('ptk_id').optional().isString(),
         check('receipient').optional().isString(),
+        check('transaction_date').isString().withMessage('tanggal transaksi tidak boleh kosong'),
+        check('accounting_year').isString().withMessage("tahun akutansi tidak boleh kosong"),
         this.validate
     ]
 }

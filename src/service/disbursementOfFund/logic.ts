@@ -2,7 +2,6 @@ import account from "../../helper/account";
 import accountingYear from "../../helper/accountingYear";
 import detailOfActivities from "../../helper/detailOfActivities";
 import message from "../../helper/message";
-import monthlyAccountCalculation from "../../helper/monthlyAccountCalculation";
 import DetailOfActivity from "../detailOfActivity/model";
 import { ActionAttributes } from "../interfaces";
 import DisbursementOfFundAttributes from "./dto";
