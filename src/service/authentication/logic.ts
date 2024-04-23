@@ -4,7 +4,6 @@ import bcrypt from "bcrypt"
 import { v4 } from "uuid";
 import jwt from 'jsonwebtoken'
 import UserSystemAttributes from "../userSystem/dto";
-import RoleAttributes from "../role/dto";
 import BlacklistToken from "../blacklistToken/model";
 import message from "../../helper/message";
 
@@ -22,7 +21,6 @@ interface LoginAttributes {
 const systemName = 'cakepout'
 
 class AuthenticationLogic {
-
     public async login(username: string, password: string): Promise<ActionAttributes | LoginAttributes> {
         try {
             const user = await userHelper.getUserByUsername(username)
@@ -39,7 +37,7 @@ class AuthenticationLogic {
             )
             return { status: true, user: { nama: user.nama, username: user.username, sistem: user.user_sistems?.find((e) => e.sistem?.nama_sistem === systemName)!, generalUser: user.general_user }, token: token }
         } catch (_) {
-            return { status: false, message: 'bad request' }
+            return message.sendMessage(false)
         }
     }
     public async logout(jti: string): Promise<ActionAttributes> {
