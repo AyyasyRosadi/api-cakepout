@@ -8,10 +8,10 @@ import { ALLROLE } from "../constant";
 class AccountRouter extends BaseRouter {
     routes(): void {
         this.router.get('/',
-        authentication.authenticationUser(ALLROLE),
+        // authentication.authenticationUser(ALLROLE),
         async(req:Request,res:Response):Promise<Response>=>{
             const allAccount = await logic.getAllAccount()
-            return res.status(200).json(allAccount)
+            return res.status(allAccount.status).json(allAccount.data)
         })
         this.router.get('/page',
             authentication.authenticationUser(ALLROLE),

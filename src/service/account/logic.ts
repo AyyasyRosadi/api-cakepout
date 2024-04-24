@@ -7,6 +7,7 @@ import GroupAccount from "../groupAccount/model";
 import { ActionAttributes } from "../interfaces";
 import AccountAttributes from "./dto";
 import Account from "./model";
+import {LogicBase, messageAttribute} from '../logicBase';
 
 interface AccountPaginationAttributes {
     page: number;
@@ -15,23 +16,22 @@ interface AccountPaginationAttributes {
     data: Array<AccountAttributes>;
 }
 
-const include = [
-    { model: DetailOfActivity, as: 'detail_of_activity' },
-    { model: GroupAccount }
-]
 
-
-class AccountLogic {
-    public async getAllAccount():Promise<Array<AccountAttributes>>{
-        const allAccount = await Account.findAll({include:include})
-        return allAccount
+class AccountLogic extends LogicBase{
+    private include = [
+        { model: DetailOfActivity, as: 'detail_of_activity' },
+        { model: GroupAccount }     
+    ]
+    public async getAllAccount():Promise<messageAttribute<Array<AccountAttributes>>>{
+        const allAccount = await Account.findAll({include:this.include})
+        return this.message<Array<AccountAttributes>>(200, allAccount)
     }
     public async getAllAccountByPage(page: number, size: number): Promise<AccountPaginationAttributes> {
         const offset = (page - 1) * size
         const allAccount = await Account.findAndCountAll({
             limit: size,
             offset: offset,
-            include: include,
+            include: this.include,
         })
         return {
             page,
@@ -40,12 +40,15 @@ class AccountLogic {
             data: allAccount.rows
         }
     }
-    public async getAccountByUuid(uuid: string): Promise<AccountAttributes | null> {
-        const oneAccount = await Account.findOne({ where: { uuid }, include: include })
-        return oneAccount
+    public async getAccountByUuid(uuid: string): Promise<messageAttribute<AccountAttributes|any>> {
+        const oneAccount = await Account.findOne({ where: { uuid }, include: this.include })
+        if(!oneAccount){
+            return this.message(404, {message:"not found"})
+        }
+        return this.message(200, oneAccount)
     }
     public async getAccountByActivity(activity_id: string): Promise<Array<AccountAttributes>> {
-        const allAccount = await Account.findAll({ where: { activity_id }, include: include })
+        const allAccount = await Account.findAll({ where: { activity_id }, include: this.include })
         return allAccount
     }
     public async getAccountByGroupAccount(group_account: number): Promise<Array<AccountAttributes>> {
@@ -59,7 +62,7 @@ class AccountLogic {
         return oneAccount
     }
     public async getAccountByAccountNumber(account_number: string): Promise<AccountAttributes | null> {
-        const oneAccount = await Account.findOne({ where: { account_number }, include: include })
+        const oneAccount = await Account.findOne({ where: { account_number }, include: this.include })
         return oneAccount
     }
     public async addAccount(name: string, group_account: number, group_account_label: number, activity_id: string | null, group_account_name: string): Promise<ActionAttributes> {

@@ -20,6 +20,8 @@ Authorization: Bearer {{token}}
 ###
 GET {{host}}/account/group_account/1
 Authorization: Bearer {{token}}
+###
+GET {{host}}/account
 
 
 ###
