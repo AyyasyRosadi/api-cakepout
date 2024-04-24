@@ -7,7 +7,7 @@ import GroupAccount from "../groupAccount/model";
 import { ActionAttributes } from "../interfaces";
 import AccountAttributes from "./dto";
 import Account from "./model";
-import {LogicBase, messageAttribute} from '../logicBase';
+import {LogicBase, messageAttribute, defaultMessage} from '../logicBase';
 
 interface AccountPaginationAttributes {
     page: number;
@@ -40,7 +40,7 @@ class AccountLogic extends LogicBase{
             data: allAccount.rows
         }
     }
-    public async getAccountByUuid(uuid: string): Promise<messageAttribute<AccountAttributes|any>> {
+    public async getAccountByUuid(uuid: string): Promise<messageAttribute<AccountAttributes|defaultMessage>> {
         const oneAccount = await Account.findOne({ where: { uuid }, include: this.include })
         if(!oneAccount){
             return this.message(404, {message:"not found"})

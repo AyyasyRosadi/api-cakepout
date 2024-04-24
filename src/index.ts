@@ -6,7 +6,6 @@ import helmet from "helmet";
 import { Synchronize } from "./config/synchronize";
 import { cache } from "./middleware/cache";
 import routes from "./service";
-import accountingYear from "./helper/accountingYear";
 
 
 const app: Application = express();
