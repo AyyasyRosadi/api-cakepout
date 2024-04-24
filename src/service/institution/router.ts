@@ -11,7 +11,7 @@ class InstitutionRouter extends BaseRouter {
             authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const allInstitution = await logic.getAllInstitution()
-                return res.status(200).json(allInstitution)
+                return res.status(allInstitution.status).json(allInstitution.data)
             })
     }
 }

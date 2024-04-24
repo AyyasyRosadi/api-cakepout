@@ -2,14 +2,13 @@ import { Op } from "sequelize";
 import Account from "../account/model";
 import JournalAttributes from "./dto";
 import Journal from "./model";
-import { ActionAttributes } from "../interfaces";
-import message from "../../helper/message";
 import account from "../../helper/account";
 import GroupAccount from "../groupAccount/model";
 import time from "../../helper/time";
 import accountingYear from "../../helper/accountingYear";
 import journalReferenceNumber from "../../helper/journalReferenceNumber";
 import monthlyAccountCalculation from "../../helper/monthlyAccountCalculation";
+import { LogicBase, defaultMessage, messageAttribute } from "../logicBase";
 
 interface JournalPaginationAttributes {
     page: number;
@@ -18,8 +17,8 @@ interface JournalPaginationAttributes {
     data: Array<JournalAttributes>;
 }
 
-class JournalLogic {
-    public async getAllJournal(page: number, size: number): Promise<JournalPaginationAttributes> {
+class JournalLogic extends LogicBase {
+    public async getAllJournal(page: number, size: number): Promise<messageAttribute<JournalPaginationAttributes>> {
         const offset = (page - 1) * size
         const allJournal = await Journal.findAndCountAll(
             {
@@ -29,32 +28,32 @@ class JournalLogic {
                 order: [["transaction_date", "DESC"], ['amount', 'DESC']]
             }
         )
-        return {
+        return this.message(200, {
             page,
             totalPages: Math.ceil(allJournal.count / size),
             totalItems: allJournal.count,
             data: allJournal.rows
-        }
+        })
     }
-    public async getJournalByUuid(uuid: string): Promise<JournalAttributes | null> {
+    public async getJournalByUuid(uuid: string): Promise<messageAttribute<JournalAttributes | defaultMessage>> {
         const oneJournal = await Journal.findOne({ where: { uuid }, include: { model: Account } })
-        return oneJournal
+        return this.message(oneJournal ? 200:404,oneJournal ? oneJournal:{message:"Journal tidak ditemukan"})
     }
-    public async getJournalByStatus(status: string): Promise<Array<JournalAttributes>> {
+    public async getJournalByStatus(status: string): Promise<messageAttribute<Array<JournalAttributes>>> {
         const allJournal = await Journal.findAll({ where: { status }, include: { model: Account } })
-        return allJournal
+        return this.message(200,allJournal)
     }
-    public async getJournalByTransactionDate(start: string, end: string): Promise<Array<JournalAttributes>> {
+    public async getJournalByTransactionDate(start: string, end: string): Promise<messageAttribute<Array<JournalAttributes>>> {
         const allJournal = await Journal.findAll({ where: { transaction_date: { [Op.gte]: start, [Op.lte]: end } }, include: { model: Account } })
-        return allJournal
+        return this.message(200,allJournal)
     }
-    public async getJournalByYear(year: string): Promise<Array<JournalAttributes>> {
+    public async getJournalByYear(year: string): Promise<messageAttribute<Array<JournalAttributes>>> {
         const allJournal = await Journal.findAll({ where: { accounting_year: year }, include: { model: Account } })
-        return allJournal
+        return this.message(200,allJournal)
     }
-    public async getJournalByAccountId(accountId: string): Promise<Array<JournalAttributes>> {
+    public async getJournalByAccountId(accountId: string): Promise<messageAttribute<Array<JournalAttributes>>> {
         const allJournal = await Journal.findAll({ where: { account_id: accountId }, include: { model: Account } })
-        return allJournal
+        return this.message(200,allJournal)
     }
     private async createJournal(amount: number, status: "K" | "D", account_id: string, reference: string, transaction_date: Date, year: string): Promise<boolean> {
         try {
@@ -64,20 +63,20 @@ class JournalLogic {
             return false
         }
     }
-    public async generateJournal(from_account: string, to_account: Array<{ account_id: string, amount: number, transaction_date: string }>): Promise<ActionAttributes> {
+    public async generateJournal(from_account: string, to_account: Array<{ account_id: string, amount: number, transaction_date: string }>): Promise<messageAttribute<defaultMessage>> {
         try {
             const activeYear = await accountingYear.getActiveAccountingYear()
             const oneAccount = await account.getAccountByUuid(from_account)
             let rejectAccount = ''
             if (!oneAccount) {
-                return message.sendMessage(false)
+                return this.message(403,{message:"Akun sumber tidak ditemukan"})
             }
             for (let i in to_account) {
                 const transactionDate = time.date(to_account[i].transaction_date)
                 const fromOneMonthlyAccountCalculation = await monthlyAccountCalculation.getActiveOneMonthlyAccountCalculation(transactionDate.getMonth(), activeYear!.tahun, oneAccount.uuid)
                 const toOneMonthlyAccountCalculation = await monthlyAccountCalculation.getActiveOneMonthlyAccountCalculation(transactionDate.getMonth(), activeYear!.tahun, to_account[i].account_id)
                 if (!fromOneMonthlyAccountCalculation) {
-                    return message.sendMessage(false, 'kalkulasi akun sumber sudah ditutup')
+                    return this.message(403,{message:"Kalkulasi akun sumber sudah ditutup"})
                 }
                 if (toOneMonthlyAccountCalculation) {
                     const referenceNumber = await journalReferenceNumber.generateReference()
@@ -98,11 +97,11 @@ class JournalLogic {
                 }
             }
             return rejectAccount.length > 0 ?
-                message.sendMessage(true, `kalkulasi akun tujuan sudah ditutup untuk akun ${rejectAccount}`)
+                this.message(200,{message:`kalkulasi akun tujuan sudah ditutup untuk akun ${rejectAccount}`})
                 :
-                message.sendMessage(true)
+                this.message(200,{message:"Succes"})
         } catch (r) {
-            return message.sendMessage(false)
+            return this.message(403,{message:"Gagal"})
         }
     }
 }

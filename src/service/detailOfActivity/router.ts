@@ -10,28 +10,25 @@ class DetailOfActivityRouter extends BaseRouter {
             authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const allDetailOfActivity = await logic.getAllDetailOfActivity()
-                return res.status(200).json(allDetailOfActivity)
+                return res.status(allDetailOfActivity.status).json(allDetailOfActivity.data)
             })
         this.router.get('/:uuid',
             authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const oneDetailOfActivity = await logic.getOneDetailActivityByUuid(req.params?.uuid)
-                if (!oneDetailOfActivity) {
-                    return res.status(404).json({ msg: "detail of activity not found" })
-                }
-                return res.status(200).json(oneDetailOfActivity)
+                return res.status(oneDetailOfActivity.status).json(oneDetailOfActivity.data)
             })
         this.router.get('/year/:accounting_year',
             authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const allDetailOfActivity = await logic.getAllDetailOfActivityByYear(req.params?.accounting_year)
-                return res.status(200).json(allDetailOfActivity)
+                return res.status(allDetailOfActivity.status).json(allDetailOfActivity.data)
             })
         this.router.post('/institution',
             authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const allDetailOfActivity = await logic.getAllDetailOfActivityByInstitution(req.body?.institutionId)
-                return res.status(200).json(allDetailOfActivity)
+                return res.status(allDetailOfActivity.status).json(allDetailOfActivity.data)
             })
     }
 }

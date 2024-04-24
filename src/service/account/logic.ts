@@ -1,13 +1,11 @@
 import { Op } from "sequelize";
 import account from "../../helper/account";
 import groupAccount from "../../helper/groupAccount";
-import message from "../../helper/message";
 import DetailOfActivity from "../detailOfActivity/model";
 import GroupAccount from "../groupAccount/model";
-import { ActionAttributes } from "../interfaces";
 import AccountAttributes from "./dto";
 import Account from "./model";
-import {LogicBase, messageAttribute, defaultMessage} from '../logicBase';
+import { LogicBase, messageAttribute, defaultMessage } from '../logicBase';
 
 interface AccountPaginationAttributes {
     page: number;
@@ -17,55 +15,55 @@ interface AccountPaginationAttributes {
 }
 
 
-class AccountLogic extends LogicBase{
+class AccountLogic extends LogicBase {
     private include = [
         { model: DetailOfActivity, as: 'detail_of_activity' },
-        { model: GroupAccount }     
+        { model: GroupAccount }
     ]
-    public async getAllAccount():Promise<messageAttribute<Array<AccountAttributes>>>{
-        const allAccount = await Account.findAll({include:this.include})
+    public async getAllAccount(): Promise<messageAttribute<Array<AccountAttributes>>> {
+        const allAccount = await Account.findAll({ include: this.include })
         return this.message<Array<AccountAttributes>>(200, allAccount)
     }
-    public async getAllAccountByPage(page: number, size: number): Promise<AccountPaginationAttributes> {
+    public async getAllAccountByPage(page: number, size: number): Promise<messageAttribute<AccountPaginationAttributes>> {
         const offset = (page - 1) * size
         const allAccount = await Account.findAndCountAll({
             limit: size,
             offset: offset,
             include: this.include,
         })
-        return {
+        return this.message(200, {
             page,
             totalPages: Math.ceil(allAccount.count / size),
             totalItems: allAccount.count,
             data: allAccount.rows
-        }
+        })
     }
-    public async getAccountByUuid(uuid: string): Promise<messageAttribute<AccountAttributes|defaultMessage>> {
+    public async getAccountByUuid(uuid: string): Promise<messageAttribute<AccountAttributes | defaultMessage>> {
         const oneAccount = await Account.findOne({ where: { uuid }, include: this.include })
-        if(!oneAccount){
-            return this.message(404, {message:"not found"})
+        if (!oneAccount) {
+            return this.message(404, { message: "not found" })
         }
         return this.message(200, oneAccount)
     }
-    public async getAccountByActivity(activity_id: string): Promise<Array<AccountAttributes>> {
+    public async getAccountByActivity(activity_id: string): Promise<messageAttribute<Array<AccountAttributes>>> {
         const allAccount = await Account.findAll({ where: { activity_id }, include: this.include })
-        return allAccount
+        return this.message(200, allAccount)
     }
-    public async getAccountByGroupAccount(group_account: number): Promise<Array<AccountAttributes>> {
+    public async getAccountByGroupAccount(group_account: number): Promise<messageAttribute<Array<AccountAttributes>>> {
         const queryGroupAccount = group_account === 4 ? { [Op.not]: { group_account } } : { group_account }
-        const oneAccount = await Account.findAll({
+        const allAccount = await Account.findAll({
             include: [
                 { model: DetailOfActivity, as: 'detail_of_activity' },
                 { model: GroupAccount, where: queryGroupAccount }
             ]
         })
-        return oneAccount
+        return this.message(200, allAccount)
     }
-    public async getAccountByAccountNumber(account_number: string): Promise<AccountAttributes | null> {
+    public async getAccountByAccountNumber(account_number: string): Promise<messageAttribute<AccountAttributes | null>> {
         const oneAccount = await Account.findOne({ where: { account_number }, include: this.include })
-        return oneAccount
+        return this.message(200, oneAccount)
     }
-    public async addAccount(name: string, group_account: number, group_account_label: number, activity_id: string | null, group_account_name: string): Promise<ActionAttributes> {
+    public async addAccount(name: string, group_account: number, group_account_label: number, activity_id: string | null, group_account_name: string): Promise<messageAttribute<defaultMessage>> {
         try {
             if (group_account_label === 0) {
                 const lastGroupAccountLabel = await groupAccount.getLastLabelGroupAccountByGroup(group_account)
@@ -76,25 +74,25 @@ class AccountLogic extends LogicBase{
                 const oneGroupAccount = await groupAccount.getGroupAccount(group_account, group_account_label)
                 lastAccountNumber && oneGroupAccount && await Account.create({ account_number: `${lastAccountNumber}`, name, activity_id, group_account_id: oneGroupAccount.uuid })
             }
-            return message.sendMessage(true)
+            return this.message(200, { message: "Succes" })
         } catch (_) {
-            return message.sendMessage(false)
+            return this.message(403, { message: "Gagal" })
         }
     }
-    public async updateAccount(uuid: string, name: string): Promise<ActionAttributes> {
+    public async updateAccount(uuid: string, name: string): Promise<messageAttribute<defaultMessage>> {
         try {
             await Account.update({ name }, { where: { uuid } })
-            return message.sendMessage(true)
+            return this.message(200, { message: "Succes" })
         } catch {
-            return message.sendMessage(false)
+            return this.message(403, { message: "Gagal" })
         }
     }
-    public async deleteAccount(uuid: string): Promise<ActionAttributes> {
+    public async deleteAccount(uuid: string): Promise<messageAttribute<defaultMessage>> {
         try {
             await Account.destroy({ where: { uuid } })
-            return message.sendMessage(true)
+            return this.message(200, { message: "Succes" })
         } catch {
-            return message.sendMessage(false)
+            return this.message(403, { message: "Gagal" })
         }
     }
 }

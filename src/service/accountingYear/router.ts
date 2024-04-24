@@ -12,42 +12,33 @@ class AccountingYearRouter extends BaseRouter {
             authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const allAccountingYear = await logic.getAllAccountYear()
-                return res.status(200).json(allAccountingYear)
+                return res.status(allAccountingYear.status).json(allAccountingYear.data)
             })
         this.router.get('/:status',
             authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const allAccountingYear = await logic.getAccountingYearByStatus(parseInt(req.params?.status))
-                return res.status(200).json(allAccountingYear)
+                return res.status(allAccountingYear.status).json(allAccountingYear.data)
             })
         this.router.post('/',
             authentication.authenticationUser(ALLROLE),
             validator.create(),
             async (req: Request, res: Response): Promise<Response> => {
-                const addAccountingYear_ = await logic.addAccountingYear(req.body?.year, req.body?.active)
-                if (!addAccountingYear_.status) {
-                    return res.status(403).json({ msg: addAccountingYear_.message })
-                }
-                return res.status(200).json({ msg: addAccountingYear_.message })
+                const addAccountingYear = await logic.addAccountingYear(req.body?.year, req.body?.active)
+                return res.status(addAccountingYear.status).json({ msg: addAccountingYear.data })
             })
         this.router.put('/:year',
             authentication.authenticationUser(ALLROLE),
             validator.update(),
             async (req: Request, res: Response): Promise<Response> => {
-                const updateAccountingYear_ = await logic.updateStatusAccountingYear(req.params?.year, req.body?.status)
-                if (!updateAccountingYear_.status) {
-                    return res.status(403).json({ msg: updateAccountingYear_.message })
-                }
-                return res.status(200).json({ msg: updateAccountingYear_.message })
+                const updateAccountingYear = await logic.updateStatusAccountingYear(req.params?.year, req.body?.status)
+                return res.status(updateAccountingYear.status).json({ msg: updateAccountingYear.data })
             })
         this.router.delete('/:year',
             authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
-                const deleteAccountingYear_ = await logic.deleteAccountingYear(req.params?.year)
-                if (!deleteAccountingYear_.status) {
-                    return res.status(403).json({ msg: deleteAccountingYear_.message })
-                }
-                return res.status(200).json({ msg: deleteAccountingYear_.message })
+                const deleteAccountingYear = await logic.deleteAccountingYear(req.params?.year)
+                return res.status(deleteAccountingYear.status).json({ msg: deleteAccountingYear.data })
             })
     }
 }

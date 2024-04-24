@@ -1,46 +1,49 @@
+import { Includeable, Order } from "sequelize";
 import account from "../../helper/account";
 import accountingYear from "../../helper/accountingYear";
 import detailOfActivities from "../../helper/detailOfActivities";
-import message from "../../helper/message";
 import DetailOfActivity from "../detailOfActivity/model";
-import { ActionAttributes } from "../interfaces";
+import { LogicBase, defaultMessage, messageAttribute } from "../logicBase";
 import DisbursementOfFundAttributes from "./dto";
 import DisbursementOfFunds from "./model";
 
 
 
-class DisbursementOfFundLogic {
-    public async getAllDisbursementOfFund(): Promise<Array<DisbursementOfFundAttributes>> {
+class DisbursementOfFundLogic extends LogicBase {
+    private inlcude: Includeable = { model: DetailOfActivity }
+    private order: Order = [["createdAt", "ASC"]]
+
+    public async getAllDisbursementOfFund(): Promise<messageAttribute<Array<DisbursementOfFundAttributes>>> {
         const activeYear = await accountingYear.getActiveAccountingYear()
-        const allDisbursementOfFund = await DisbursementOfFunds.findAll({ where: { accounting_year: activeYear?.tahun }, include: { model: DetailOfActivity }, order: [["createdAt", "ASC"]] })
-        return allDisbursementOfFund
+        const allDisbursementOfFund = await DisbursementOfFunds.findAll({ where: { accounting_year: activeYear?.tahun }, include: this.inlcude, order: this.order })
+        return this.message(200, allDisbursementOfFund)
     }
-    public async getDisbursementOfFundByUuid(uuid: string): Promise<DisbursementOfFundAttributes | null> {
+    public async getDisbursementOfFundByUuid(uuid: string): Promise<messageAttribute<DisbursementOfFundAttributes | defaultMessage>> {
         const activeYear = await accountingYear.getActiveAccountingYear()
-        const oneDisbursementOfFund = await DisbursementOfFunds.findOne({ where: { uuid, accounting_year: activeYear?.tahun }, include: { model: DetailOfActivity }, order: [["createdAt", "ASC"]] })
-        return oneDisbursementOfFund
+        const oneDisbursementOfFund = await DisbursementOfFunds.findOne({ where: { uuid, accounting_year: activeYear?.tahun }, include: this.inlcude, order: this.order })
+        return this.message(oneDisbursementOfFund ? 200 : 404, oneDisbursementOfFund ? oneDisbursementOfFund : { message: "Antrian tidak ditemukan" })
     }
-    public async getDisbursementOfFundByActivityId(activity_id: string): Promise<Array<DisbursementOfFundAttributes>> {
+    public async getDisbursementOfFundByActivityId(activity_id: string): Promise<messageAttribute<Array<DisbursementOfFundAttributes>>> {
         const activeYear = await accountingYear.getActiveAccountingYear()
-        const allDisbursementOfFund = await DisbursementOfFunds.findAll({ where: { activity_id: activity_id, accounting_year: activeYear?.tahun }, include: { model: DetailOfActivity }, order: [["createdAt", "ASC"]] })
-        return allDisbursementOfFund
+        const allDisbursementOfFund = await DisbursementOfFunds.findAll({ where: { activity_id: activity_id, accounting_year: activeYear?.tahun }, include: this.inlcude, order: this.order })
+        return this.message(200, allDisbursementOfFund)
     }
-    public async getDisbursementOfFundByPtk_id(ptk_id: string): Promise<Array<DisbursementOfFundAttributes>> {
+    public async getDisbursementOfFundByPtk_id(ptk_id: string): Promise<messageAttribute<Array<DisbursementOfFundAttributes>>> {
         const activeYear = await accountingYear.getActiveAccountingYear()
-        const allDisbursementOfFund = await DisbursementOfFunds.findAll({ where: { ptk_id: ptk_id, accounting_year: activeYear?.tahun }, include: { model: DetailOfActivity }, order: [["createdAt", "ASC"]] })
-        return allDisbursementOfFund
+        const allDisbursementOfFund = await DisbursementOfFunds.findAll({ where: { ptk_id: ptk_id, accounting_year: activeYear?.tahun }, include: this.inlcude, order: this.order })
+        return this.message(200, allDisbursementOfFund)
     }
-    public async getDisbursementOfFundByStatus(status: number): Promise<Array<DisbursementOfFundAttributes>> {
+    public async getDisbursementOfFundByStatus(status: number): Promise<messageAttribute<Array<DisbursementOfFundAttributes>>> {
         const activeYear = await accountingYear.getActiveAccountingYear()
-        const allDisbursementOfFund = await DisbursementOfFunds.findAll({ where: { status, withdraw: false, accounting_year: activeYear?.tahun }, include: { model: DetailOfActivity }, order: [["createdAt", "ASC"]] })
-        return allDisbursementOfFund
+        const allDisbursementOfFund = await DisbursementOfFunds.findAll({ where: { status, withdraw: false, accounting_year: activeYear?.tahun }, include: this.inlcude, order: this.order })
+        return this.message(200, allDisbursementOfFund)
     }
-    public async getDisbursementOfFundByWithDraw(withdraw: number): Promise<Array<DisbursementOfFundAttributes>> {
+    public async getDisbursementOfFundByWithDraw(withdraw: number): Promise<messageAttribute<Array<DisbursementOfFundAttributes>>> {
         const activeYear = await accountingYear.getActiveAccountingYear()
-        const allDisbursementOfFund = await DisbursementOfFunds.findAll({ where: { withdraw, accounting_year: activeYear?.tahun }, include: { model: DetailOfActivity }, order: [["createdAt", "ASC"]] })
-        return allDisbursementOfFund
+        const allDisbursementOfFund = await DisbursementOfFunds.findAll({ where: { withdraw, accounting_year: activeYear?.tahun }, include: this.inlcude, order: this.order })
+        return this.message(200, allDisbursementOfFund)
     }
-    public async addDisbursementOfFund(activity: Array<{ activity_id: string, amount: number, accounting_year: string, month_index: number, sharing_program: boolean }>): Promise<Array<{ activity_id: string, remainingAmount: number }>> {
+    public async addDisbursementOfFund(activity: Array<{ activity_id: string, amount: number, accounting_year: string, month_index: number, sharing_program: boolean }>): Promise<messageAttribute<Array<{ activity_id: string, remainingAmount: number }> | defaultMessage>> {
         let failedActivity: Array<{ activity_id: string, remainingAmount: number }> = []
         for (let i in activity) {
             const checkRemainingAmount_ = await detailOfActivities.checkRemainingAmountDetailOfActivity(activity[i].activity_id, activity[i].amount)
@@ -61,49 +64,51 @@ class DisbursementOfFundLogic {
             }
         }
         if (failedActivity.length > 0) {
-            return failedActivity
+            return this.message(200, failedActivity)
         }
-        return []
+        return this.message(200, { message: "Succes" })
     }
-    public async approveStatusDisbursementOfFund(uuid: string): Promise<ActionAttributes> {
+    public async approveStatusDisbursementOfFund(uuid: string): Promise<messageAttribute<defaultMessage>> {
         try {
             const oneDisbursementOfFund = await this.getDisbursementOfFundByUuid(uuid)
-            if (oneDisbursementOfFund) {
-                const checkRemainingAmount_ = await detailOfActivities.checkRemainingAmountDetailOfActivity(oneDisbursementOfFund.activity_id, oneDisbursementOfFund.amount)
-                if (!checkRemainingAmount_.status) {
-                    return { status: false, message: "amount out of range" }
-                }
-                !oneDisbursementOfFund?.status && await detailOfActivities.updateReceivedAmountDetailOfActivity(oneDisbursementOfFund.activity_id, oneDisbursementOfFund.amount)
-                await DisbursementOfFunds.update({ status: true }, { where: { uuid } })
-                if (oneDisbursementOfFund.sharing_program) {
-                    // TODO: add to sharing_program table
-                }
-                return message.sendMessage(true,'Update status succes')
+            if (oneDisbursementOfFund.status !== 200 ) {
+                return this.message(403,{message:"Gagal"})
             }
-            return message.sendMessage(false)
+            const disbursementOfFund = oneDisbursementOfFund.data as DisbursementOfFundAttributes
+            const checkRemainingAmount_ = await detailOfActivities.checkRemainingAmountDetailOfActivity(disbursementOfFund.activity_id, disbursementOfFund.amount)
+            if (!checkRemainingAmount_.status) {
+                return this.message(403,{message:"Status tidak disetujui"})
+            }
+            !disbursementOfFund?.status && await detailOfActivities.updateReceivedAmountDetailOfActivity(disbursementOfFund.activity_id, disbursementOfFund.amount)
+            await DisbursementOfFunds.update({ status: true }, { where: { uuid } })
+            if (disbursementOfFund.sharing_program) {
+                // TODO: add to sharing_program table
+            }
+            return this.message(200,{message:"Succes"})
         } catch (_) {
-            return message.sendMessage(false)
+            return this.message(403,{message:"Gagal"})
         }
     }
-    public async approveWithDrawDisbursementOfFund(uuid: string, ptk_id: string | null, recipient: string | null): Promise<ActionAttributes> {
+    public async approveWithDrawDisbursementOfFund(uuid: string, ptk_id: string | null, recipient: string | null): Promise<messageAttribute<defaultMessage>> {
         try {
             const oneDisbursementOfFund = await this.getDisbursementOfFundByUuid(uuid)
-            const oneAccount = await account.getAccountByActivityId(oneDisbursementOfFund?.activity_id!)
-            if (oneDisbursementOfFund!.status && oneAccount) {
-                await DisbursementOfFunds.update({ withdraw: true, ptk_id: ptk_id, recipient: recipient }, { where: { uuid } })
-                return message.sendMessage(true, "update withdraw succes")
+            const disbursementOfFund = oneDisbursementOfFund.data as DisbursementOfFundAttributes
+            const oneAccount = await account.getAccountByActivityId(disbursementOfFund.activity_id!)
+            if (oneDisbursementOfFund.status !== 200 || !oneAccount) {
+                return this.message(404,{message:"Antrian/Akun tidak ditemukan"})
             }
-            return message.sendMessage(false,'Account not found')
+            await DisbursementOfFunds.update({ withdraw: true, ptk_id: ptk_id, recipient: recipient }, { where: { uuid } })
+            return this.message(200,{message:"Succes"})
         } catch (_) {
-            return message.sendMessage(false)
+            return this.message(403,{message:"Gagal"})
         }
     }
-    public async deleteDisbursementOfFund(uuid: string): Promise<ActionAttributes> {
+    public async deleteDisbursementOfFund(uuid: string): Promise<messageAttribute<defaultMessage>> {
         try {
             await DisbursementOfFunds.destroy({ where: { uuid } })
-            return message.sendMessage(true)
+            return this.message(200,{message:"Succes"})
         } catch (_) {
-            return message.sendMessage(false)
+            return this.message(403,{message:"Gagal"})
         }
     }
 }

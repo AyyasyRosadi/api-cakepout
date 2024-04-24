@@ -1,11 +1,12 @@
+import { LogicBase, messageAttribute } from "../logicBase";
 import InstitutionAttributes from "./dto";
 import Institution from "./model";
 
 
-class InstitutionLogic {
-    public async getAllInstitution(): Promise<Array<InstitutionAttributes>> {
+class InstitutionLogic extends LogicBase {
+    public async getAllInstitution(): Promise<messageAttribute<Array<InstitutionAttributes>>> {
         const allInstitution = await Institution.findAll()
-        return allInstitution
+        return this.message(200,allInstitution)
     }
 }
 

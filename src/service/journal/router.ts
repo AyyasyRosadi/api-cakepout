@@ -13,35 +13,35 @@ class JournalRouter extends BaseRouter {
             async (req: Request, res: Response): Promise<Response> => {
                 const { page, size } = req.query
                 const allJournal = await logic.getAllJournal(Number(page), Number(size))
-                return res.status(200).json(allJournal)
+                return res.status(allJournal.status).json(allJournal.data)
             }
         )
         this.router.get('/:uuid',
             authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const oneJournal = await logic.getJournalByUuid(req.params?.uuid)
-                return res.status(200).json(oneJournal)
+                return res.status(oneJournal.status).json(oneJournal.data)
             }
         )
         this.router.get('/status/:status',
             authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const allJournal = await logic.getJournalByStatus(req.params?.status)
-                return res.status(200).json(allJournal)
+                return res.status(allJournal.status).json(allJournal.data)
             }
         )
         this.router.get('year/:year',
             authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const allJournal = await logic.getJournalByYear(req.params?.year)
-                return res.status(200).json(allJournal)
+                return res.status(allJournal.status).json(allJournal.data)
             }
         )
         this.router.get('/account-id/:account_id',
             authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const allJournal = await logic.getJournalByAccountId(req.params?.account_id)
-                return res.status(200).json(allJournal)
+                return res.status(allJournal.status).json(allJournal.data)
             }
         )
         this.router.post('/transaction-date',
@@ -49,7 +49,7 @@ class JournalRouter extends BaseRouter {
             validator.date(),
             async (req: Request, res: Response): Promise<Response> => {
                 const allJournal = await logic.getJournalByTransactionDate(req.body?.start, req.body?.end)
-                return res.status(200).json(allJournal)
+                return res.status(allJournal.status).json(allJournal.data)
             }
         )
         this.router.post('/',
@@ -58,10 +58,7 @@ class JournalRouter extends BaseRouter {
             async (req: Request, res: Response): Promise<Response> => {
                 const { from_account, to_account } = req.body;
                 const generateJournal = await logic.generateJournal(from_account, to_account)
-                if (!generateJournal.status) {
-                    return res.status(400).json({ msg: generateJournal.message })
-                }
-                return res.status(200).json({ msg: generateJournal.message })
+                return res.status(generateJournal.status).json(generateJournal.data)
             }
         )
     }

@@ -1,14 +1,16 @@
+import { Includeable } from "sequelize";
 import accountingYear from "../../helper/accountingYear";
 import Activity from "../activity/model";
 import Component from "../component/model";
 import Institution from "../institution/model";
+import { LogicBase, defaultMessage, messageAttribute } from "../logicBase";
 import Program from "../program/model";
 import DetailOfActivityAttributes from "./dto";
 import DetailOfActivity from "./model";
 
 
-const include = [
-    {
+class DetailOfActivityLogic extends LogicBase {
+    private include: Includeable = {
         model: Activity,
         attributes: ['no_komponen'],
         include: [{
@@ -24,24 +26,21 @@ const include = [
             }]
         }]
     }
-]
-
-class DetailOfActivityLogic {
-    public async getAllDetailOfActivity(): Promise<Array<DetailOfActivityAttributes>> {
+    public async getAllDetailOfActivity(): Promise<messageAttribute<Array<DetailOfActivityAttributes>>> {
         const activeYear = await accountingYear.getActiveAccountingYear()
-        const allDetailOfActivity = await DetailOfActivity.findAll({ where: { tahun_ajar: activeYear?.tahun }, include: include })
-        return allDetailOfActivity
+        const allDetailOfActivity = await DetailOfActivity.findAll({ where: { tahun_ajar: activeYear?.tahun }, include: this.include })
+        return this.message(200, allDetailOfActivity)
     }
-    public async getOneDetailActivityByUuid(uuid: string): Promise<DetailOfActivityAttributes | null> {
+    public async getOneDetailActivityByUuid(uuid: string): Promise<messageAttribute<DetailOfActivityAttributes | defaultMessage>> {
         const activeYear = await accountingYear.getActiveAccountingYear()
-        const oneDetailOfActivity = await DetailOfActivity.findOne({ where: { uuid, tahun_ajar: activeYear?.tahun }, include: include })
-        return oneDetailOfActivity ? oneDetailOfActivity : null
+        const oneDetailOfActivity = await DetailOfActivity.findOne({ where: { uuid, tahun_ajar: activeYear?.tahun }, include: this.include })
+        return this.message(oneDetailOfActivity ? 200 : 404, oneDetailOfActivity ? oneDetailOfActivity : { message: "Rincian tidak ditemukan" })
     }
-    public async getAllDetailOfActivityByYear(accounting_year: string): Promise<Array<DetailOfActivityAttributes>> {
-        const allDetailOfActivity = await DetailOfActivity.findAll({ where: { tahun_ajar: accounting_year }, include: include })
-        return allDetailOfActivity
+    public async getAllDetailOfActivityByYear(accounting_year: string): Promise<messageAttribute<Array<DetailOfActivityAttributes>>> {
+        const allDetailOfActivity = await DetailOfActivity.findAll({ where: { tahun_ajar: accounting_year }, include: this.include })
+        return this.message(200, allDetailOfActivity)
     }
-    public async getAllDetailOfActivityByInstitution(institutionId: number): Promise<Array<DetailOfActivityAttributes>> {
+    public async getAllDetailOfActivityByInstitution(institutionId: number): Promise<messageAttribute<Array<DetailOfActivityAttributes>>> {
         const allDetailOfActivity = await DetailOfActivity.findAll({
             include: {
                 model: Activity,
@@ -65,7 +64,7 @@ class DetailOfActivityLogic {
                 }]
             }
         })
-        return allDetailOfActivity
+        return this.message(200, allDetailOfActivity)
     }
 }
 

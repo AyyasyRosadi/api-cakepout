@@ -8,7 +8,7 @@ import { ALLROLE } from "../constant";
 class AccountRouter extends BaseRouter {
     routes(): void {
         this.router.get('/',
-        // authentication.authenticationUser(ALLROLE),
+        authentication.authenticationUser(ALLROLE),
         async(req:Request,res:Response):Promise<Response>=>{
             const allAccount = await logic.getAllAccount()
             return res.status(allAccount.status).json(allAccount.data)
@@ -18,7 +18,7 @@ class AccountRouter extends BaseRouter {
             async (req: Request, res: Response): Promise<Response> => {
                 const { page, size } = req.query;
                 const allAccount = await logic.getAllAccountByPage(Number(page), Number(size))
-                return res.status(200).json(allAccount)
+                return res.status(allAccount.status).json(allAccount.data)
             }
         )
         this.router.get('/:uuid',
@@ -33,7 +33,7 @@ class AccountRouter extends BaseRouter {
             authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const allAccount = await logic.getAccountByActivity(req.params?.activity_id)
-                return res.status(200).json(allAccount)
+                return res.status(allAccount.status).json(allAccount.data)
             }
         )
         this.router.get('/group-account/:group_account',
@@ -43,7 +43,7 @@ class AccountRouter extends BaseRouter {
                 if (!oneAccount) {
                     return res.status(404).json({ msg: 'account not found' })
                 }
-                return res.status(200).json(oneAccount)
+                return res.status(oneAccount.status).json(oneAccount.data)
             }
         )
         this.router.get('/account-number/:account_number',
@@ -53,7 +53,7 @@ class AccountRouter extends BaseRouter {
                 if (!oneAccount) {
                     return res.status(404).json({ msg: 'account not found' })
                 }
-                return res.status(200).json(oneAccount)
+                return res.status(oneAccount.status).json(oneAccount.data)
             }
         )
         this.router.post('/',
@@ -62,10 +62,7 @@ class AccountRouter extends BaseRouter {
             async (req: Request, res: Response): Promise<Response> => {
                 const { name, group_account, group_account_label, activity_id, group_account_name } = req.body
                 const addAccount = await logic.addAccount(name, group_account, group_account_label, activity_id, group_account_name)
-                if (!addAccount.status) {
-                    return res.status(400).json({ msg: addAccount.message })
-                }
-                return res.status(200).json({ msg: addAccount.message })
+                return res.status(addAccount.status).json({ msg: addAccount.data })
             }
         )
         this.router.put('/:uuid',
@@ -74,20 +71,14 @@ class AccountRouter extends BaseRouter {
             async (req: Request, res: Response): Promise<Response> => {
                 const { name } = req.body
                 const updateAccount = await logic.updateAccount(req.params?.uuid, name)
-                if (!updateAccount.status) {
-                    return res.status(400).json({ msg: updateAccount.message })
-                }
-                return res.status(200).json({ msg: updateAccount.message })
+                return res.status(updateAccount.status).json({ msg: updateAccount.data })
             }
         )
         this.router.delete('/:uuid',
             authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const deleteAccount = await logic.deleteAccount(req.params?.uuid)
-                if (!deleteAccount.status) {
-                    return res.status(400).json({ msg: deleteAccount.message })
-                }
-                return res.status(200).json({ msg: deleteAccount.message })
+                return res.status(deleteAccount.status).json({ msg: deleteAccount.data })
             }
         )
     }

@@ -11,16 +11,13 @@ class PtkRouter extends BaseRouter {
             authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const allPtk = await logic.getAllPtk()
-                return res.status(200).json(allPtk)
+                return res.status(allPtk.status).json(allPtk.data)
             })
         this.router.get('/:uuid',
             authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const onePtk = await logic.getPtkByUuid(req.params?.uuid)
-                if (!onePtk) {
-                    return res.status(404).json({ msg: 'ptk not found' })
-                }
-                return res.status(200).json(onePtk)
+                return res.status(onePtk.status).json(onePtk.data)
             })
     }
 }

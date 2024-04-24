@@ -1,11 +1,10 @@
 import userHelper from "../../helper/user";
-import { ActionAttributes } from "../interfaces";
 import bcrypt from "bcrypt"
 import { v4 } from "uuid";
 import jwt from 'jsonwebtoken'
 import UserSystemAttributes from "../userSystem/dto";
 import BlacklistToken from "../blacklistToken/model";
-import message from "../../helper/message";
+import { LogicBase, defaultMessage, messageAttribute } from "../logicBase";
 
 interface LoginAttributes {
     status: boolean,
@@ -18,14 +17,15 @@ interface LoginAttributes {
     }
 }
 
-const systemName = 'cakepout'
 
-class AuthenticationLogic {
-    public async login(username: string, password: string): Promise<ActionAttributes | LoginAttributes> {
+class AuthenticationLogic extends LogicBase {
+    private systemName = 'cakepout'
+
+    public async login(username: string, password: string): Promise<messageAttribute<defaultMessage | LoginAttributes>> {
         try {
             const user = await userHelper.getUserByUsername(username)
             if (!user || !await bcrypt.compare(password, user.password)) {
-                return { status: false, message: 'user not found' }
+                return this.message(404,{message:"User tidak ditemukan"})
             }
             const jti = v4()
             const token = jwt.sign(
@@ -35,17 +35,17 @@ class AuthenticationLogic {
                 process.env['SECRET_KEY']!,
                 { jwtid: jti, expiresIn: '6h' }
             )
-            return { status: true, user: { nama: user.nama, username: user.username, sistem: user.user_sistems?.find((e) => e.sistem?.nama_sistem === systemName)!, generalUser: user.general_user }, token: token }
+            return this.message(200,{ status: true, user: { nama: user.nama, username: user.username, sistem: user.user_sistems?.find((e) => e.sistem?.nama_sistem === this.systemName)!, generalUser: user.general_user }, token: token })
         } catch (_) {
-            return message.sendMessage(false)
+            return this.message(403,{message:"Gagal"})
         }
     }
-    public async logout(jti: string): Promise<ActionAttributes> {
+    public async logout(jti: string): Promise<messageAttribute<defaultMessage>> {
         try {
             await BlacklistToken.create({ jti })
-            return message.sendMessage(true)
+            return this.message(200,{message:"Logout berhasil"})
         } catch (_) {
-            return message.sendMessage(false)
+            return this.message(403,{message:"Gagal"})
         }
     }
 }

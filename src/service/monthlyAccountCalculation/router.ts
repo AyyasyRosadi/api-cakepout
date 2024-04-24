@@ -13,28 +13,28 @@ class MonthlyAccountCalculationRouter extends BaseRouter {
             async (req: Request, res: Response): Promise<Response> => {
                 const { page, size } = req.query
                 const allMonthlyAccountCalculation = await logic.getAllMonthlyAccountCalculation(Number(page), Number(size))
-                return res.status(200).json(allMonthlyAccountCalculation)
+                return res.status(allMonthlyAccountCalculation.status).json(allMonthlyAccountCalculation.data)
             }
         )
         this.router.get('/:uuid',
             authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const oneMonthlyAccountCalculation = await logic.getMonthlyAccountCalculationByUuid(req.params?.uuid)
-                return res.status(200).json(oneMonthlyAccountCalculation)
+                return res.status(oneMonthlyAccountCalculation.status).json(oneMonthlyAccountCalculation.data)
             }
         )
         this.router.get('/year/:year',
             authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const allMonthlyAccountCalculation = await logic.getMonthlyAccountCalculationByYear(req.params?.year)
-                return res.status(200).json(allMonthlyAccountCalculation)
+                return res.status(allMonthlyAccountCalculation.status).json(allMonthlyAccountCalculation.data)
             }
         )
         this.router.get('month/:month_index',
             authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const oneMonthlyAccountCalculation = await logic.getMonthlyAccountCalculationByMonth(parseInt(req.params?.month_index))
-                return res.status(200).json(oneMonthlyAccountCalculation)
+                return res.status(oneMonthlyAccountCalculation.status).json(oneMonthlyAccountCalculation.data)
             }
         )
         this.router.post('/',
@@ -43,10 +43,7 @@ class MonthlyAccountCalculationRouter extends BaseRouter {
             async (req: Request, res: Response): Promise<Response> => {
                 const { month_index, accounting_year, account_id, open } = req.body;
                 const addMonthlyAccountCalculation = await logic.addMonthlyAccountCalculation(month_index, accounting_year, 0, account_id, open)
-                if (!addMonthlyAccountCalculation.status) {
-                    return res.status(400).json({ msg: addMonthlyAccountCalculation.message })
-                }
-                return res.status(200).json({ msg: addMonthlyAccountCalculation.message })
+                return res.status(addMonthlyAccountCalculation.status).json(addMonthlyAccountCalculation.data)
             }
         )
         this.router.put('/total/:uuid',
@@ -54,10 +51,7 @@ class MonthlyAccountCalculationRouter extends BaseRouter {
             validator.updateTotal(),
             async (req: Request, res: Response): Promise<Response> => {
                 const updateTotalMonthlyAccountCalculation = await logic.updateTotalMonthlyAccountCalculation(req.body?.total, req.params?.uuid)
-                if (!updateTotalMonthlyAccountCalculation.status) {
-                    return res.status(400).json({ msg: updateTotalMonthlyAccountCalculation.message })
-                }
-                return res.status(200).json({ msg: updateTotalMonthlyAccountCalculation.message })
+                return res.status(updateTotalMonthlyAccountCalculation.status).json(updateTotalMonthlyAccountCalculation.data)
             }
         )
         this.router.put('/open/:uuid',
@@ -65,20 +59,14 @@ class MonthlyAccountCalculationRouter extends BaseRouter {
             authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const updateOpenMonthlyAccountCalculation = await logic.updateOpenMonthlyAccountCalculation(req.body?.open, req.params?.uuid)
-                if (!updateOpenMonthlyAccountCalculation.status) {
-                    return res.status(400).json({ msg: updateOpenMonthlyAccountCalculation.message })
-                }
-                return res.status(200).json({ msg: updateOpenMonthlyAccountCalculation.message })
+                return res.status(updateOpenMonthlyAccountCalculation.status).json(updateOpenMonthlyAccountCalculation.data)
             }
         )
         this.router.delete('/:uuid',
             authentication.authenticationUser(SUPERADMIN),
             async (req: Request, res: Response): Promise<Response> => {
                 const deleteMonthlyAccountCalculation = await logic.deleteMonthlyAccountCalculation(req.params?.uuid)
-                if (!deleteMonthlyAccountCalculation.status) {
-                    return res.status(400).json({ msg: deleteMonthlyAccountCalculation.message })
-                }
-                return res.status(200).json({ msg: deleteMonthlyAccountCalculation.message })
+                return res.status(deleteMonthlyAccountCalculation.status).json(deleteMonthlyAccountCalculation.data)
             }
         )
     }
