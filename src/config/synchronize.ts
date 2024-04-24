@@ -31,7 +31,7 @@ export const Synchronize = async () => {
         await Program.sync()
         await Component.sync()
         await Activity.sync()
-        await DetailOfActivity.sync()
+        await DetailOfActivity.sync({alter:true})
         await BlacklistToken.sync()
         await JournalReferenceNumber.sync({ alter: true })
         await GroupAccount.sync({ alter: true })
