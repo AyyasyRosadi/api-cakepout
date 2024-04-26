@@ -15,45 +15,64 @@ interface JournalPaginationAttributes {
     totalPages: number;
     totalItems: number;
     data: Array<JournalAttributes>;
+    debit: number;
+    kredit: number;
 }
 
 class JournalLogic extends LogicBase {
-    public async getAllJournal(page: number, size: number): Promise<messageAttribute<JournalPaginationAttributes>> {
+    private async accumulateDebitNKredit(data: Array<JournalAttributes>): Promise<{ debit: number, kredit: number }> {
+        let debit = 0
+        let kredit = 0
+        for (let i in data) {
+            if (data[i].status === 'K') {
+                kredit += data[i].amount
+            } else {
+                debit += data[i].amount
+            }
+        }
+        return { debit, kredit }
+    }
+    public async getAllJournal(page: number, size: number, fromDate: string, toDate: string): Promise<messageAttribute<JournalPaginationAttributes>> {
         const offset = (page - 1) * size
+        const filterJournal = fromDate !== "-" && toDate !== "-" ? { transaction_date: { [Op.between]: [fromDate, toDate] } } : { transaction_date: 0 }
         const allJournal = await Journal.findAndCountAll(
             {
                 limit: size,
                 offset: offset,
                 include: [{ model: Account, include: [{ model: GroupAccount }] }],
-                order: [["transaction_date", "DESC"], ['amount', 'DESC']]
+                where: filterJournal,
+                order: [["transaction_date", "DESC"]]
             }
         )
+        const accumulate = await this.accumulateDebitNKredit(allJournal.rows)
         return this.message(200, {
             page,
             totalPages: Math.ceil(allJournal.count / size),
             totalItems: allJournal.count,
-            data: allJournal.rows
+            data: allJournal.rows,
+            debit: accumulate.debit,
+            kredit: accumulate.kredit
         })
     }
     public async getJournalByUuid(uuid: string): Promise<messageAttribute<JournalAttributes | defaultMessage>> {
         const oneJournal = await Journal.findOne({ where: { uuid }, include: { model: Account } })
-        return this.message(oneJournal ? 200:404,oneJournal ? oneJournal:{message:"Journal tidak ditemukan"})
+        return this.message(oneJournal ? 200 : 404, oneJournal ? oneJournal : { message: "Journal tidak ditemukan" })
     }
     public async getJournalByStatus(status: string): Promise<messageAttribute<Array<JournalAttributes>>> {
         const allJournal = await Journal.findAll({ where: { status }, include: { model: Account } })
-        return this.message(200,allJournal)
+        return this.message(200, allJournal)
     }
     public async getJournalByTransactionDate(start: string, end: string): Promise<messageAttribute<Array<JournalAttributes>>> {
         const allJournal = await Journal.findAll({ where: { transaction_date: { [Op.gte]: start, [Op.lte]: end } }, include: { model: Account } })
-        return this.message(200,allJournal)
+        return this.message(200, allJournal)
     }
     public async getJournalByYear(year: string): Promise<messageAttribute<Array<JournalAttributes>>> {
         const allJournal = await Journal.findAll({ where: { accounting_year: year }, include: { model: Account } })
-        return this.message(200,allJournal)
+        return this.message(200, allJournal)
     }
     public async getJournalByAccountId(accountId: string): Promise<messageAttribute<Array<JournalAttributes>>> {
         const allJournal = await Journal.findAll({ where: { account_id: accountId }, include: { model: Account } })
-        return this.message(200,allJournal)
+        return this.message(200, allJournal)
     }
     private async createJournal(amount: number, status: "K" | "D", account_id: string, reference: string, transaction_date: Date, year: string): Promise<boolean> {
         try {
@@ -63,45 +82,40 @@ class JournalLogic extends LogicBase {
             return false
         }
     }
-    public async generateJournal(from_account: string, to_account: Array<{ account_id: string, amount: number, transaction_date: string }>): Promise<messageAttribute<defaultMessage>> {
+    public async generateJournal(from_account: string, transaction_date: string, to_account: Array<{ account_id: string, amount: number }>): Promise<messageAttribute<defaultMessage>> {
         try {
             const activeYear = await accountingYear.getActiveAccountingYear()
             const oneAccount = await account.getAccountByUuid(from_account)
-            let rejectAccount = ''
-            if (!oneAccount) {
-                return this.message(403,{message:"Akun sumber tidak ditemukan"})
+            const transactionDate = time.date(transaction_date)
+            const fromOneMonthlyAccountCalculation = await monthlyAccountCalculation.getActiveOneMonthlyAccountCalculation(transactionDate.getMonth(), activeYear!.tahun, oneAccount!.uuid)
+            if (!fromOneMonthlyAccountCalculation) {
+                return this.message(403, { message: "Kalkulasi akun sumber belum dibuka" })
             }
+            let finalAmount = 0
+            const referenceNumber = await journalReferenceNumber.generateReference()
             for (let i in to_account) {
-                const transactionDate = time.date(to_account[i].transaction_date)
-                const fromOneMonthlyAccountCalculation = await monthlyAccountCalculation.getActiveOneMonthlyAccountCalculation(transactionDate.getMonth(), activeYear!.tahun, oneAccount.uuid)
                 const toOneMonthlyAccountCalculation = await monthlyAccountCalculation.getActiveOneMonthlyAccountCalculation(transactionDate.getMonth(), activeYear!.tahun, to_account[i].account_id)
-                if (!fromOneMonthlyAccountCalculation) {
-                    return this.message(403,{message:"Kalkulasi akun sumber sudah ditutup"})
+                if (!toOneMonthlyAccountCalculation) {
+                    return this.message(403, { message: `Kalkulasi akun tujuan belum dibuka` })
                 }
-                if (toOneMonthlyAccountCalculation) {
-                    const referenceNumber = await journalReferenceNumber.generateReference()
-                    if (oneAccount.group_account?.group_account === 1 || oneAccount.group_account?.group_account === 4) {
-                        await this.createJournal(to_account[i].amount, 'K', oneAccount.uuid, referenceNumber!, transactionDate, activeYear!.tahun)
+                if (oneAccount!.group_account?.group_account === 1 || oneAccount!.group_account?.group_account === 4) {
+                    await this.createJournal(to_account[i].amount, 'D', to_account[i].account_id, referenceNumber!, transactionDate, activeYear!.tahun)
+
+                    if (oneAccount!.group_account?.group_account === 1 && (fromOneMonthlyAccountCalculation.total - to_account[i].amount) < 0) {
+                        return this.message(403, { message: "Maaf journal tidak tercatat karena saldo tidak mencukupi" })
+                    } else if (oneAccount!.group_account?.group_account === 1) {
                         await monthlyAccountCalculation.updateTotalMonthlyAccountCalculation((fromOneMonthlyAccountCalculation.total - to_account[i].amount), fromOneMonthlyAccountCalculation.uuid)
-                        await this.createJournal(to_account[i].amount, 'D', to_account[i].account_id, referenceNumber!, transactionDate, activeYear!.tahun)
-                        await monthlyAccountCalculation.updateTotalMonthlyAccountCalculation((toOneMonthlyAccountCalculation.total + to_account[i].amount), toOneMonthlyAccountCalculation.uuid)
-                    } else {
-                        await this.createJournal(to_account[i].amount, 'D', oneAccount.uuid, referenceNumber!, transactionDate, activeYear!.tahun)
-                        await monthlyAccountCalculation.updateTotalMonthlyAccountCalculation((fromOneMonthlyAccountCalculation.total + to_account[i].amount), fromOneMonthlyAccountCalculation.uuid)
-                        await this.createJournal(to_account[i].amount, 'K', to_account[i].account_id, referenceNumber!, transactionDate, activeYear!.tahun)
-                        await monthlyAccountCalculation.updateTotalMonthlyAccountCalculation((toOneMonthlyAccountCalculation.total - to_account[i].amount), toOneMonthlyAccountCalculation.uuid)
                     }
-                } else {
-                    const toAccount = await account.getAccountByUuid(to_account[i].account_id)
-                    rejectAccount += toAccount?.name
+                    await monthlyAccountCalculation.updateTotalMonthlyAccountCalculation((toOneMonthlyAccountCalculation!.total + to_account[i].amount), toOneMonthlyAccountCalculation!.uuid)
+
+                    finalAmount += to_account[i].amount
                 }
             }
-            return rejectAccount.length > 0 ?
-                this.message(200,{message:`kalkulasi akun tujuan sudah ditutup untuk akun ${rejectAccount}`})
-                :
-                this.message(200,{message:"Succes"})
+            await this.createJournal(finalAmount, 'K', oneAccount!.uuid, referenceNumber!, transactionDate, activeYear!.tahun)
+
+            return this.message(200, { message: "Succes" })
         } catch (r) {
-            return this.message(403,{message:"Gagal"})
+            return this.message(403, { message: "Gagal" })
         }
     }
 }

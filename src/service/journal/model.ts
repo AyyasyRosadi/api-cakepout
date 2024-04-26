@@ -21,7 +21,7 @@ const Journal = db.define<JournalInstance>('journals',{
         type:DataTypes.STRING
     },
     transaction_date:{
-        type:DataTypes.DATE
+        type:DataTypes.DATEONLY
     },
     amount:{
         type:DataTypes.BIGINT

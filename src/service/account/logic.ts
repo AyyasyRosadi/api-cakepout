@@ -49,8 +49,8 @@ class AccountLogic extends LogicBase {
         const allAccount = await Account.findAll({ where: { activity_id }, include: this.include })
         return this.message(200, allAccount)
     }
-    public async getAccountByGroupAccount(group_account: number): Promise<messageAttribute<Array<AccountAttributes>>> {
-        const queryGroupAccount = group_account === 4 ? { [Op.not]: { group_account } } : { group_account }
+    public async getAccountByGroupAccount(group_account: number | string): Promise<messageAttribute<Array<AccountAttributes>>> {
+        const queryGroupAccount = group_account === "-" ? { group_account: 0 } : parseInt(group_account as string) === 4 ? { [Op.not]: { group_account } } : { group_account }
         const allAccount = await Account.findAll({
             include: [
                 { model: DetailOfActivity, as: 'detail_of_activity' },
@@ -68,11 +68,11 @@ class AccountLogic extends LogicBase {
             if (group_account_label === 0) {
                 const lastGroupAccountLabel = await groupAccount.getLastLabelGroupAccountByGroup(group_account)
                 const generateGroupAccount = await groupAccount.generateGroupAccount(group_account, lastGroupAccountLabel, group_account_name)
-                generateGroupAccount && generateGroupAccount.uuid && await Account.create({ name, group_account_id: generateGroupAccount.uuid, activity_id, account_number: '1' })
+                await Account.create({ name, group_account_id: generateGroupAccount.uuid!, activity_id, account_number: '1' })
             } else {
                 const lastAccountNumber = await account.getLastAccountNumber(group_account, group_account_label)
                 const oneGroupAccount = await groupAccount.getGroupAccount(group_account, group_account_label)
-                lastAccountNumber && oneGroupAccount && await Account.create({ account_number: `${lastAccountNumber}`, name, activity_id, group_account_id: oneGroupAccount.uuid })
+                await Account.create({ account_number: `${lastAccountNumber}`, name, activity_id, group_account_id: oneGroupAccount?.uuid! })
             }
             return this.message(200, { message: "Succes" })
         } catch (_) {

@@ -12,7 +12,7 @@ class AuthenticationRouter extends BaseRouter {
         this.router.get('/logout',
             async (req: Request, res: Response): Promise<Response> => {
                 const logout = await logic.logout(req.app?.locals?.token?.jti)
-                return res.status(logout.status).json({ msg: logout.data })
+                return res.status(logout.status).json(logout.data)
             })
     }
 }

@@ -10,10 +10,10 @@ class JournalValidator extends Validator {
     ]
     public create = () => [
         check('from_account').isString().withMessage('akun sumber tidak boleh kosong'),
+        check('transaction_date').isString().withMessage('tanggal transaksi tidak boleh kosong'),
         check('to_account').isArray({ min: 1 }),
         check('to_account.*.account_id').isString().withMessage('akun tidak boleh kosong'),
         check('to_account.*.amount').isInt().withMessage('jumlah tidak boleh kosong'),
-        check('to_account.*.transaction_date').isString().withMessage('tanggal transaksi tidak boleh kosong'),
         // check('to_account.*.reference').isString().withMessage('referensi tidak boleh kosong'),
         this.validate
     ]

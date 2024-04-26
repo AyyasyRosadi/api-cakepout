@@ -8,11 +8,12 @@ import validator from "./validator";
 
 class JournalRouter extends BaseRouter {
     routes(): void {
-        this.router.get('/',
+        this.router.get('/:from_date/:to_date',
             authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const { page, size } = req.query
-                const allJournal = await logic.getAllJournal(Number(page), Number(size))
+                const { from_date, to_date } = req.params;
+                const allJournal = await logic.getAllJournal(Number(page), Number(size), from_date, to_date)
                 return res.status(allJournal.status).json(allJournal.data)
             }
         )
@@ -56,8 +57,8 @@ class JournalRouter extends BaseRouter {
             authentication.authenticationUser(ALLROLE),
             validator.create(),
             async (req: Request, res: Response): Promise<Response> => {
-                const { from_account, to_account } = req.body;
-                const generateJournal = await logic.generateJournal(from_account, to_account)
+                const { from_account, transaction_date, to_account } = req.body;
+                const generateJournal = await logic.generateJournal(from_account, transaction_date, to_account)
                 return res.status(generateJournal.status).json(generateJournal.data)
             }
         )
