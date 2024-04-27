@@ -46,7 +46,7 @@ class AccountRouter extends BaseRouter {
         this.router.get('/account-number/:account_number',
             authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
-                const oneAccount = await logic.getAccountByAccountNumber(req.params?.account_number)
+                const oneAccount = await logic.getAccountByAccountNumber(parseInt(req.params?.account_number))
                 return res.status(oneAccount.status).json(oneAccount.data)
             }
         )

@@ -3,7 +3,7 @@ import db from "../../config/database";
 import AccountAttributes from "./dto";
 import DetailOfActivity from "../detailOfActivity/model";
 import DetailOfActivityAttributes from "../detailOfActivity/dto";
-import JournalAttributes from "../journal/dto";
+import {JournalAttributes} from "../journal/dto";
 
 interface AccountCreationsAttributes extends Optional<AccountAttributes, 'uuid' | 'activity_id'> { };
 interface AccountInstance extends Model<AccountAttributes, AccountCreationsAttributes>, AccountAttributes {
@@ -26,7 +26,7 @@ const Account = db.define<AccountInstance>('accounts', {
         type: DataTypes.STRING
     },
     account_number: {
-        type: DataTypes.STRING
+        type: DataTypes.NUMBER
     },
     activity_id: {
         type: DataTypes.STRING,
