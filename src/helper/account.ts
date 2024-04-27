@@ -1,6 +1,5 @@
 import AccountAttributes from "../service/account/dto";
 import Account from "../service/account/model";
-import ActivityAttributes from "../service/activity/dto";
 import GroupAccount from "../service/groupAccount/model";
 
 
@@ -10,7 +9,7 @@ class AccountHelper {
         if (oneAccount.length === 0) {
             return 1
         }
-        return parseInt(oneAccount[0].account_number) + 1
+        return oneAccount[0].account_number + 1
     }
     public async getAccountByUuid(uuid: string): Promise<AccountAttributes | null> {
         try {
