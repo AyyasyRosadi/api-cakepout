@@ -59,20 +59,20 @@ class AccountLogic extends LogicBase {
         })
         return this.message(200, allAccount)
     }
-    public async getAccountByAccountNumber(account_number: number): Promise<messageAttribute<AccountAttributes | null>> {
+    public async getAccountByAccountNumber(account_number: string): Promise<messageAttribute<AccountAttributes | null>> {
         const oneAccount = await Account.findOne({ where: { account_number }, include: this.include })
         return this.message(200, oneAccount)
     }
     public async addAccount(name: string, group_account: number, group_account_label: number, activity_id: string | null, group_account_name: string): Promise<messageAttribute<defaultMessage>> {
         try {
+            const lastGroupAccountLabel = await groupAccount.getLastLabelGroupAccountByGroup(group_account)
             if (group_account_label === 0) {
-                const lastGroupAccountLabel = await groupAccount.getLastLabelGroupAccountByGroup(group_account)
                 const generateGroupAccount = await groupAccount.generateGroupAccount(group_account, lastGroupAccountLabel, group_account_name)
-                await Account.create({ name, group_account_id: generateGroupAccount.uuid!, activity_id, account_number: 1})
+                await Account.create({ name, group_account_id: generateGroupAccount.uuid!, activity_id, account_number: `${group_account}.${lastGroupAccountLabel}.1` })
             } else {
                 const lastAccountNumber = await account.getLastAccountNumber(group_account, group_account_label)
                 const oneGroupAccount = await groupAccount.getGroupAccount(group_account, group_account_label)
-                await Account.create({ account_number: lastAccountNumber, name, activity_id, group_account_id: oneGroupAccount?.uuid! })
+                await Account.create({ account_number: `${group_account}.${lastGroupAccountLabel}.${lastAccountNumber}`, name, activity_id, group_account_id: oneGroupAccount?.uuid! })
             }
             return this.message(200, { message: "Succes" })
         } catch (_) {

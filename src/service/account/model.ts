@@ -26,7 +26,7 @@ const Account = db.define<AccountInstance>('accounts', {
         type: DataTypes.STRING
     },
     account_number: {
-        type: DataTypes.NUMBER
+        type: DataTypes.STRING
     },
     activity_id: {
         type: DataTypes.STRING,

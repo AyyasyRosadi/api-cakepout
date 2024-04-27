@@ -9,7 +9,8 @@ class AccountHelper {
         if (oneAccount.length === 0) {
             return 1
         }
-        return oneAccount[0].account_number + 1
+        const account_number = oneAccount[0].account_number.split(".")
+        return parseInt(account_number[account_number.length - 1]) + 1
     }
     public async getAccountByUuid(uuid: string): Promise<AccountAttributes | null> {
         try {
