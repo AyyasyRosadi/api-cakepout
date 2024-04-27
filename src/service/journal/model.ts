@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import db from "../../config/database";
-import JournalAttributes from "./dto";
+import {JournalAttributes} from "./dto";
 import Account from "../account/model";
 import AccountAttributes from "../account/dto";
 

@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import Account from "../account/model";
-import JournalAttributes from "./dto";
+import {JournalAttributes, JournalPaginationAttributes, AccountBegeningBalanceAttributes} from "./dto";
 import Journal from "./model";
 import account from "../../helper/account";
 import GroupAccount from "../groupAccount/model";
@@ -9,15 +9,9 @@ import accountingYear from "../../helper/accountingYear";
 import journalReferenceNumber from "../../helper/journalReferenceNumber";
 import monthlyAccountCalculation from "../../helper/monthlyAccountCalculation";
 import { LogicBase, defaultMessage, messageAttribute } from "../logicBase";
+import AccountAttributes from "../account/dto";
+import AccountLogic from '../account/logic'
 
-interface JournalPaginationAttributes {
-    page: number;
-    totalPages: number;
-    totalItems: number;
-    data: Array<JournalAttributes>;
-    debit: number;
-    kredit: number;
-}
 
 class JournalLogic extends LogicBase {
     private async accumulateDebitNKredit(data: Array<JournalAttributes>): Promise<{ debit: number, kredit: number }> {
@@ -118,6 +112,11 @@ class JournalLogic extends LogicBase {
             return this.message(403, { message: "Gagal" })
         }
     }
+
+    // public async getAccountBeginningBalance():Promise<messageAttribute<Array<AccountAttributes>>>{
+        // const harta = await AccountLogic.getAccountByAccountNumber(1)
+        // return this.message(200, [])
+    // }
 }
 
 export default new JournalLogic;
