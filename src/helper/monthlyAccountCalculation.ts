@@ -8,9 +8,9 @@ class MonthlyAccountCalculationHelper {
         const oneMonthlyAccountCalculation = await MonthlyAccountCalulation.findOne({ where: { month_index: month, accounting_year: year, account_id: account_id, open: true } })
         return oneMonthlyAccountCalculation
     }
-    public async createMonthlyAccountCalculation(month_index: number, accounting_year: string, account_id: string): Promise<boolean> {
+    public async createMonthlyAccountCalculation(month_index: number, accounting_year: string, account_id: string, total:number): Promise<boolean> {
         try {
-            await MonthlyAccountCalulation.create({ month_index, accounting_year, account_id, open: true, total: 0 })
+            await MonthlyAccountCalulation.create({ month_index, accounting_year, account_id, open: true, total })
             return true
         } catch {
             return false

@@ -53,3 +53,21 @@ Content-Type: application/json
 ###
 GET {{host}}/journal?page=2&size=7
 Authorization: Bearer {{token}}
+###
+GET {{host}}/journal/account/account-begining-balance
+###
+POST {{host}}/journal/account/account-begining-balance
+Content-Type: application/json
+
+{
+    "harta":[
+        {
+            "value":10000,
+            "id":"ff87dec6-754a-483f-bf87-3417687cfb1e"
+        },
+        {
+            "value":20000,
+            "id":"b95613de-ef94-4c5a-89c4-2e5bcdb7ef4e"
+        }
+    ]
+}

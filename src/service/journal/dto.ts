@@ -1,4 +1,4 @@
-import AccountAttributes from "../account/dto";
+import GroupAccountAttributes from "../groupAccount/dto";
 
 export interface JournalAttributes{
     uuid:string,
@@ -20,7 +20,20 @@ export interface JournalPaginationAttributes {
 }
 
 export interface AccountBegeningBalanceAttributes{
-    Harta: Array<AccountAttributes>
-    Kewajiban:Array<AccountAttributes>
-    Modal:Array<AccountAttributes>
+    harta: Array<GroupAccountAttributes>
+    kewajiban:Array<GroupAccountAttributes>
+    modal:Array<GroupAccountAttributes>
+}
+
+
+export interface AccountBegeningBalanceData{
+    value: number,
+    id:string
+}
+
+export interface SaveAccountBeginingBalance{
+    harta: Array<AccountBegeningBalanceData>
+    kewajiban:Array<AccountBegeningBalanceData>
+    modal:Array<AccountBegeningBalanceData>
+    account_balancing:number|null
 }
