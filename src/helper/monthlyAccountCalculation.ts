@@ -1,5 +1,4 @@
-import { where } from "sequelize";
-import MonthlyAccountCalculationAttributes from "../service/monthlyAccountCalculation/dto";
+import {MonthlyAccountCalculationAttributes} from "../service/monthlyAccountCalculation/dto";
 import MonthlyAccountCalulation from "../service/monthlyAccountCalculation/model";
 
 

@@ -1,8 +1,8 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import db from "../../config/database";
-import MonthlyAccountCalculationAttributes from "./dto";
+import {MonthlyAccountCalculationAttributes} from "./dto";
 import Account from "../account/model";
-import AccountAttributes from "../account/dto";
+import {AccountAttributes} from "../account/dto";
 
 interface MonthlyAccountCalculationCreationAttributes extends Optional<MonthlyAccountCalculationAttributes, 'uuid'> { };
 interface MonthlyAccountCalculationInstance extends Model<MonthlyAccountCalculationAttributes, MonthlyAccountCalculationCreationAttributes>, MonthlyAccountCalculationAttributes {
