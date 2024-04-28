@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import Account from "../account/model";
-import {JournalAttributes, JournalPaginationAttributes, AccountBegeningBalanceAttributes} from "./dto";
+import {JournalAttributes, JournalPaginationAttributes, AccountBegeningBalanceAttributes, SaveAccountBeginingBalance, AccountBegeningBalanceData} from "./dto";
 import Journal from "./model";
 import account from "../../helper/account";
 import GroupAccount from "../groupAccount/model";
@@ -11,6 +11,7 @@ import monthlyAccountCalculation from "../../helper/monthlyAccountCalculation";
 import { LogicBase, defaultMessage, messageAttribute } from "../logicBase";
 import AccountAttributes from "../account/dto";
 import AccountLogic from '../account/logic'
+import GroupAccountAttributes from "../groupAccount/dto";
 
 
 class JournalLogic extends LogicBase {
@@ -113,10 +114,63 @@ class JournalLogic extends LogicBase {
         }
     }
 
-    // public async getAccountBeginningBalance():Promise<messageAttribute<Array<AccountAttributes>>>{
-        // const harta = await AccountLogic.getAccountByAccountNumber(1)
-        // return this.message(200, [])
-    // }
+    private async getGroupAccountByNumberGroup(group_account: number):Promise<Array<GroupAccountAttributes>>{
+        const groupAccount = await GroupAccount.findAll({where: {
+            group_account,
+        }, include:{
+            model: Account,
+            attributes:[ 'uuid','name','account_number',]
+        },
+        attributes:['group_account', 'group_account_label', 'name']
+    })
+        
+        return groupAccount
+    }
+
+    public async getAccountBeginingBalance():Promise<messageAttribute<AccountBegeningBalanceAttributes>>{
+        const accountBeginingBalance:AccountBegeningBalanceAttributes = {
+            harta:await this.getGroupAccountByNumberGroup(1),
+            kewajiban: await this.getGroupAccountByNumberGroup(2),
+            modal: await this.getGroupAccountByNumberGroup(3)
+        }
+        return this.message(200, accountBeginingBalance)
+    }
+
+    private async cekAccountBeginingBalanceBeforeSave(data: Array<AccountBegeningBalanceData>, ref:string, month_index:number, accounting_year:string, date:Date, status:string):Promise<boolean>{
+    
+        for(const i of data){
+            const cekExist = await monthlyAccountCalculation.getActiveOneMonthlyAccountCalculation(month_index, accounting_year, i.id)
+            if(!cekExist){
+                await monthlyAccountCalculation.createMonthlyAccountCalculation(month_index, accounting_year, i.id, i.value)
+            }
+            Journal.create({
+                account_id:i.id,
+                amount:i.value,
+                accounting_year:accounting_year, 
+                reference:ref,
+                transaction_date:date,
+                status: status
+            })
+
+        }
+        return true
+    }
+
+    public async saveAccountBeginingBalance(data:SaveAccountBeginingBalance):Promise<messageAttribute<defaultMessage>>{
+        const ref = await journalReferenceNumber.generateReference()
+        const yearActive = await accountingYear.getActiveAccountingYear()
+        // if(data.account_balancing){
+            
+        // }
+
+        const date = new Date()
+
+        this.cekAccountBeginingBalanceBeforeSave(data.harta, ref!, date.getMonth(), yearActive?.tahun!, date, 'D')
+        this.cekAccountBeginingBalanceBeforeSave(data.kewajiban, ref!, date.getMonth(), yearActive?.tahun!, date, 'K')
+        this.cekAccountBeginingBalanceBeforeSave(data.kewajiban, ref!, date.getMonth(), yearActive?.tahun!, date, 'K')
+        return this.message(200, {message:"saved"})
+    }
+
 }
 
 export default new JournalLogic;

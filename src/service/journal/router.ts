@@ -8,15 +8,15 @@ import validator from "./validator";
 
 class JournalRouter extends BaseRouter {
     routes(): void {
-        this.router.get('/:from_date/:to_date',
-            authentication.authenticationUser(ALLROLE),
-            async (req: Request, res: Response): Promise<Response> => {
-                const { page, size } = req.query
-                const { from_date, to_date } = req.params;
-                const allJournal = await logic.getAllJournal(Number(page), Number(size), from_date, to_date)
-                return res.status(allJournal.status).json(allJournal.data)
-            }
-        )
+        // this.router.get('/:from_date/:to_date',
+        //     authentication.authenticationUser(ALLROLE),
+        //     async (req: Request, res: Response): Promise<Response> => {
+        //         const { page, size } = req.query
+        //         const { from_date, to_date } = req.params;
+        //         const allJournal = await logic.getAllJournal(Number(page), Number(size), from_date, to_date)
+        //         return res.status(allJournal.status).json(allJournal.data)
+        //     }
+        // )
         this.router.get('/:uuid',
             authentication.authenticationUser(ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
@@ -62,6 +62,15 @@ class JournalRouter extends BaseRouter {
                 return res.status(generateJournal.status).json(generateJournal.data)
             }
         )
+        this.router.get('/account/account-begining-balance', async(req:Request, res:Response)=>{
+            const getAccountBeginingBalance = await logic.getAccountBeginingBalance()
+            return res.status(getAccountBeginingBalance.status).json(getAccountBeginingBalance.data)
+        })
+
+        this.router.post('/account/account-begining-balance', async(req:Request, res:Response)=>{
+            const saveAccountBeginingBalance = await logic.saveAccountBeginingBalance(req.body);
+            return res.status(saveAccountBeginingBalance.status).json(saveAccountBeginingBalance.data)
+        })
     }
 
 }
