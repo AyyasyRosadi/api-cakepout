@@ -1,10 +1,11 @@
 import { Op } from "sequelize";
-import account from "../../helper/account";
 import DetailOfActivity from "../detailOfActivity/model";
 import GroupAccount from "../groupAccount/model";
 import { AccountPaginationAttributes, AccountAttributes } from "./dto";
 import Account from "./model";
 import { LogicBase, messageAttribute, defaultMessage } from '../logicBase';
+import GroupAccountAttributes from "../groupAccount/dto";
+import account from "../../helper/account";
 
 
 
@@ -58,15 +59,7 @@ class AccountLogic extends LogicBase {
     }
     public async addAccount(name: string, group_account: number, group_account_label: number, activity_id: string | null, group_account_name: string): Promise<messageAttribute<defaultMessage>> {
         try {
-            if (group_account_label === 0) {
-                const lastGroupAccountLabel = await account.getLastLabelGroupAccountByGroup(group_account)
-                const generateGroupAccount = await account.generateGroupAccount(group_account, lastGroupAccountLabel, group_account_name)
-                await Account.create({ name, group_account_id: generateGroupAccount.uuid!, activity_id, account_number: `${group_account}.${lastGroupAccountLabel}.1` })
-            } else {
-                const lastAccountNumber = await account.getLastAccountNumber(group_account, group_account_label)
-                const oneGroupAccount = await account.getGroupAccount(group_account, group_account_label)
-                await Account.create({ account_number: `${group_account}.${group_account_label}.${lastAccountNumber}`, name, activity_id, group_account_id: oneGroupAccount?.uuid! })
-            }
+            await account.generateAccount(name,group_account,group_account_label,activity_id,group_account_name)
             return this.message(200, { message: "Succes" })
         } catch (_) {
             return this.message(403, { message: "Gagal" })

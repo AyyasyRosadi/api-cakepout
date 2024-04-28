@@ -2,7 +2,6 @@ import { Op } from "sequelize";
 import Account from "../account/model";
 import { JournalAttributes, JournalPaginationAttributes, AccountBegeningBalanceAttributes, SaveAccountBeginingBalance, AccountBegeningBalanceData } from "./dto";
 import Journal from "./model";
-import account from "../../helper/account";
 import GroupAccount from "../groupAccount/model";
 import time from "../../helper/time";
 import accountingYear from "../../helper/accountingYear";
@@ -10,6 +9,7 @@ import journalReferenceNumber from "../../helper/journalReferenceNumber";
 import monthlyAccountCalculation from "../../helper/monthlyAccountCalculation";
 import { LogicBase, defaultMessage, messageAttribute } from "../logicBase";
 import GroupAccountAttributes from "../groupAccount/dto";
+import { AccountAttributes } from "../account/dto";
 
 
 class JournalLogic extends LogicBase {
@@ -75,10 +75,15 @@ class JournalLogic extends LogicBase {
             return false
         }
     }
+    private async getAccountByUuid(uuid: string): Promise<AccountAttributes | null> {
+        const oneAccount = await Account.findOne({ where: { uuid } })
+        return oneAccount
+    }
+
     public async generateJournal(from_account: string, transaction_date: string, to_account: Array<{ account_id: string, amount: number }>): Promise<messageAttribute<defaultMessage>> {
         try {
             const activeYear = await accountingYear.getActiveAccountingYear()
-            const oneAccount = await account.getAccountByUuid(from_account)
+            const oneAccount = await this.getAccountByUuid(from_account)
             const transactionDate = time.date(transaction_date)
             const fromOneMonthlyAccountCalculation = await monthlyAccountCalculation.getActiveOneMonthlyAccountCalculation(transactionDate.getMonth(), activeYear!.tahun, oneAccount!.uuid)
             if (!fromOneMonthlyAccountCalculation) {
