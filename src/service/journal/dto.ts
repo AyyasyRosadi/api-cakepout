@@ -8,6 +8,7 @@ export interface JournalAttributes{
     status:string;
     accounting_year:string;
     account_id:string;
+    description:string;
 }
 
 export interface JournalPaginationAttributes {
@@ -35,5 +36,6 @@ export interface SaveAccountBeginingBalance{
     harta: Array<AccountBegeningBalanceData>
     kewajiban:Array<AccountBegeningBalanceData>
     modal:Array<AccountBegeningBalanceData>
-    account_balancing:number|null
+    account_balancing:number|null;
+    description:string;
 }

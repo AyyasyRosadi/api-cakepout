@@ -56,8 +56,8 @@ class JournalRouter extends BaseRouter {
             authentication.authenticationUser(SYSTEMCAKEPOUT, ALLROLE),
             validator.create(),
             async (req: Request, res: Response): Promise<Response> => {
-                const { from_account, transaction_date, to_account } = req.body;
-                const generateJournal = await logic.generateJournal(from_account, transaction_date, to_account)
+                const { from_account, transaction_date, to_account, description } = req.body;
+                const generateJournal = await logic.generateJournal(from_account, transaction_date, description, to_account)
                 return res.status(generateJournal.status).json(generateJournal.data)
             }
         )
@@ -71,7 +71,7 @@ class JournalRouter extends BaseRouter {
             return res.status(saveAccountBeginingBalance.status).json(saveAccountBeginingBalance.data)
         })
         this.router.post('/disbursement-of-fund', async (req: Request, res: Response): Promise<Response> => {
-            const saveJournalDisbursementOfFund = await logic.generateJournalDisbursementOfFund(req.body.from_account, req.body.transaction_date, req.body.id,req.body.ptk_id,req.body.receipient)
+            const saveJournalDisbursementOfFund = await logic.generateJournalDisbursementOfFund(req.body.from_account, req.body.transaction_date, req.body?.description, req.body.id, req.body.ptk_id, req.body.receipient)
             return res.status(saveJournalDisbursementOfFund.status).json(saveJournalDisbursementOfFund.data)
         })
     }

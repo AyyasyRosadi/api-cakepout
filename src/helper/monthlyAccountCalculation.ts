@@ -24,6 +24,15 @@ class MonthlyAccountCalculationHelper {
             return false
         }
     }
+    public async generateMonthlyAccountCalculation(month_index: number, accounting_year: string, account_id: string, total: number): Promise<MonthlyAccountCalculationAttributes> {
+        let oneMonthlyAccountCalculation = await this.getActiveOneMonthlyAccountCalculation(month_index, accounting_year, account_id)
+        if (!oneMonthlyAccountCalculation) {
+            await this.createMonthlyAccountCalculation(month_index, accounting_year, account_id, total)
+        } else {
+            await this.updateTotalMonthlyAccountCalculation(total + oneMonthlyAccountCalculation.total, oneMonthlyAccountCalculation.uuid)
+        }
+        return await this.getActiveOneMonthlyAccountCalculation(month_index, accounting_year, account_id);
+    }
     public async getMonthlyAccountCalculationByAccountId(account_id: string): Promise<MonthlyAccountCalculationAttributes[]> {
         const activeYear = await accountingYear.getActiveAccountingYear()
         const allMonthlyAccountCalculation = await MonthlyAccountCalulation.findAll({ where: { account_id, accounting_year: activeYear!.tahun } })

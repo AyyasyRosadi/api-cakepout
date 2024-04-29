@@ -111,7 +111,7 @@ class DisbursementOfFundLogic extends LogicBase {
         try {
             console.log(antrian)
             for (let i in antrian) {
-                const checkGroup = await disbursementOfFund.getDisbursementOfFundByGroupId(antrian[i])
+                const checkGroup = await disbursementOfFund.getDisbursementOfFundByGroupId(antrian[i],false)
                 if (checkGroup.length > 0) {
                     for (let j in checkGroup) {
                         const checkRemainingAmount = await detailOfActivities.checkRemainingAmountDetailOfActivity(checkGroup[j].activity_id, checkGroup[j].amount)

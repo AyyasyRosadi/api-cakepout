@@ -4,8 +4,8 @@ import DisbursementOfFunds from "../service/disbursementOfFund/model"
 
 class DisbursementOfFundHelper {
     private include = [{ model: DetailOfActivity }]
-    public async getDisbursementOfFundByGroupId(uuid: string): Promise<Array<DisbursementOfFundAttributes>> {
-        const allDisbursementOfFund = await DisbursementOfFunds.findAll({ where: { sharing_program_id: uuid }, include: this.include })
+    public async getDisbursementOfFundByGroupId(uuid: string,status:boolean): Promise<Array<DisbursementOfFundAttributes>> {
+        const allDisbursementOfFund = await DisbursementOfFunds.findAll({ where: { sharing_program_id: uuid,status:status, withdraw: false }, include: this.include })
         return allDisbursementOfFund
     }
     public async getDisbursementOfFundByUuid(uuid: string): Promise<DisbursementOfFundAttributes> {

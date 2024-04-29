@@ -34,6 +34,9 @@ const Journal = db.define<JournalInstance>('journals', {
     },
     account_id: {
         type: DataTypes.STRING
+    },
+    description:{
+        type:DataTypes.STRING
     }
 })
 
