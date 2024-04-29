@@ -1,5 +1,6 @@
-import {MonthlyAccountCalculationAttributes} from "../service/monthlyAccountCalculation/dto";
+import { MonthlyAccountCalculationAttributes } from "../service/monthlyAccountCalculation/dto";
 import MonthlyAccountCalulation from "../service/monthlyAccountCalculation/model";
+import accountingYear from "./accountingYear";
 
 
 class MonthlyAccountCalculationHelper {
@@ -7,7 +8,7 @@ class MonthlyAccountCalculationHelper {
         const oneMonthlyAccountCalculation = await MonthlyAccountCalulation.findOne({ where: { month_index: month, accounting_year: year, account_id: account_id, open: true } })
         return oneMonthlyAccountCalculation!
     }
-    public async createMonthlyAccountCalculation(month_index: number, accounting_year: string, account_id: string, total:number): Promise<boolean> {
+    public async createMonthlyAccountCalculation(month_index: number, accounting_year: string, account_id: string, total: number): Promise<boolean> {
         try {
             await MonthlyAccountCalulation.create({ month_index, accounting_year, account_id, open: true, total })
             return true
@@ -22,6 +23,11 @@ class MonthlyAccountCalculationHelper {
         } catch {
             return false
         }
+    }
+    public async getMonthlyAccountCalculationByAccountId(account_id: string): Promise<MonthlyAccountCalculationAttributes[]> {
+        const activeYear = await accountingYear.getActiveAccountingYear()
+        const allMonthlyAccountCalculation = await MonthlyAccountCalulation.findAll({ where: { account_id, accounting_year: activeYear!.tahun } })
+        return allMonthlyAccountCalculation
     }
 }
 

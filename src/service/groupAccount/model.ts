@@ -6,6 +6,7 @@ import Account from "../account/model";
 
 interface GroupAccountCreationAttributes extends Optional<GroupAccountAttributes, 'uuid'> { };
 interface GroupAccountInstance extends Model<GroupAccountAttributes, GroupAccountCreationAttributes>, GroupAccountAttributes {
+    accounts: any;
     created_at: Date;
     updated_at: Date;
 }

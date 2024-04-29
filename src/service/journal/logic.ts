@@ -15,6 +15,7 @@ import account from "../../helper/account";
 import { MonthlyAccountCalculationAttributes } from "../monthlyAccountCalculation/dto";
 import DisbursementOfFunds from "../disbursementOfFund/model";
 import DetailOfActivityAttributes from "../detailOfActivity/dto";
+import MonthlyAccountCalulation from "../monthlyAccountCalculation/model";
 
 
 class JournalLogic extends LogicBase {
@@ -32,14 +33,14 @@ class JournalLogic extends LogicBase {
     }
     public async getAllJournal(page: number, size: number, fromDate: string, toDate: string): Promise<messageAttribute<JournalPaginationAttributes>> {
         const offset = (page - 1) * size
-        const filterJournal = fromDate !== "-" && toDate !== "-" ? { transaction_date: { [Op.between]: [fromDate, toDate] } } : { transaction_date: 0 }
+        const filterJournal = fromDate !== "" && toDate !== "" ? { transaction_date: { [Op.between]: [fromDate, toDate] } } : { transaction_date: 0 }
         const allJournal = await Journal.findAndCountAll(
             {
                 limit: size,
                 offset: offset,
                 include: [{ model: Account, include: [{ model: GroupAccount }] }],
                 where: filterJournal,
-                order: [["transaction_date", "DESC"],['createdAt',"DESC"]]
+                order: [["transaction_date", "DESC"], ['createdAt', "DESC"]]
             }
         )
         const accumulate = await this.accumulateDebitNKredit(allJournal.rows)
@@ -203,19 +204,25 @@ class JournalLogic extends LogicBase {
                 group_account,
             }, include: {
                 model: Account,
-                attributes: ['uuid', 'name', 'account_number',]
+                attributes: ['uuid', 'name', 'account_number'],
+                include: [{
+                    model: MonthlyAccountCalulation,
+                    attributes: ['uuid', 'total', 'month_index']
+                }]
             },
             attributes: ['group_account', 'group_account_label', 'name']
         })
-
         return groupAccount
     }
 
     public async getAccountBeginingBalance(): Promise<messageAttribute<AccountBegeningBalanceAttributes>> {
+        const harta = await this.getGroupAccountByNumberGroup(1)
+        const kewajiban = await this.getGroupAccountByNumberGroup(2)
+        const modal = await this.getGroupAccountByNumberGroup(3)
         const accountBeginingBalance: AccountBegeningBalanceAttributes = {
-            harta: await this.getGroupAccountByNumberGroup(1),
-            kewajiban: await this.getGroupAccountByNumberGroup(2),
-            modal: await this.getGroupAccountByNumberGroup(3)
+            harta,
+            kewajiban,
+            modal
         }
         return this.message(200, accountBeginingBalance)
     }
