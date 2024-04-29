@@ -39,9 +39,9 @@ class AccountLogic extends LogicBase {
         }
         return this.message(200, oneAccount)
     }
-    public async getAccountByActivity(activity_id: string): Promise<messageAttribute<Array<AccountAttributes>>> {
-        const allAccount = await Account.findAll({ where: { activity_id }, include: this.include })
-        return this.message(200, allAccount)
+    public async getAccountByActivity(activity_id: string): Promise<messageAttribute<AccountAttributes>> {
+        const oneAccount = await account.getAccountByActivity(activity_id)
+        return this.message(200, oneAccount!)
     }
     public async getAccountByGroupAccount(group_account: number | string): Promise<messageAttribute<Array<AccountAttributes>>> {
         const queryGroupAccount = group_account === "-" ? { group_account: 0 } : parseInt(group_account as string) === 4 ? { [Op.not]: { group_account } } : { group_account }
@@ -59,7 +59,7 @@ class AccountLogic extends LogicBase {
     }
     public async addAccount(name: string, group_account: number, group_account_label: number, activity_id: string | null, group_account_name: string): Promise<messageAttribute<defaultMessage>> {
         try {
-            await account.generateAccount(name,group_account,group_account_label,activity_id,group_account_name)
+            await account.generateAccount(name, group_account, group_account_label, activity_id, group_account_name)
             return this.message(200, { message: "Succes" })
         } catch (_) {
             return this.message(403, { message: "Gagal" })

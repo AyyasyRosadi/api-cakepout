@@ -3,9 +3,9 @@ import MonthlyAccountCalulation from "../service/monthlyAccountCalculation/model
 
 
 class MonthlyAccountCalculationHelper {
-    public async getActiveOneMonthlyAccountCalculation(month: number, year: string, account_id: string): Promise<MonthlyAccountCalculationAttributes | null> {
+    public async getActiveOneMonthlyAccountCalculation(month: number, year: string, account_id: string): Promise<MonthlyAccountCalculationAttributes> {
         const oneMonthlyAccountCalculation = await MonthlyAccountCalulation.findOne({ where: { month_index: month, accounting_year: year, account_id: account_id, open: true } })
-        return oneMonthlyAccountCalculation
+        return oneMonthlyAccountCalculation!
     }
     public async createMonthlyAccountCalculation(month_index: number, accounting_year: string, account_id: string, total:number): Promise<boolean> {
         try {

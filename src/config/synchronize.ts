@@ -17,6 +17,7 @@ import System from "../service/system/model"
 import UserSystem from "../service/userSystem/model"
 import User from "../service/user/model"
 import db from "./database"
+import SharingProgram from "../service/sharingProgram/model"
 
 export const Synchronize = async () => {
     try {
@@ -31,8 +32,9 @@ export const Synchronize = async () => {
         await Program.sync()
         await Component.sync()
         await Activity.sync()
-        await DetailOfActivity.sync({alter:true})
+        await SharingProgram.sync()
         await BlacklistToken.sync()
+        await DetailOfActivity.sync({alter:true})
         await JournalReferenceNumber.sync({ alter: true })
         await GroupAccount.sync({ alter: true })
         await Account.sync({ alter: true })

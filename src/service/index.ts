@@ -9,6 +9,7 @@ import GroupAccount from "./groupAccount/router";
 import Institution from "./institution/router";
 import MonthlyAccountCalulation from "./monthlyAccountCalculation/router";
 import Journal from "./journal/router";
+import SharingProgram from "./sharingProgram/router";
 
 const serviceRouter: Router = express();
 
@@ -22,6 +23,7 @@ serviceRouter.use('/group-account', GroupAccount)
 serviceRouter.use('/institution', Institution)
 serviceRouter.use('/monthly-account-calculation', MonthlyAccountCalulation)
 serviceRouter.use('/journal', Journal)
+serviceRouter.use('/sharing-program',SharingProgram)
 
 
 export default serviceRouter

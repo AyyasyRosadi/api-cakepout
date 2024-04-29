@@ -1,3 +1,4 @@
+import { AccountAttributes } from "../service/account/dto"
 import Account from "../service/account/model"
 import GroupAccountAttributes from "../service/groupAccount/dto"
 import GroupAccount from "../service/groupAccount/model"
@@ -43,6 +44,11 @@ class AccountHelper {
         }
         return true
     }
+    public async getAccountByActivity(activity_id: string): Promise<AccountAttributes | null> {
+        const oneAccount = await Account.findOne({ where: { activity_id } })
+        return oneAccount
+    }
+
 }
 
 export default new AccountHelper;

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import authentication from "../../middleware/authentication";
 import BaseRouter from "../routerBase";
-import { ALLROLE, SUPERADMIN } from "../constant";
+import { ALLROLE, SUPERADMIN, SYSTEMCAKEPOUT } from "../constant";
 import logic from "./logic";
 import validator from "./validator";
 
@@ -9,7 +9,7 @@ import validator from "./validator";
 class MonthlyAccountCalculationRouter extends BaseRouter {
     routes(): void {
         this.router.get('/',
-            authentication.authenticationUser(ALLROLE),
+            authentication.authenticationUser(SYSTEMCAKEPOUT, ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const { page, size } = req.query
                 const allMonthlyAccountCalculation = await logic.getAllMonthlyAccountCalculation(Number(page), Number(size))
@@ -17,28 +17,28 @@ class MonthlyAccountCalculationRouter extends BaseRouter {
             }
         )
         this.router.get('/:uuid',
-            authentication.authenticationUser(ALLROLE),
+            authentication.authenticationUser(SYSTEMCAKEPOUT, ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const oneMonthlyAccountCalculation = await logic.getMonthlyAccountCalculationByUuid(req.params?.uuid)
                 return res.status(oneMonthlyAccountCalculation.status).json(oneMonthlyAccountCalculation.data)
             }
         )
         this.router.get('/year/:year',
-            authentication.authenticationUser(ALLROLE),
+            authentication.authenticationUser(SYSTEMCAKEPOUT, ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const allMonthlyAccountCalculation = await logic.getMonthlyAccountCalculationByYear(req.params?.year)
                 return res.status(allMonthlyAccountCalculation.status).json(allMonthlyAccountCalculation.data)
             }
         )
         this.router.get('month/:month_index',
-            authentication.authenticationUser(ALLROLE),
+            authentication.authenticationUser(SYSTEMCAKEPOUT, ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const oneMonthlyAccountCalculation = await logic.getMonthlyAccountCalculationByMonth(parseInt(req.params?.month_index))
                 return res.status(oneMonthlyAccountCalculation.status).json(oneMonthlyAccountCalculation.data)
             }
         )
         this.router.post('/',
-            authentication.authenticationUser(ALLROLE),
+            authentication.authenticationUser(SYSTEMCAKEPOUT, ALLROLE),
             validator.create(),
             async (req: Request, res: Response): Promise<Response> => {
                 const { month_index, accounting_year, account_id, open } = req.body;
@@ -47,7 +47,7 @@ class MonthlyAccountCalculationRouter extends BaseRouter {
             }
         )
         this.router.put('/total/:uuid',
-            authentication.authenticationUser(ALLROLE),
+            authentication.authenticationUser(SYSTEMCAKEPOUT, ALLROLE),
             validator.updateTotal(),
             async (req: Request, res: Response): Promise<Response> => {
                 const updateTotalMonthlyAccountCalculation = await logic.updateTotalMonthlyAccountCalculation(req.body?.total, req.params?.uuid)
@@ -56,14 +56,14 @@ class MonthlyAccountCalculationRouter extends BaseRouter {
         )
         this.router.put('/open/:uuid',
             validator.updateOpen(),
-            authentication.authenticationUser(ALLROLE),
+            authentication.authenticationUser(SYSTEMCAKEPOUT, ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const updateOpenMonthlyAccountCalculation = await logic.updateOpenMonthlyAccountCalculation(req.body?.open, req.params?.uuid)
                 return res.status(updateOpenMonthlyAccountCalculation.status).json(updateOpenMonthlyAccountCalculation.data)
             }
         )
         this.router.delete('/:uuid',
-            authentication.authenticationUser(SUPERADMIN),
+            authentication.authenticationUser(SYSTEMCAKEPOUT, ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const deleteMonthlyAccountCalculation = await logic.deleteMonthlyAccountCalculation(req.params?.uuid)
                 return res.status(deleteMonthlyAccountCalculation.status).json(deleteMonthlyAccountCalculation.data)

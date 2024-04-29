@@ -10,6 +10,11 @@ import monthlyAccountCalculation from "../../helper/monthlyAccountCalculation";
 import { LogicBase, defaultMessage, messageAttribute } from "../logicBase";
 import GroupAccountAttributes from "../groupAccount/dto";
 import { AccountAttributes } from "../account/dto";
+import disbursementOfFund from "../../helper/disbursementOfFund";
+import account from "../../helper/account";
+import { MonthlyAccountCalculationAttributes } from "../monthlyAccountCalculation/dto";
+import DisbursementOfFunds from "../disbursementOfFund/model";
+import DetailOfActivityAttributes from "../detailOfActivity/dto";
 
 
 class JournalLogic extends LogicBase {
@@ -34,7 +39,7 @@ class JournalLogic extends LogicBase {
                 offset: offset,
                 include: [{ model: Account, include: [{ model: GroupAccount }] }],
                 where: filterJournal,
-                order: [["transaction_date", "DESC"]]
+                order: [["transaction_date", "DESC"],['createdAt',"DESC"]]
             }
         )
         const accumulate = await this.accumulateDebitNKredit(allJournal.rows)
@@ -79,7 +84,14 @@ class JournalLogic extends LogicBase {
         const oneAccount = await Account.findOne({ where: { uuid } })
         return oneAccount
     }
-
+    private async checkAndUpdateMontlyAccountCalculationValue(fromAccount: AccountAttributes, fromOneMonthlyAccountCalculation: MonthlyAccountCalculationAttributes, toAccount: { amount: number, account_id: string }): Promise<boolean> {
+        if (fromAccount!.group_account?.group_account === 1 && (fromOneMonthlyAccountCalculation.total - toAccount.amount) < 0) {
+            return false
+        } else if (fromAccount!.group_account?.group_account === 1) {
+            await monthlyAccountCalculation.updateTotalMonthlyAccountCalculation((fromOneMonthlyAccountCalculation.total - toAccount.amount), fromOneMonthlyAccountCalculation.uuid)
+        }
+        return true
+    }
     public async generateJournal(from_account: string, transaction_date: string, to_account: Array<{ account_id: string, amount: number }>): Promise<messageAttribute<defaultMessage>> {
         try {
             const activeYear = await accountingYear.getActiveAccountingYear()
@@ -97,20 +109,88 @@ class JournalLogic extends LogicBase {
                     return this.message(403, { message: `Kalkulasi akun tujuan belum dibuka` })
                 }
                 if (oneAccount!.group_account?.group_account === 1 || oneAccount!.group_account?.group_account === 4) {
-                    await this.createJournal(to_account[i].amount, 'D', to_account[i].account_id, referenceNumber!, transactionDate, activeYear!.tahun)
-
-                    if (oneAccount!.group_account?.group_account === 1 && (fromOneMonthlyAccountCalculation.total - to_account[i].amount) < 0) {
-                        return this.message(403, { message: "Maaf journal tidak tercatat karena saldo tidak mencukupi" })
-                    } else if (oneAccount!.group_account?.group_account === 1) {
-                        await monthlyAccountCalculation.updateTotalMonthlyAccountCalculation((fromOneMonthlyAccountCalculation.total - to_account[i].amount), fromOneMonthlyAccountCalculation.uuid)
+                    const checkMonthlyAccountCalculation = await this.checkAndUpdateMontlyAccountCalculationValue(oneAccount!, fromOneMonthlyAccountCalculation, to_account[i])
+                    if (!checkMonthlyAccountCalculation) {
+                        return this.message(403, { message: "Gagal" })
                     }
                     await monthlyAccountCalculation.updateTotalMonthlyAccountCalculation((toOneMonthlyAccountCalculation!.total + to_account[i].amount), toOneMonthlyAccountCalculation!.uuid)
 
+                    await this.createJournal(to_account[i].amount, 'D', to_account[i].account_id, referenceNumber!, transactionDate, activeYear!.tahun)
                     finalAmount += to_account[i].amount
                 }
             }
             await this.createJournal(finalAmount, 'K', oneAccount!.uuid, referenceNumber!, transactionDate, activeYear!.tahun)
 
+            return this.message(200, { message: "Succes" })
+        } catch (r) {
+            return this.message(403, { message: "Gagal" })
+        }
+    }
+    private async approveWithDrawDisbursementOfFund(uuid: string, ptk_id: string | null, recipient: string | null): Promise<messageAttribute<defaultMessage>> {
+        try {
+            await DisbursementOfFunds.update({ withdraw: true, ptk_id: ptk_id, recipient: recipient }, { where: { uuid } })
+            return this.message(200, { message: "Succes" })
+        } catch (_) {
+            return this.message(403, { message: "Gagal" })
+        }
+    }
+
+    private async createJournalDisbursementOfFund(fromAccount: AccountAttributes, fromOneMonthlyAccountCalculation: MonthlyAccountCalculationAttributes, activity: DetailOfActivityAttributes, transactionDate: Date, year: string, disbursement_of_fund_id: string, amount: number, referenceNumber: string, ptk_id: string | null, recepient: string | null): Promise<messageAttribute<defaultMessage>> {
+        try {
+            let toAccount = await account.getAccountByActivity(activity.uuid)
+            if (!toAccount) {
+                await account.generateAccount(activity.uraian, 5, 0, activity.uuid, activity.uraian)
+                toAccount = await account.getAccountByActivity(activity.uuid)
+                // return this.message(403, { message: `Akun dengan nomor kegiatan ${activity.no_kegiatan!} tidak ditemukan` })
+            }
+            let toOneMonthlyAccountCalculation = await monthlyAccountCalculation.getActiveOneMonthlyAccountCalculation(transactionDate.getMonth(), year, disbursement_of_fund_id)
+            !toOneMonthlyAccountCalculation ?
+                await monthlyAccountCalculation.createMonthlyAccountCalculation(transactionDate.getMonth(), year, disbursement_of_fund_id, amount)
+                :
+                await monthlyAccountCalculation.updateTotalMonthlyAccountCalculation(amount + toOneMonthlyAccountCalculation.total, toOneMonthlyAccountCalculation.uuid)
+            const dataCheck = { account_id: disbursement_of_fund_id, amount: amount }
+            const checkMonthlyAccountCalculation = await this.checkAndUpdateMontlyAccountCalculationValue(fromAccount!, fromOneMonthlyAccountCalculation, dataCheck)
+            if (!checkMonthlyAccountCalculation) {
+                return this.message(403, { message: "Gagal" })
+            }
+            await this.createJournal(amount, 'D', toAccount?.uuid!, referenceNumber!, transactionDate, year)
+            await this.approveWithDrawDisbursementOfFund(disbursement_of_fund_id, ptk_id, recepient)
+            return this.message(200, { message: "Succes" })
+        } catch (r) {
+            console.log(r)
+            return this.message(403, { message: "Gagal" })
+        }
+    }
+
+    public async generateJournalDisbursementOfFund(from_account: string, transaction_date: string, id: string, ptk_id: string | null, recepient: string | null): Promise<messageAttribute<defaultMessage>> {
+        try {
+            const activeYear = await accountingYear.getActiveAccountingYear()
+            const fromAccount = await this.getAccountByUuid(from_account)
+            const transactionDate = time.date(transaction_date)
+            const fromOneMonthlyAccountCalculation = await monthlyAccountCalculation.getActiveOneMonthlyAccountCalculation(transactionDate.getMonth(), activeYear!.tahun, fromAccount!.uuid)
+            if (!fromOneMonthlyAccountCalculation) {
+                return this.message(403, { message: "Kalkulasi akun sumber belum dibuka" })
+            }
+            const checkGroup = await disbursementOfFund.getDisbursementOfFundByGroupId(id)
+            const referenceNumber = await journalReferenceNumber.generateReference()
+            let finalAmount = 0
+            if (checkGroup.length > 0) {
+                for (let i in checkGroup) {
+                    const createJournal = await this.createJournalDisbursementOfFund(fromAccount!, fromOneMonthlyAccountCalculation!, checkGroup[i]?.rincian_kegiatan!, transactionDate, activeYear!.tahun, checkGroup[i]?.uuid, checkGroup[i]?.amount, referenceNumber!, ptk_id, recepient)
+                    if (createJournal.status !== 200) {
+                        return this.message(createJournal.status, createJournal.data)
+                    }
+                    finalAmount += checkGroup[i].amount
+                }
+            } else {
+                const oneDisbursementOfFund = await disbursementOfFund.getDisbursementOfFundByUuid(id)
+                const createJournal = await this.createJournalDisbursementOfFund(fromAccount!, fromOneMonthlyAccountCalculation, oneDisbursementOfFund?.rincian_kegiatan!, transactionDate!, activeYear!.tahun, oneDisbursementOfFund.uuid, oneDisbursementOfFund.amount, referenceNumber!, ptk_id, recepient)
+                if (createJournal.status !== 200) {
+                    return this.message(createJournal.status, createJournal.data)
+                }
+                finalAmount += oneDisbursementOfFund.amount
+            }
+            await this.createJournal(finalAmount, 'K', fromAccount!.uuid, referenceNumber!, transactionDate, activeYear!.tahun)
             return this.message(200, { message: "Succes" })
         } catch (r) {
             return this.message(403, { message: "Gagal" })

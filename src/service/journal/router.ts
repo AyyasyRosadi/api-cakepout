@@ -2,50 +2,50 @@ import { Request, Response } from "express";
 import BaseRouter from "../routerBase";
 import logic from "./logic";
 import authentication from "../../middleware/authentication";
-import { ALLROLE } from "../constant";
+import { ALLROLE, SYSTEMCAKEPOUT } from "../constant";
 import validator from "./validator";
 
 
 class JournalRouter extends BaseRouter {
     routes(): void {
         this.router.get('/',
-            authentication.authenticationUser(ALLROLE),
+            authentication.authenticationUser(SYSTEMCAKEPOUT, ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
-                const { page, size,from_date,to_date } = req.query
+                const { page, size, from_date, to_date } = req.query
                 const allJournal = await logic.getAllJournal(Number(page), Number(size), from_date as string, to_date as string)
                 return res.status(allJournal.status).json(allJournal.data)
             }
         )
         this.router.get('/:uuid',
-            authentication.authenticationUser(ALLROLE),
+            authentication.authenticationUser(SYSTEMCAKEPOUT, ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const oneJournal = await logic.getJournalByUuid(req.params?.uuid)
                 return res.status(oneJournal.status).json(oneJournal.data)
             }
         )
         this.router.get('/status/:status',
-            authentication.authenticationUser(ALLROLE),
+            authentication.authenticationUser(SYSTEMCAKEPOUT, ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const allJournal = await logic.getJournalByStatus(req.params?.status)
                 return res.status(allJournal.status).json(allJournal.data)
             }
         )
         this.router.get('year/:year',
-            authentication.authenticationUser(ALLROLE),
+            authentication.authenticationUser(SYSTEMCAKEPOUT, ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const allJournal = await logic.getJournalByYear(req.params?.year)
                 return res.status(allJournal.status).json(allJournal.data)
             }
         )
         this.router.get('/account-id/:account_id',
-            authentication.authenticationUser(ALLROLE),
+            authentication.authenticationUser(SYSTEMCAKEPOUT, ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const allJournal = await logic.getJournalByAccountId(req.params?.account_id)
                 return res.status(allJournal.status).json(allJournal.data)
             }
         )
         this.router.post('/transaction-date',
-            authentication.authenticationUser(ALLROLE),
+            authentication.authenticationUser(SYSTEMCAKEPOUT, ALLROLE),
             validator.date(),
             async (req: Request, res: Response): Promise<Response> => {
                 const allJournal = await logic.getJournalByTransactionDate(req.body?.start, req.body?.end)
@@ -53,7 +53,7 @@ class JournalRouter extends BaseRouter {
             }
         )
         this.router.post('/',
-            authentication.authenticationUser(ALLROLE),
+            authentication.authenticationUser(SYSTEMCAKEPOUT, ALLROLE),
             validator.create(),
             async (req: Request, res: Response): Promise<Response> => {
                 const { from_account, transaction_date, to_account } = req.body;
@@ -61,14 +61,18 @@ class JournalRouter extends BaseRouter {
                 return res.status(generateJournal.status).json(generateJournal.data)
             }
         )
-        this.router.get('/account/account-begining-balance', async(req:Request, res:Response)=>{
+        this.router.get('/account/account-begining-balance', async (req: Request, res: Response) => {
             const getAccountBeginingBalance = await logic.getAccountBeginingBalance()
             return res.status(getAccountBeginingBalance.status).json(getAccountBeginingBalance.data)
         })
 
-        this.router.post('/account/account-begining-balance', async(req:Request, res:Response)=>{
+        this.router.post('/account/account-begining-balance', async (req: Request, res: Response) => {
             const saveAccountBeginingBalance = await logic.saveAccountBeginingBalance(req.body);
             return res.status(saveAccountBeginingBalance.status).json(saveAccountBeginingBalance.data)
+        })
+        this.router.post('/disbursement-of-fund', async (req: Request, res: Response): Promise<Response> => {
+            const saveJournalDisbursementOfFund = await logic.generateJournalDisbursementOfFund(req.body.from_account, req.body.transaction_date, req.body.id,req.body.ptk_id,req.body.receipient)
+            return res.status(saveJournalDisbursementOfFund.status).json(saveJournalDisbursementOfFund.data)
         })
     }
 

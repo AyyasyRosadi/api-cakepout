@@ -3,18 +3,18 @@ import BaseRouter from "../routerBase";
 import logic from "./logic";
 import validaor from "./validaor";
 import authentication from "../../middleware/authentication";
-import { ALLROLE } from "../constant";
+import { ALLROLE, SYSTEMCAKEPOUT } from "../constant";
 
 class AccountRouter extends BaseRouter {
     routes(): void {
         this.router.get('/',
-        authentication.authenticationUser(ALLROLE),
+        authentication.authenticationUser(SYSTEMCAKEPOUT,ALLROLE),
         async(req:Request,res:Response):Promise<Response>=>{
             const allAccount = await logic.getAllAccount()
             return res.status(allAccount.status).json(allAccount.data)
         })
         this.router.get('/page',
-            authentication.authenticationUser(ALLROLE),
+            authentication.authenticationUser(SYSTEMCAKEPOUT,ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const { page, size } = req.query;
                 const allAccount = await logic.getAllAccountByPage(Number(page), Number(size))
@@ -22,7 +22,7 @@ class AccountRouter extends BaseRouter {
             }
         )
         this.router.get('/:uuid',
-            authentication.authenticationUser(ALLROLE),
+            authentication.authenticationUser(SYSTEMCAKEPOUT,ALLROLE),
 
             async (req: Request, res: Response): Promise<Response> => {
                 const oneAccount = await logic.getAccountByUuid(req.params?.uuid)
@@ -30,28 +30,28 @@ class AccountRouter extends BaseRouter {
             }
         )
         this.router.get('/activity/:activity_id',
-            authentication.authenticationUser(ALLROLE),
+            authentication.authenticationUser(SYSTEMCAKEPOUT,ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const allAccount = await logic.getAccountByActivity(req.params?.activity_id)
                 return res.status(allAccount.status).json(allAccount.data)
             }
         )
         this.router.get('/group-account/:group_account',
-            authentication.authenticationUser(ALLROLE),
+            authentication.authenticationUser(SYSTEMCAKEPOUT,ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const oneAccount = await logic.getAccountByGroupAccount(req.params?.group_account)
                 return res.status(oneAccount.status).json(oneAccount.data)
             }
         )
         this.router.get('/account-number/:account_number',
-            authentication.authenticationUser(ALLROLE),
+            authentication.authenticationUser(SYSTEMCAKEPOUT,ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const oneAccount = await logic.getAccountByAccountNumber(req.params?.account_number)
                 return res.status(oneAccount.status).json(oneAccount.data)
             }
         )
         this.router.post('/',
-            authentication.authenticationUser(ALLROLE),
+            authentication.authenticationUser(SYSTEMCAKEPOUT,ALLROLE),
             validaor.create(),
             async (req: Request, res: Response): Promise<Response> => {
                 const { name, group_account, group_account_label, activity_id, group_account_name } = req.body
@@ -60,7 +60,7 @@ class AccountRouter extends BaseRouter {
             }
         )
         this.router.put('/:uuid',
-            authentication.authenticationUser(ALLROLE),
+            authentication.authenticationUser(SYSTEMCAKEPOUT,ALLROLE),
             validaor.update(),
             async (req: Request, res: Response): Promise<Response> => {
                 const { name } = req.body
@@ -69,7 +69,7 @@ class AccountRouter extends BaseRouter {
             }
         )
         this.router.delete('/:uuid',
-            authentication.authenticationUser(ALLROLE),
+            authentication.authenticationUser(SYSTEMCAKEPOUT,ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const deleteAccount = await logic.deleteAccount(req.params?.uuid)
                 return res.status(deleteAccount.status).json({ msg: deleteAccount.data })

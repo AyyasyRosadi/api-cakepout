@@ -3,10 +3,9 @@ import jwt from "jsonwebtoken"
 import BlacklistToken from "../service/blacklistToken/model";
 import userHelper from "../helper/user";
 
-const systemName = 'cakepout'
 
 class Authentication {
-    public authenticationUser(allowedRole: string[]): (req: Request, res: Response, next: NextFunction) => Promise<Response | void> {
+    public authenticationUser(system: string, allowedRole: string[]): (req: Request, res: Response, next: NextFunction) => Promise<Response | void> {
         return async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
             const splitter = req.headers.authorization?.split(' ')
             if (splitter?.length !== 2 || splitter[0] !== "Bearer") {
@@ -23,7 +22,7 @@ class Authentication {
                     return res.status(401).json({ msg: "Unauthorized" })
                 }
                 const userSystem = await userHelper.getUserSystemByUuidUser(user.uuid)
-                if (!userSystem.some((e) => e.sistem.nama_sistem === systemName && allowedRole.includes(e.role.nama_role))) {
+                if (!userSystem.some((e) => e.sistem.nama_sistem === system && allowedRole.includes(e.role.nama_role))) {
                     return res.status(401).json({ msg: "Unauthorized" })
                 }
                 req.app.locals.token = token;
