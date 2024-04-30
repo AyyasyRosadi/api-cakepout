@@ -7,7 +7,7 @@ import { AccountAttributes } from "../account/dto";
 
 interface GroupAccountCreationAttributes extends Optional<GroupAccountAttributes, 'uuid'> { };
 interface GroupAccountInstance extends Model<GroupAccountAttributes, GroupAccountCreationAttributes>, GroupAccountAttributes {
-    accounts: AccountAttributes[];
+    account: AccountAttributes[];
     created_at: Date;
     updated_at: Date;
 }

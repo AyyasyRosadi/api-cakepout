@@ -2,6 +2,7 @@ import { AccountAttributes } from "../service/account/dto"
 import Account from "../service/account/model"
 import GroupAccountAttributes from "../service/groupAccount/dto"
 import GroupAccount from "../service/groupAccount/model"
+import MonthlyAccountCalulation from "../service/monthlyAccountCalculation/model"
 
 class AccountHelper {
     private async getLastLabelGroupAccountByGroup(group_account: number): Promise<number> {
@@ -48,6 +49,26 @@ class AccountHelper {
         const oneAccount = await Account.findOne({ where: { activity_id } })
         return oneAccount
     }
+
+    public async getGroupAccountByNumberGroup(group_account: number): Promise<Array<GroupAccountAttributes>> {
+        const groupAccount = await GroupAccount.findAll({
+            where: {
+                group_account,
+            }, include: {
+                model: Account,
+                as:"account",
+                attributes: ['uuid', 'name', 'account_number'],
+                include: [{
+                    model: MonthlyAccountCalulation,
+                    attributes: ['uuid', 'total', 'month_index'],
+                    order: [["accounting_year", "ASC"], ["month_index", "ASC"],]
+                }]
+            },
+            attributes: ['group_account', 'group_account_label', 'name']
+        })
+        return groupAccount
+    }
+
 
 }
 

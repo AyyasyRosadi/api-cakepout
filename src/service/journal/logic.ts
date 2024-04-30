@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import Account from "../account/model";
-import { JournalAttributes, JournalPaginationAttributes, AccountBegeningBalanceAttributes, SaveAccountBeginingBalance, AccountBegeningBalanceData, BalanceReportAttributes } from "./dto";
+import { JournalAttributes, JournalPaginationAttributes, AccountBegeningBalanceAttributes, SaveAccountBeginingBalance, AccountBegeningBalanceData } from "./dto";
 import Journal from "./model";
 import GroupAccount from "../groupAccount/model";
 import time from "../../helper/time";
@@ -179,28 +179,10 @@ class JournalLogic extends LogicBase {
         }
     }
 
-    private async getGroupAccountByNumberGroup(group_account: number): Promise<Array<GroupAccountAttributes>> {
-        const groupAccount = await GroupAccount.findAll({
-            where: {
-                group_account,
-            }, include: {
-                model: Account,
-                attributes: ['uuid', 'name', 'account_number'],
-                include: [{
-                    model: MonthlyAccountCalulation,
-                    attributes: ['uuid', 'total', 'month_index'],
-                    order: [["accounting_year", "ASC"], ["month_index", "ASC"],]
-                }]
-            },
-            attributes: ['group_account', 'group_account_label', 'name']
-        })
-        return groupAccount
-    }
-
     public async getAccountBeginingBalance(): Promise<messageAttribute<AccountBegeningBalanceAttributes>> {
-        const harta = await this.getGroupAccountByNumberGroup(1)
-        const kewajiban = await this.getGroupAccountByNumberGroup(2)
-        const modal = await this.getGroupAccountByNumberGroup(3)
+        const harta = await account.getGroupAccountByNumberGroup(1)
+        const kewajiban = await account.getGroupAccountByNumberGroup(2)
+        const modal = await account.getGroupAccountByNumberGroup(3)
         const accountBeginingBalance: AccountBegeningBalanceAttributes = {
             harta,
             kewajiban,
@@ -259,15 +241,15 @@ class JournalLogic extends LogicBase {
             const activeYear = await accountingYear.getActiveAccountingYear()
             const date = new Date()
             for (let i = 1; i <= 5; i++) {
-                const group = await this.getGroupAccountByNumberGroup(i)
+                const group = await account.getGroupAccountByNumberGroup(i)
                 for (let j in group) {
-                    let grouping = group[j] as GroupAccountAttributes & { accounts: AccountAttributes[] }
-                    for (let k = 0; k < grouping.accounts.length; k++) {
-                        let activeMonthlyAccountCalculation = await monthlyAccountCalculation.getActiveOneMonthlyAccountCalculation(monthIndex, activeYear!.tahun, grouping.accounts[k].uuid)
+                    let grouping = group[j] as GroupAccountAttributes & { account: AccountAttributes[] }
+                    for (let k = 0; k < grouping.account.length; k++) {
+                        let activeMonthlyAccountCalculation = await monthlyAccountCalculation.getActiveOneMonthlyAccountCalculation(monthIndex, activeYear!.tahun, grouping.account[k].uuid)
                         if (!activeMonthlyAccountCalculation) {
-                            await monthlyAccountCalculation.createMonthlyAccountCalculation(monthIndex + 1, activeYear!.tahun, grouping?.accounts[k]?.uuid, 0)
+                            await monthlyAccountCalculation.createMonthlyAccountCalculation(monthIndex + 1, activeYear!.tahun, grouping?.account[k]?.uuid, 0)
                         } else {
-                            await monthlyAccountCalculation.createMonthlyAccountCalculation(monthIndex + 1, activeYear!.tahun, grouping?.accounts[k]?.uuid, i <= 3 ? activeMonthlyAccountCalculation.total : 0)
+                            await monthlyAccountCalculation.createMonthlyAccountCalculation(monthIndex + 1, activeYear!.tahun, grouping?.account[k]?.uuid, i <= 3 ? activeMonthlyAccountCalculation.total : 0)
                             if (i <= 3) {
                                 const reference = await journalReferenceNumber.generateReference()
                                 await this.createJournal(activeMonthlyAccountCalculation.total, 'K', activeMonthlyAccountCalculation.account_id, reference!, date, activeYear!.tahun, `Penutupan Akun bulan ${this.listMonth[monthIndex]}`)
@@ -284,34 +266,7 @@ class JournalLogic extends LogicBase {
         }
     }
 
-    private async restructureReport(accounts: AccountAttributes[], monthIndex: number, year: string): Promise<BalanceReportAttributes> {
-        let finalResult = []
-        let finalAmount = 0
-        for (let i in accounts) {
-            const oneMonthlyAccount = await monthlyAccountCalculation.getOneMonthlyAccountCalculation(monthIndex, year, accounts[i].uuid)
-            finalResult.push({ uuid: accounts[i].uuid, account_number: accounts[i].account_number, name: accounts[i].name, amount: oneMonthlyAccount?.total })
-            finalAmount += Number(oneMonthlyAccount?.total)
-        }
-        return { finalAmount, accounts: finalResult }
-    }
-    public async getBalanceSheetReport(monthIndex: number): Promise<messageAttribute<BalanceReportAttributes[] | defaultMessage>> {
-        try {
-            const activeYear = await accountingYear.getActiveAccountingYear()
-            const result = []
-            for (let i = 1; i <= 3; i++) {
-                const group = await this.getGroupAccountByNumberGroup(i)
-                for (let j in group) {
-                    const grouping = group[j] as GroupAccountAttributes & { accounts: AccountAttributes[] }
-                    const restructureReport = await this.restructureReport(grouping.accounts, monthIndex, activeYear!.tahun)
-                    result.push(restructureReport)
-                }
-            }
-            return this.message(200, result)
-        } catch (e) {
-            console.log(e)
-            return this.message(403, { message: "Gagal" })
-        }
-    }
+
 }
 
 export default new JournalLogic;

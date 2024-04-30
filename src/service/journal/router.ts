@@ -77,10 +77,6 @@ class JournalRouter extends BaseRouter {
             const closeBook = await logic.closeBook(Number(req.query.month_index))
             return res.status(closeBook.status).json(closeBook.data)
         })
-        this.router.get('/report/balance', async (req: Request, res: Response): Promise<Response> => {
-            const report = await logic.getBalanceSheetReport(Number(req.query?.month_index))
-            return res.status(report.status).json(report.data)
-        })
     }
 
 }
