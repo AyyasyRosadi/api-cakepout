@@ -3,7 +3,7 @@ import GroupAccount from "../groupAccount/model";
 import Account from "../account/model";
 import Journal from "../journal/model";
 import GroupAccountAttributes from "../groupAccount/dto";
-import { BalanceReportAttributes, listOfAccount } from "./dto";
+import { BalanceReportAttributes, GroupBalanceReportAttributes, listOfAccount } from "./dto";
 import accountingYear from "../../helper/accountingYear";
 import account from "../../helper/account";
 import monthlyAccountCalculation from "../../helper/monthlyAccountCalculation";
@@ -90,30 +90,43 @@ class Logic extends LogicBase {
         return this.message(200, journal)
     }
 
-    private async restructureReport(accounts: AccountAttributes[], monthIndex: number, year: string): Promise<BalanceReportAttributes> {
+    private async restructureBalanceReport(accounts: AccountAttributes[], monthIndex: number, year: string, group_account_name: string): Promise<GroupBalanceReportAttributes> {
         let finalResult = []
         let finalAmount = 0
+
         for (let i in accounts) {
             const oneMonthlyAccount = await monthlyAccountCalculation.getOneMonthlyAccountCalculation(monthIndex, year, accounts[i].uuid)
-            if(oneMonthlyAccount && !oneMonthlyAccount?.open){
+            if (oneMonthlyAccount && !oneMonthlyAccount?.open) {
                 finalResult.push({ uuid: accounts[i].uuid, account_number: accounts[i].account_number, name: accounts[i].name, amount: oneMonthlyAccount?.total })
                 finalAmount += Number(oneMonthlyAccount?.total)
             }
         }
-        return { finalAmount, accounts: finalResult }
+        return { group_account_name, finalAmount, accounts: finalResult }
     }
-    public async getBalanceSheetReport(monthIndex: number): Promise<messageAttribute<BalanceReportAttributes[]>> {
+    private async getGroupBalanceReport(index: number, monthIndex: number): Promise<{ finalAmount: number, group: GroupBalanceReportAttributes[] }> {
         const activeYear = await accountingYear.getActiveAccountingYear()
         const result = []
-        for (let i = 1; i <= 3; i++) {
-            const group = await account.getGroupAccountByNumberGroup(i)
-            for (let j in group) {
-                const grouping = group[j] as GroupAccountAttributes & { account: AccountAttributes[] }
-                const restructureReport = await this.restructureReport(grouping.account, monthIndex, activeYear!.tahun)
-                result.push(restructureReport)
-            }
+        let finalAmount = 0
+        const group = await account.getGroupAccountByNumberGroup(index)
+        for (let j in group) {
+            const grouping = group[j] as GroupAccountAttributes & { account: AccountAttributes[] }
+            const restructurBalanceReport = await this.restructureBalanceReport(grouping.account, monthIndex, activeYear!.tahun, grouping.name)
+            result.push(restructurBalanceReport)
+            finalAmount += restructurBalanceReport.finalAmount
         }
-        return this.message(200, result)
+        return { finalAmount, group: result }
+    }
+    public async getBalanceSheetReport(monthIndex: number): Promise<messageAttribute<BalanceReportAttributes>> {
+        const harta = await this.getGroupBalanceReport(1, monthIndex)
+        const kewajiban = await this.getGroupBalanceReport(2, monthIndex)
+        const modal = await this.getGroupBalanceReport(3, monthIndex)
+        const pendapatan = await this.getGroupBalanceReport(4, monthIndex)
+        const beban = await this.getGroupBalanceReport(5, monthIndex)
+        console.log("Harta", harta.finalAmount)
+        console.log("Selain", (kewajiban.finalAmount + modal.finalAmount))
+        console.log("Labarugi", (pendapatan.finalAmount - beban.finalAmount))
+        console.log("Balance", (kewajiban.finalAmount + modal.finalAmount) + (pendapatan.finalAmount - beban.finalAmount))
+        return this.message(200, { harta: harta, kewajiban: kewajiban, modal: modal, labaRugi: (pendapatan.finalAmount - beban.finalAmount) })
 
     }
 }

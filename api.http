@@ -1,5 +1,5 @@
 @host = http://localhost:9191
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiZDJlMDhkZjgtYjkxNy00NDM2LWI3N2UtNmRjNDBlYWI1MGFkIiwiaWF0IjoxNzExMjU0MzkwLCJleHAiOjE3MTEyNzU5OTAsImp0aSI6IjdmYmI4Y2I2LTY3MDgtNDdiZi05MzQyLTEzNjNiOTJlYzAzOSJ9.sVQoaedmaAJhS_ONz4EURHJ9o6bfv3YOMfClyS19EfA
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiZDJlMDhkZjgtYjkxNy00NDM2LWI3N2UtNmRjNDBlYWI1MGFkIiwiaWF0IjoxNzE0NDg2NDM3LCJleHAiOjE3MTQ1MDgwMzcsImp0aSI6ImI3MTBhMTM5LTYxNjUtNGQxNS1iYmFmLTUwNTVkNzVkYmQ0OCJ9.g-Az7kiDMXhQ8udac8Mkm93svoQRXi0jpG5cZcg7PIM
 
 ###
 POST {{host}}/authentication/login
@@ -51,7 +51,7 @@ Content-Type: application/json
 }
 
 ###
-GET {{host}}/journal?page=2&size=7
+GET {{host}}/journal?page=1&size=5&`from_date=2024-04-01&to_date=2024-04-30
 Authorization: Bearer {{token}}
 ###
 GET {{host}}/journal/account/account-begining-balance
@@ -76,8 +76,4 @@ Content-Type: application/json
 POST  {{host}}/journal/monthly-account/close-book/?month_index=3
 
 ###
-GET {{host}}/journal/report/balance?month_index=4
-###
-GET {{host}}/report/income-statement?start=2024-01-01&end=2024-05-01
-###
-GET {{host}}/report/cash-flow-statement
+GET {{host}}/report/balance-statement?month_index=3

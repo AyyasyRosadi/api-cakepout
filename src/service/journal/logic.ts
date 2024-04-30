@@ -91,6 +91,8 @@ class JournalLogic extends LogicBase {
             return false
         } else if (fromAccount!.group_account?.group_account === 1) {
             await monthlyAccountCalculation.updateTotalMonthlyAccountCalculation((fromOneMonthlyAccountCalculation.total - toAccount.amount), fromOneMonthlyAccountCalculation.uuid)
+        } else if (fromAccount!.group_account?.group_account === 4) {
+            await monthlyAccountCalculation.updateTotalMonthlyAccountCalculation((fromOneMonthlyAccountCalculation.total + toAccount.amount), fromOneMonthlyAccountCalculation.uuid)
         }
         return true
     }
@@ -246,22 +248,21 @@ class JournalLogic extends LogicBase {
                     let grouping = group[j] as GroupAccountAttributes & { account: AccountAttributes[] }
                     for (let k = 0; k < grouping.account.length; k++) {
                         let activeMonthlyAccountCalculation = await monthlyAccountCalculation.getActiveOneMonthlyAccountCalculation(monthIndex, activeYear!.tahun, grouping.account[k].uuid)
-                        if (!activeMonthlyAccountCalculation) {
+                        if (!activeMonthlyAccountCalculation && i <= 3) {
                             await monthlyAccountCalculation.createMonthlyAccountCalculation(monthIndex + 1, activeYear!.tahun, grouping?.account[k]?.uuid, 0)
-                        } else {
-                            await monthlyAccountCalculation.createMonthlyAccountCalculation(monthIndex + 1, activeYear!.tahun, grouping?.account[k]?.uuid, i <= 3 ? activeMonthlyAccountCalculation.total : 0)
-                            if (i <= 3) {
-                                const reference = await journalReferenceNumber.generateReference()
-                                await this.createJournal(activeMonthlyAccountCalculation.total, 'K', activeMonthlyAccountCalculation.account_id, reference!, date, activeYear!.tahun, `Penutupan Akun bulan ${this.listMonth[monthIndex]}`)
-                                await this.createJournal(activeMonthlyAccountCalculation.total, 'D', activeMonthlyAccountCalculation.account_id, reference!, date, activeYear!.tahun, `Penutupan Akun bulan ${this.listMonth[monthIndex]}`)
-                            }
-                            await this.closeMonthlyAccountCalculation(activeMonthlyAccountCalculation.uuid)
+                        } else if (i <= 3) {
+                            await monthlyAccountCalculation.createMonthlyAccountCalculation(monthIndex + 1, activeYear!.tahun, grouping?.account[k]?.uuid, activeMonthlyAccountCalculation.total)
+                            const reference = await journalReferenceNumber.generateReference()
+                            await this.createJournal(activeMonthlyAccountCalculation.total, 'K', activeMonthlyAccountCalculation.account_id, reference!, date, activeYear!.tahun, `Penutupan Akun bulan ${this.listMonth[monthIndex]}`)
+                            await this.createJournal(activeMonthlyAccountCalculation.total, 'D', activeMonthlyAccountCalculation.account_id, reference!, date, activeYear!.tahun, `Penutupan Akun bulan ${this.listMonth[monthIndex]}`)
                         }
+                        await this.closeMonthlyAccountCalculation(activeMonthlyAccountCalculation?.uuid)
                     }
                 }
             }
             return this.message(200, { message: "Succes" })
-        } catch {
+        } catch (e) {
+            console.log(e)
             return this.message(403, { message: "Gagal" })
         }
     }
