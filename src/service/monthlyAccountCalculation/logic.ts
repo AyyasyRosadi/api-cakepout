@@ -85,18 +85,7 @@ class MonthlyAccountCalculationLogic extends LogicBase {
             return this.message(403, { message: "Gagal" })
         }
     }
-    public async updateOpenMonthlyAccountCalculation(open: boolean, uuid: string): Promise<messageAttribute<defaultMessage>> {
-        try {
-            await MonthlyAccountCalulation.update({
-                open: open
-            }, {
-                where: { uuid }
-            })
-            return this.message(200, { message: "Succes" })
-        } catch {
-            return this.message(403, { message: "Gagal" })
-        }
-    }
+    
     public async deleteMonthlyAccountCalculation(uuid: string): Promise<messageAttribute<defaultMessage>> {
         try {
             await MonthlyAccountCalulation.destroy({

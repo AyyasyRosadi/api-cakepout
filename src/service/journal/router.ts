@@ -65,7 +65,6 @@ class JournalRouter extends BaseRouter {
             const getAccountBeginingBalance = await logic.getAccountBeginingBalance()
             return res.status(getAccountBeginingBalance.status).json(getAccountBeginingBalance.data)
         })
-
         this.router.post('/account/account-begining-balance', async (req: Request, res: Response) => {
             const saveAccountBeginingBalance = await logic.saveAccountBeginingBalance(req.body);
             return res.status(saveAccountBeginingBalance.status).json(saveAccountBeginingBalance.data)
@@ -73,6 +72,14 @@ class JournalRouter extends BaseRouter {
         this.router.post('/disbursement-of-fund', async (req: Request, res: Response): Promise<Response> => {
             const saveJournalDisbursementOfFund = await logic.generateJournalDisbursementOfFund(req.body.from_account, req.body.transaction_date, req.body?.description, req.body.id, req.body.ptk_id, req.body.receipient)
             return res.status(saveJournalDisbursementOfFund.status).json(saveJournalDisbursementOfFund.data)
+        })
+        this.router.post('/monthly-account/close-book', async (req: Request, res: Response): Promise<Response> => {
+            const closeBook = await logic.closeBook(Number(req.query.month_index))
+            return res.status(closeBook.status).json(closeBook.data)
+        })
+        this.router.get('/report/balance', async (req: Request, res: Response): Promise<Response> => {
+            const report = await logic.getBalanceSheetReport(Number(req.query?.month_index))
+            return res.status(report.status).json(report.data)
         })
     }
 

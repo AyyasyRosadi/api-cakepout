@@ -54,14 +54,14 @@ class MonthlyAccountCalculationRouter extends BaseRouter {
                 return res.status(updateTotalMonthlyAccountCalculation.status).json(updateTotalMonthlyAccountCalculation.data)
             }
         )
-        this.router.put('/open/:uuid',
-            validator.updateOpen(),
-            authentication.authenticationUser(SYSTEMCAKEPOUT, ALLROLE),
-            async (req: Request, res: Response): Promise<Response> => {
-                const updateOpenMonthlyAccountCalculation = await logic.updateOpenMonthlyAccountCalculation(req.body?.open, req.params?.uuid)
-                return res.status(updateOpenMonthlyAccountCalculation.status).json(updateOpenMonthlyAccountCalculation.data)
-            }
-        )
+        // this.router.put('/open/:uuid',
+        //     validator.updateOpen(),
+        //     authentication.authenticationUser(SYSTEMCAKEPOUT, ALLROLE),
+        //     async (req: Request, res: Response): Promise<Response> => {
+        //         const updateOpenMonthlyAccountCalculation = await logic.updateOpenMonthlyAccountCalculation(req.body?.open, req.params?.uuid)
+        //         return res.status(updateOpenMonthlyAccountCalculation.status).json(updateOpenMonthlyAccountCalculation.data)
+        //     }
+        // )
         this.router.delete('/:uuid',
             authentication.authenticationUser(SYSTEMCAKEPOUT, ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {

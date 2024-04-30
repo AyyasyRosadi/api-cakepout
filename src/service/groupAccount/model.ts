@@ -2,11 +2,12 @@ import db from "../../config/database";
 import { DataTypes, Model, Optional } from "sequelize";
 import GroupAccountAttributes from "./dto";
 import Account from "../account/model";
+import { AccountAttributes } from "../account/dto";
 
 
 interface GroupAccountCreationAttributes extends Optional<GroupAccountAttributes, 'uuid'> { };
 interface GroupAccountInstance extends Model<GroupAccountAttributes, GroupAccountCreationAttributes>, GroupAccountAttributes {
-    accounts: any;
+    accounts: AccountAttributes[];
     created_at: Date;
     updated_at: Date;
 }

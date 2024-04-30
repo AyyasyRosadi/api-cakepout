@@ -4,6 +4,10 @@ import accountingYear from "./accountingYear";
 
 
 class MonthlyAccountCalculationHelper {
+    public async getOneMonthlyAccountCalculation(month: number, year: string, account_id: string): Promise<MonthlyAccountCalculationAttributes> {
+        const oneMonthlyAccountCalculation = await MonthlyAccountCalulation.findOne({ where: { month_index: month, accounting_year: year, account_id: account_id } })
+        return oneMonthlyAccountCalculation!
+    }
     public async getActiveOneMonthlyAccountCalculation(month: number, year: string, account_id: string): Promise<MonthlyAccountCalculationAttributes> {
         const oneMonthlyAccountCalculation = await MonthlyAccountCalulation.findOne({ where: { month_index: month, accounting_year: year, account_id: account_id, open: true } })
         return oneMonthlyAccountCalculation!

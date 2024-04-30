@@ -13,6 +13,9 @@ class TimeHelper {
     public formatUtc(date: Date): string {
         return moment(date).utc().format("YYYY-MM-DD HH:mm:ss")
     }
+    public dateOnly(date:Date):string{
+        return moment(date).format("YYYY-MM-DD")
+    }
     public date(date: string) {
         return moment(date).toDate()
     }

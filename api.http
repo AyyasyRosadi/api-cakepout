@@ -71,3 +71,9 @@ Content-Type: application/json
         }
     ]
 }
+
+###
+POST  {{host}}/journal/monthly-account/close-book/?month_index=3
+
+###
+GET {{host}}/journal/report/balance?month_index=4
