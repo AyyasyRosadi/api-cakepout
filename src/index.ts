@@ -1,23 +1,5 @@
-import express, { Application, json } from "express";
-import cors from "cors";
-import morgan from "morgan";
-import compression from "compression";
-import helmet from "helmet";
-import { Synchronize } from "./config/synchronize";
-import { cache } from "./middleware/cache";
-import routes from "./service";
-
-
-const app: Application = express();
-
-app.use(cache)
-app.use(json())
-app.use(cors())
-app.use(morgan('dev'))
-app.use(compression())
-app.use(helmet())
-
-app.use(routes)
+import { Synchronize } from "./config/synchronize"
+import app from "./server"
 
 
 app.listen(9191, async () => {
@@ -28,5 +10,9 @@ app.listen(9191, async () => {
         console.log(err)
     }
 })
+
+
+
+
 
 
