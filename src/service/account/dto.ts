@@ -7,6 +7,7 @@ export interface AccountAttributes {
     account_number: string;
     activity_id: string | null;
     group_account?:GroupAccountAttributes;
+
 }
 
 export interface AccountPaginationAttributes {

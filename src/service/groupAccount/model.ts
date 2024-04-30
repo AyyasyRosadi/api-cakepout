@@ -29,7 +29,7 @@ const GroupAccount = db.define<GroupAccountInstance>('group_accounts', {
     }
 })
 
-GroupAccount.hasMany(Account, { foreignKey: 'group_account_id' })
+GroupAccount.hasMany(Account, { foreignKey: 'group_account_id', as:"account" })
 Account.belongsTo(GroupAccount, { foreignKey: 'group_account_id' })
 
 export default GroupAccount
