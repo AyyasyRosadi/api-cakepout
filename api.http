@@ -63,13 +63,15 @@ Content-Type: application/json
     "harta":[
         {
             "value":10000,
-            "id":"ff87dec6-754a-483f-bf87-3417687cfb1e"
+            "id":"4846008b-cbcf-4cdf-a481-b1d7037141e0"
         },
         {
             "value":20000,
-            "id":"b95613de-ef94-4c5a-89c4-2e5bcdb7ef4e"
+            "id":"5259bf2c-f7ee-4150-a52c-43184bb5dd96"
         }
-    ]
+    ],
+    "kewajiban":[],
+    "modal":[]
 }
 
 ###

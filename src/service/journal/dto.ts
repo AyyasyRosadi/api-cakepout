@@ -40,8 +40,3 @@ export interface SaveAccountBeginingBalance {
     account_balancing: number | null;
     description: string;
 }
-
-export interface BalanceReportAttributes {
-    finalAmount: number;
-    accounts: Array<Omit<AccountAttributes,'group_account_id'|'activity_id'> & { amount: number }>
-}

@@ -17,6 +17,12 @@ class JournalValidator extends Validator {
         // check('to_account.*.reference').isString().withMessage('referensi tidak boleh kosong'),
         this.validate
     ]
+    public createBeginingBalance = ()=>[
+        check("harta").isArray({min:1}).withMessage("harta tidak boleh kosong"),
+        check("kewajiban").isArray({min:1}).withMessage("harta tidak boleh kosong"),
+        check("modal").isArray({min:1}).withMessage("harta tidak boleh kosong"),
+        this.validate
+    ]
 }
 
 export default new JournalValidator

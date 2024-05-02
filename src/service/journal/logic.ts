@@ -194,13 +194,12 @@ class JournalLogic extends LogicBase {
     }
 
     private async cekAccountBeginingBalanceBeforeSave(data: Array<AccountBegeningBalanceData>, ref: string, month_index: number, accounting_year: string, date: Date, status: string, description: string): Promise<boolean> {
-
         for (const i of data) {
             const cekExist = await monthlyAccountCalculation.getActiveOneMonthlyAccountCalculation(month_index, accounting_year, i.id)
             if (!cekExist) {
                 await monthlyAccountCalculation.createMonthlyAccountCalculation(month_index, accounting_year, i.id, i.value)
             }
-            Journal.create({
+            await Journal.create({
                 account_id: i.id,
                 amount: i.value,
                 accounting_year: accounting_year,
@@ -215,18 +214,17 @@ class JournalLogic extends LogicBase {
     }
 
     public async saveAccountBeginingBalance(data: SaveAccountBeginingBalance): Promise<messageAttribute<defaultMessage>> {
-        const ref = await journalReferenceNumber.generateReference()
-        const yearActive = await accountingYear.getActiveAccountingYear()
-        // if(data.account_balancing){
-
-        // }
-
-        const date = new Date()
-
-        this.cekAccountBeginingBalanceBeforeSave(data.harta, ref!, date.getMonth(), yearActive?.tahun!, date, 'D', data.description)
-        this.cekAccountBeginingBalanceBeforeSave(data.kewajiban, ref!, date.getMonth(), yearActive?.tahun!, date, 'K', data.description)
-        this.cekAccountBeginingBalanceBeforeSave(data.modal, ref!, date.getMonth(), yearActive?.tahun!, date, 'K', data.description)
-        return this.message(200, { message: "saved" })
+        try {
+            const ref = await journalReferenceNumber.generateReference()
+            const yearActive = await accountingYear.getActiveAccountingYear()
+            const date = new Date()
+            await this.cekAccountBeginingBalanceBeforeSave(data?.harta, ref!, date.getMonth(), yearActive?.tahun!, date, 'D', data.description)
+            await this.cekAccountBeginingBalanceBeforeSave(data?.kewajiban, ref!, date.getMonth(), yearActive?.tahun!, date, 'K', data.description)
+            await this.cekAccountBeginingBalanceBeforeSave(data?.modal, ref!, date.getMonth(), yearActive?.tahun!, date, 'K', data.description)
+            return this.message(200, { message: "saved" })
+        } catch {
+            return this.message(403,{message:"Gagal"})
+        }
     }
 
     private async closeMonthlyAccountCalculation(uuid: string): Promise<boolean> {

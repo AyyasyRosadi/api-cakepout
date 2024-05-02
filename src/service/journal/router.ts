@@ -61,22 +61,31 @@ class JournalRouter extends BaseRouter {
                 return res.status(generateJournal.status).json(generateJournal.data)
             }
         )
-        this.router.get('/account/account-begining-balance', async (req: Request, res: Response) => {
-            const getAccountBeginingBalance = await logic.getAccountBeginingBalance()
-            return res.status(getAccountBeginingBalance.status).json(getAccountBeginingBalance.data)
-        })
-        this.router.post('/account/account-begining-balance', async (req: Request, res: Response) => {
-            const saveAccountBeginingBalance = await logic.saveAccountBeginingBalance(req.body);
-            return res.status(saveAccountBeginingBalance.status).json(saveAccountBeginingBalance.data)
-        })
-        this.router.post('/disbursement-of-fund', async (req: Request, res: Response): Promise<Response> => {
-            const saveJournalDisbursementOfFund = await logic.generateJournalDisbursementOfFund(req.body.from_account, req.body.transaction_date, req.body?.description, req.body.id, req.body.ptk_id, req.body.receipient)
-            return res.status(saveJournalDisbursementOfFund.status).json(saveJournalDisbursementOfFund.data)
-        })
-        this.router.post('/monthly-account/close-book', async (req: Request, res: Response): Promise<Response> => {
-            const closeBook = await logic.closeBook(Number(req.query.month_index))
-            return res.status(closeBook.status).json(closeBook.data)
-        })
+        this.router.get('/account/account-begining-balance',
+            authentication.authenticationUser(SYSTEMCAKEPOUT, ALLROLE),
+            async (req: Request, res: Response) => {
+                const getAccountBeginingBalance = await logic.getAccountBeginingBalance()
+                return res.status(getAccountBeginingBalance.status).json(getAccountBeginingBalance.data)
+            })
+        this.router.post('/account/account-begining-balance',
+            // authentication.authenticationUser(SYSTEMCAKEPOUT, ALLROLE),
+            validator.createBeginingBalance(),
+            async (req: Request, res: Response) => {
+                const saveAccountBeginingBalance = await logic.saveAccountBeginingBalance(req.body);
+                return res.status(saveAccountBeginingBalance.status).json(saveAccountBeginingBalance.data)
+            })
+        this.router.post('/disbursement-of-fund',
+            authentication.authenticationUser(SYSTEMCAKEPOUT, ALLROLE),
+            async (req: Request, res: Response): Promise<Response> => {
+                const saveJournalDisbursementOfFund = await logic.generateJournalDisbursementOfFund(req.body.from_account, req.body.transaction_date, req.body?.description, req.body.id, req.body.ptk_id, req.body.receipient)
+                return res.status(saveJournalDisbursementOfFund.status).json(saveJournalDisbursementOfFund.data)
+            })
+        this.router.post('/monthly-account/close-book',
+            authentication.authenticationUser(SYSTEMCAKEPOUT, ALLROLE),
+            async (req: Request, res: Response): Promise<Response> => {
+                const closeBook = await logic.closeBook(Number(req.query.month_index))
+                return res.status(closeBook.status).json(closeBook.data)
+            })
     }
 
 }
