@@ -221,7 +221,7 @@ class JournalLogic extends LogicBase {
 
         // }
 
-        const date = time.getPresentTime()
+        const date = new Date()
 
         this.cekAccountBeginingBalanceBeforeSave(data.harta, ref!, date.getMonth(), yearActive?.tahun!, date, 'D', data.description)
         this.cekAccountBeginingBalanceBeforeSave(data.kewajiban, ref!, date.getMonth(), yearActive?.tahun!, date, 'K', data.description)

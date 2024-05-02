@@ -28,10 +28,6 @@ class TimeHelper {
     public dateUtc(date: Date): Date {
         return moment(date).utc().toDate()
     }
-    public getPresentTime(){
-        const date = new Date()
-        return date
-    }
 }
 
 export default new TimeHelper
