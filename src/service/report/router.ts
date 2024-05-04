@@ -6,7 +6,7 @@ import Logic from "./logic";
 class ReportRouter extends BaseRouter {
     routes(): void {
         this.router.get("/income-statement", async (req: Request, res: Response): Promise<Response> => {
-            const data = await Logic.incomeStatement(req.params.start, req.params.end)
+            const data = await Logic.incomeStatement(req.query.start, req.query.end)
             return res.status(200).json(data.data)
         })
         this.router.get("/cash-flow-statement", async (req: Request, res: Response): Promise<Response> => {

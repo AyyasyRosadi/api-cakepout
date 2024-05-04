@@ -21,6 +21,8 @@ class JournalValidator extends Validator {
         check("harta").isArray({min:1}).withMessage("harta tidak boleh kosong"),
         check("kewajiban").isArray({min:1}).withMessage("harta tidak boleh kosong"),
         check("modal").isArray({min:1}).withMessage("harta tidak boleh kosong"),
+        check("description").isString().withMessage('deskripsi tidak boleh kosong'),
+        check('account_balancing').isInt(),
         this.validate
     ]
 }

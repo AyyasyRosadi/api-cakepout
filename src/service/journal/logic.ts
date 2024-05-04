@@ -222,7 +222,8 @@ class JournalLogic extends LogicBase {
             await this.cekAccountBeginingBalanceBeforeSave(data?.kewajiban, ref!, date.getMonth(), yearActive?.tahun!, date, 'K', data.description)
             await this.cekAccountBeginingBalanceBeforeSave(data?.modal, ref!, date.getMonth(), yearActive?.tahun!, date, 'K', data.description)
             return this.message(200, { message: "saved" })
-        } catch {
+        } catch(e) {
+            console.log(e)
             return this.message(403,{message:"Gagal"})
         }
     }
