@@ -54,8 +54,8 @@ class AccountRouter extends BaseRouter {
             authentication.authenticationUser(SYSTEMCAKEPOUT,ALLROLE),
             validaor.create(),
             async (req: Request, res: Response): Promise<Response> => {
-                const { name, group_account, group_account_label, activity_id, group_account_name } = req.body
-                const addAccount = await logic.addAccount(name, group_account, group_account_label, activity_id, group_account_name)
+                const { name, group_account, group_account_label, activity_id, group_account_name,asset } = req.body
+                const addAccount = await logic.addAccount(name, group_account, group_account_label, activity_id, group_account_name,asset)
                 return res.status(addAccount.status).json(addAccount.data)
             }
         )

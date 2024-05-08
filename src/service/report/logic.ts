@@ -26,7 +26,7 @@ class Logic extends LogicBase {
                         model: Journal,
                         where: {
                             transaction_date: {
-                                $between: [start, end]
+                                [Op.between]: [start, end]
                             }
                         }
                     }
@@ -88,36 +88,36 @@ class Logic extends LogicBase {
         return journal
     }
 
-    private async getJournalByMounth(start:string, end:string): Promise<Array<JournalAttributes>> {
+    private async getJournalByMounth(start: string, end: string): Promise<Array<JournalAttributes>> {
         const journal = await Journal.findAll({
-            include:[
+            include: [
                 {
-                    model:Account,
+                    model: Account,
                 }
             ],
-            where:{
-               transaction_date:{
-                [Op.between]:[start, end]
-               }
+            where: {
+                transaction_date: {
+                    [Op.between]: [start, end]
+                }
             },
-            order:[['transaction_date', 'asc'], ['reference', 'asc']]
+            order: [['transaction_date', 'asc'], ['reference', 'asc']]
         })
         return journal
     }
 
-    public async cashFlowStatement():Promise<messageAttribute<Array<JournalAttributes>>>{
+    public async cashFlowStatement(): Promise<messageAttribute<Array<JournalAttributes>>> {
         const journal = await this.getJournalByMounth("2024-04-01", "2024-04-30")
         return this.message(200, journal)
     }
 
     private async restructureBalanceReport(accounts: AccountAttributes[], monthIndex: number, year: string, group_account_name: string): Promise<GroupBalanceReportAttributes> {
-        let finalResult:any = []
+        let finalResult: any = []
         let finalAmount = 0
 
         for (let i in accounts) {
             const oneMonthlyAccount = await monthlyAccountCalculation.getOneMonthlyAccountCalculation(monthIndex, year, accounts[i].uuid)
             if (oneMonthlyAccount && !oneMonthlyAccount?.open) {
-                finalResult.push({ uuid: accounts[i].uuid, account_number: accounts[i].account_number, name: accounts[i].name, amount: oneMonthlyAccount?.total, account:true })
+                finalResult.push({ uuid: accounts[i].uuid, account_number: accounts[i].account_number, name: accounts[i].name, amount: oneMonthlyAccount?.total, account: true })
                 finalAmount += Number(oneMonthlyAccount?.total)
             }
         }

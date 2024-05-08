@@ -74,9 +74,9 @@ class JournalLogic extends LogicBase {
         const allJournal = await Journal.findAll({ where: { account_id: accountId }, include: { model: Account } })
         return this.message(200, allJournal)
     }
-    private async createJournal(amount: number, status: "K" | "D", account_id: string, reference: string, transaction_date: Date, year: string, description: string): Promise<boolean> {
+    private async createJournal(amount: number, status: "K" | "D", account_id: string, reference: string, transaction_date: Date, year: string, description: string, closing: boolean): Promise<boolean> {
         try {
-            await Journal.create({ transaction_date, account_id: account_id, accounting_year: year, amount: amount, reference: reference, status: status, description, closing:false })
+            await Journal.create({ transaction_date, account_id: account_id, accounting_year: year, amount: amount, reference: reference, status: status, description, closing })
             return true
         } catch {
             return false
@@ -111,11 +111,11 @@ class JournalLogic extends LogicBase {
                         return this.message(403, { message: "Nilai akun sumber tidak mencukupi" })
                     }
                     await monthlyAccountCalculation.generateMonthlyAccountCalculation(transactionDate.getMonth(), activeYear!.tahun, to_account[i].account_id, to_account[i].amount)
-                    await this.createJournal(to_account[i].amount, 'D', to_account[i].account_id, referenceNumber!, transactionDate, activeYear!.tahun, description)
+                    await this.createJournal(to_account[i].amount, 'D', to_account[i].account_id, referenceNumber!, transactionDate, activeYear!.tahun, description, false)
                     finalAmount += to_account[i].amount
                 }
             }
-            await this.createJournal(finalAmount, 'K', oneAccount!.uuid, referenceNumber!, transactionDate, activeYear!.tahun, description)
+            await this.createJournal(finalAmount, 'K', oneAccount!.uuid, referenceNumber!, transactionDate, activeYear!.tahun, description, false)
             return this.message(200, { message: "Succes" })
         } catch (r) {
             return this.message(403, { message: "Gagal" })
@@ -140,7 +140,7 @@ class JournalLogic extends LogicBase {
             if (!checkMonthlyAccountCalculation) {
                 return this.message(403, { message: "Gagal" })
             }
-            await this.createJournal(amount, 'D', toAccount?.uuid!, referenceNumber!, transactionDate, year, description)
+            await this.createJournal(amount, 'D', toAccount?.uuid!, referenceNumber!, transactionDate, year, description, false)
             await this.approveWithDrawDisbursementOfFund(disbursement_of_fund_id, ptk_id, recepient)
             return this.message(200, { message: "Succes" })
         } catch (r) {
@@ -174,7 +174,7 @@ class JournalLogic extends LogicBase {
                 }
                 finalAmount += oneDisbursementOfFund.amount
             }
-            await this.createJournal(finalAmount, 'K', fromAccount!.uuid, referenceNumber!, transactionDate, activeYear!.tahun, description)
+            await this.createJournal(finalAmount, 'K', fromAccount!.uuid, referenceNumber!, transactionDate, activeYear!.tahun, description, false)
             return this.message(200, { message: "Succes" })
         } catch (r) {
             return this.message(403, { message: "Gagal" })
@@ -207,7 +207,7 @@ class JournalLogic extends LogicBase {
                 transaction_date: date,
                 status: status,
                 description: description,
-                closing:false
+                closing: false
             })
 
         }
@@ -223,9 +223,9 @@ class JournalLogic extends LogicBase {
             await this.cekAccountBeginingBalanceBeforeSave(data?.kewajiban, ref!, date.getMonth(), yearActive?.tahun!, date, 'K', data.description)
             await this.cekAccountBeginingBalanceBeforeSave(data?.modal, ref!, date.getMonth(), yearActive?.tahun!, date, 'K', data.description)
             return this.message(200, { message: "saved" })
-        } catch(e) {
+        } catch (e) {
             console.log(e)
-            return this.message(403,{message:"Gagal"})
+            return this.message(403, { message: "Gagal" })
         }
     }
 
@@ -253,8 +253,8 @@ class JournalLogic extends LogicBase {
                         } else if (i <= 3) {
                             await monthlyAccountCalculation.createMonthlyAccountCalculation(monthIndex + 1, activeYear!.tahun, grouping?.account[k]?.uuid, activeMonthlyAccountCalculation.total)
                             const reference = await journalReferenceNumber.generateReference()
-                            await this.createJournal(activeMonthlyAccountCalculation.total, 'K', activeMonthlyAccountCalculation.account_id, reference!, date, activeYear!.tahun, `Penutupan Akun bulan ${this.listMonth[monthIndex]}`)
-                            await this.createJournal(activeMonthlyAccountCalculation.total, 'D', activeMonthlyAccountCalculation.account_id, reference!, date, activeYear!.tahun, `Penutupan Akun bulan ${this.listMonth[monthIndex]}`)
+                            await this.createJournal(activeMonthlyAccountCalculation.total, 'K', activeMonthlyAccountCalculation.account_id, reference!, date, activeYear!.tahun, `Penutupan Akun bulan ${this.listMonth[monthIndex]}`, true)
+                            await this.createJournal(activeMonthlyAccountCalculation.total, 'D', activeMonthlyAccountCalculation.account_id, reference!, date, activeYear!.tahun, `Penutupan Akun bulan ${this.listMonth[monthIndex]}`, true)
                         }
                         await this.closeMonthlyAccountCalculation(activeMonthlyAccountCalculation?.uuid)
                     }
