@@ -76,7 +76,7 @@ class JournalLogic extends LogicBase {
     }
     private async createJournal(amount: number, status: "K" | "D", account_id: string, reference: string, transaction_date: Date, year: string, description: string): Promise<boolean> {
         try {
-            await Journal.create({ transaction_date, account_id: account_id, accounting_year: year, amount: amount, reference: reference, status: status, description })
+            await Journal.create({ transaction_date, account_id: account_id, accounting_year: year, amount: amount, reference: reference, status: status, description, closing:false })
             return true
         } catch {
             return false
@@ -206,7 +206,8 @@ class JournalLogic extends LogicBase {
                 reference: ref,
                 transaction_date: date,
                 status: status,
-                description: description
+                description: description,
+                closing:false
             })
 
         }

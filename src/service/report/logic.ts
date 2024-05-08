@@ -9,6 +9,9 @@ import account from "../../helper/account";
 import monthlyAccountCalculation from "../../helper/monthlyAccountCalculation";
 import { AccountAttributes } from "../account/dto";
 
+import { Op } from "sequelize";
+import { JournalAttributes } from "../journal/dto";
+
 class Logic extends LogicBase {
     private async getJournalByDate(groupAccount: number, start: string, end: string): Promise<Array<GroupAccountAttributes>> {
         const journal = await GroupAccount.findAll({
@@ -85,19 +88,36 @@ class Logic extends LogicBase {
         return journal
     }
 
-    public async cashFlowStatement(): Promise<any> {
-        const journal = await this.getJournal(1)
+    private async getJournalByMounth(start:string, end:string): Promise<Array<JournalAttributes>> {
+        const journal = await Journal.findAll({
+            include:[
+                {
+                    model:Account,
+                }
+            ],
+            where:{
+               transaction_date:{
+                [Op.between]:[start, end]
+               }
+            },
+            order:[['transaction_date', 'asc'], ['reference', 'asc']]
+        })
+        return journal
+    }
+
+    public async cashFlowStatement():Promise<messageAttribute<Array<JournalAttributes>>>{
+        const journal = await this.getJournalByMounth("2024-04-01", "2024-04-30")
         return this.message(200, journal)
     }
 
     private async restructureBalanceReport(accounts: AccountAttributes[], monthIndex: number, year: string, group_account_name: string): Promise<GroupBalanceReportAttributes> {
-        let finalResult = []
+        let finalResult:any = []
         let finalAmount = 0
 
         for (let i in accounts) {
             const oneMonthlyAccount = await monthlyAccountCalculation.getOneMonthlyAccountCalculation(monthIndex, year, accounts[i].uuid)
             if (oneMonthlyAccount && !oneMonthlyAccount?.open) {
-                finalResult.push({ uuid: accounts[i].uuid, account_number: accounts[i].account_number, name: accounts[i].name, amount: oneMonthlyAccount?.total })
+                finalResult.push({ uuid: accounts[i].uuid, account_number: accounts[i].account_number, name: accounts[i].name, amount: oneMonthlyAccount?.total, account:true })
                 finalAmount += Number(oneMonthlyAccount?.total)
             }
         }
@@ -125,6 +145,8 @@ class Logic extends LogicBase {
         return this.message(200, { harta: harta, kewajiban: kewajiban, modal: modal, labaRugi: (pendapatan.finalAmount - beban.finalAmount) })
 
     }
+
+
 }
 
 export default new Logic;

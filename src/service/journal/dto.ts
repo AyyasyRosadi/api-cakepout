@@ -10,6 +10,7 @@ export interface JournalAttributes {
     accounting_year: string;
     account_id: string;
     description: string;
+    closing:boolean;
 }
 
 export interface JournalPaginationAttributes {

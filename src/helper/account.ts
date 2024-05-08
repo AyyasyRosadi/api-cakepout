@@ -37,11 +37,11 @@ class AccountHelper {
         if (group_account_label === 0) {
             const lastGroupAccountLabel = await this.getLastLabelGroupAccountByGroup(group_account)
             const generateGroupAccount = await this.generateGroupAccount(group_account, lastGroupAccountLabel, group_account_name)
-            await Account.create({ name, group_account_id: generateGroupAccount.uuid!, activity_id, account_number: `${group_account}.${lastGroupAccountLabel}.1` })
+            await Account.create({ name, group_account_id: generateGroupAccount.uuid!, activity_id, account_number: `${group_account}.${lastGroupAccountLabel}.1`, asset:false })
         } else {
             const lastAccountNumber = await this.getLastAccountNumber(group_account, group_account_label)
             const oneGroupAccount = await this.getGroupAccount(group_account, group_account_label)
-            await Account.create({ account_number: `${group_account}.${group_account_label}.${lastAccountNumber}`, name, activity_id, group_account_id: oneGroupAccount?.uuid! })
+            await Account.create({ account_number: `${group_account}.${group_account_label}.${lastAccountNumber}`, name, activity_id, group_account_id: oneGroupAccount?.uuid!, asset:false })
         }
         return true
     }

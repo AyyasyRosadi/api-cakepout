@@ -6,6 +6,7 @@ export interface AccountAttributes {
     group_account_id: string;
     account_number: string;
     activity_id: string | null;
+    asset: boolean;
     group_account?:GroupAccountAttributes;
 
 }

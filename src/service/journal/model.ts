@@ -37,6 +37,9 @@ const Journal = db.define<JournalInstance>('journals', {
     },
     description:{
         type:DataTypes.STRING
+    },
+    closing:{
+        type:DataTypes.BOOLEAN
     }
 })
 
