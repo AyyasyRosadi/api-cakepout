@@ -28,6 +28,9 @@ class TimeHelper {
     public dateUtc(date: Date): Date {
         return moment(date).utc().toDate()
     }
+    public getLastDayOnMonth(date:string):Date{
+        return moment(date).endOf('month').toDate()   
+    }
 }
 
 export default new TimeHelper

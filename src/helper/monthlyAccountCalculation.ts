@@ -28,10 +28,12 @@ class MonthlyAccountCalculationHelper {
             return false
         }
     }
-    public async generateMonthlyAccountCalculation(month_index: number, accounting_year: string, account_id: string, total: number): Promise<MonthlyAccountCalculationAttributes> {
-        let oneMonthlyAccountCalculation = await this.getActiveOneMonthlyAccountCalculation(month_index, accounting_year, account_id)
+    public async generateMonthlyAccountCalculation(month_index: number, accounting_year: string, account_id: string, total: number): Promise<MonthlyAccountCalculationAttributes | boolean> {
+        let oneMonthlyAccountCalculation = await this.getOneMonthlyAccountCalculation(month_index, accounting_year, account_id)
         if (!oneMonthlyAccountCalculation) {
             await this.createMonthlyAccountCalculation(month_index, accounting_year, account_id, total)
+        } else if (!oneMonthlyAccountCalculation.open) {
+            return false
         } else {
             await this.updateTotalMonthlyAccountCalculation(total + oneMonthlyAccountCalculation.total, oneMonthlyAccountCalculation.uuid)
         }

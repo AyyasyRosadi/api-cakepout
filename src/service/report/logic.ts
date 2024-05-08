@@ -142,7 +142,11 @@ class Logic extends LogicBase {
         const modal = await this.getGroupBalanceReport(3, monthIndex)
         const pendapatan = await this.getGroupBalanceReport(4, monthIndex)
         const beban = await this.getGroupBalanceReport(5, monthIndex)
-        return this.message(200, { harta: harta, kewajiban: kewajiban, modal: modal, labaRugi: (pendapatan.finalAmount - beban.finalAmount) })
+        let labaBerjalan = 0
+        if (monthIndex !== 6) {
+            labaBerjalan = (await this.getGroupBalanceReport(4, monthIndex - 1)).finalAmount - (await this.getGroupBalanceReport(5, monthIndex - 1)).finalAmount
+        }
+        return this.message(200, { harta: harta, kewajiban: kewajiban, modal: modal, labaRugi: (pendapatan.finalAmount - beban.finalAmount) + labaBerjalan })
 
     }
 

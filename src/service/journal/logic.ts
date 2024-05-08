@@ -16,6 +16,7 @@ import { MonthlyAccountCalculationAttributes } from "../monthlyAccountCalculatio
 import DisbursementOfFunds from "../disbursementOfFund/model";
 import DetailOfActivityAttributes from "../detailOfActivity/dto";
 import MonthlyAccountCalulation from "../monthlyAccountCalculation/model";
+import moment from "moment";
 
 
 class JournalLogic extends LogicBase {
@@ -102,11 +103,14 @@ class JournalLogic extends LogicBase {
             const oneAccount = await this.getAccountByUuid(from_account)
             const transactionDate = time.date(transaction_date)
             const fromMonthlyAccountCalculation = await monthlyAccountCalculation.generateMonthlyAccountCalculation(transactionDate.getMonth(), activeYear!.tahun, oneAccount!.uuid, 0)
+            if (!fromMonthlyAccountCalculation) {
+                return this.message(403, { message: "Bulan sudah ditutup" })
+            }
             let finalAmount = 0
             const referenceNumber = await journalReferenceNumber.generateReference()
             for (let i in to_account) {
                 if (oneAccount!.group_account?.group_account === 1 || oneAccount!.group_account?.group_account === 4) {
-                    const checkfromMonthlyAccountCalculationAmount = await this.checkFromMonthlyAccountCalculationAmount(oneAccount!, fromMonthlyAccountCalculation, { amount: to_account[i].amount, account_id: to_account[i].account_id })
+                    const checkfromMonthlyAccountCalculationAmount = await this.checkFromMonthlyAccountCalculationAmount(oneAccount!, fromMonthlyAccountCalculation as MonthlyAccountCalculationAttributes, { amount: to_account[i].amount, account_id: to_account[i].account_id })
                     if (!checkfromMonthlyAccountCalculationAmount) {
                         return this.message(403, { message: "Nilai akun sumber tidak mencukupi" })
                     }
@@ -155,12 +159,15 @@ class JournalLogic extends LogicBase {
             const fromAccount = await this.getAccountByUuid(from_account)
             const transactionDate = time.date(transaction_date)
             const fromOneMonthlyAccountCalculation = await monthlyAccountCalculation.generateMonthlyAccountCalculation(transactionDate.getMonth(), activeYear!.tahun, fromAccount?.uuid!, 0)
+            if (!fromOneMonthlyAccountCalculation) {
+                return this.message(403, { message: "Bulan sudah ditutup" })
+            }
             const checkGroup = await disbursementOfFund.getDisbursementOfFundByGroupId(id, true)
             const referenceNumber = await journalReferenceNumber.generateReference()
             let finalAmount = 0
             if (checkGroup.length > 0) {
                 for (let i in checkGroup) {
-                    const createJournal = await this.createJournalDisbursementOfFund(fromAccount!, fromOneMonthlyAccountCalculation!, checkGroup[i]?.rincian_kegiatan!, transactionDate, activeYear!.tahun, checkGroup[i]?.uuid, checkGroup[i]?.amount, referenceNumber!, ptk_id, recepient, description)
+                    const createJournal = await this.createJournalDisbursementOfFund(fromAccount!, fromOneMonthlyAccountCalculation! as MonthlyAccountCalculationAttributes, checkGroup[i]?.rincian_kegiatan!, transactionDate, activeYear!.tahun, checkGroup[i]?.uuid, checkGroup[i]?.amount, referenceNumber!, ptk_id, recepient, description)
                     if (createJournal.status !== 200) {
                         return this.message(createJournal.status, createJournal.data)
                     }
@@ -168,7 +175,7 @@ class JournalLogic extends LogicBase {
                 }
             } else {
                 const oneDisbursementOfFund = await disbursementOfFund.getDisbursementOfFundByUuid(id)
-                const createJournal = await this.createJournalDisbursementOfFund(fromAccount!, fromOneMonthlyAccountCalculation, oneDisbursementOfFund?.rincian_kegiatan!, transactionDate!, activeYear!.tahun, oneDisbursementOfFund.uuid, oneDisbursementOfFund.amount, referenceNumber!, ptk_id, recepient, description)
+                const createJournal = await this.createJournalDisbursementOfFund(fromAccount!, fromOneMonthlyAccountCalculation! as MonthlyAccountCalculationAttributes, oneDisbursementOfFund?.rincian_kegiatan!, transactionDate!, activeYear!.tahun, oneDisbursementOfFund.uuid, oneDisbursementOfFund.amount, referenceNumber!, ptk_id, recepient, description)
                 if (createJournal.status !== 200) {
                     return this.message(createJournal.status, createJournal.data)
                 }
@@ -241,16 +248,17 @@ class JournalLogic extends LogicBase {
     public async closeBook(monthIndex: number): Promise<messageAttribute<defaultMessage>> {
         try {
             const activeYear = await accountingYear.getActiveAccountingYear()
-            const date = new Date()
+            const tahunDate = monthIndex + 1 >= 7 && monthIndex + 1 <= 12 ? activeYear?.tahun.split('/')[0] : activeYear?.tahun.split('/')[1]
+            const date = time.getLastDayOnMonth(`${tahunDate}-${monthIndex + 1 < 10 ? `0${monthIndex + 1}` : monthIndex + 1}-01`)
             for (let i = 1; i <= 5; i++) {
                 const group = await account.getGroupAccountByNumberGroup(i)
                 for (let j in group) {
                     let grouping = group[j] as GroupAccountAttributes & { account: AccountAttributes[] }
                     for (let k = 0; k < grouping.account.length; k++) {
                         let activeMonthlyAccountCalculation = await monthlyAccountCalculation.getActiveOneMonthlyAccountCalculation(monthIndex, activeYear!.tahun, grouping.account[k].uuid)
-                        if (!activeMonthlyAccountCalculation && i <= 3) {
+                        if (!activeMonthlyAccountCalculation && i <= 3 && monthIndex + 1 !== 6) {
                             await monthlyAccountCalculation.createMonthlyAccountCalculation(monthIndex + 1, activeYear!.tahun, grouping?.account[k]?.uuid, 0)
-                        } else if (i <= 3) {
+                        } else if (i <= 3 && monthIndex + 1 !== 6) {
                             await monthlyAccountCalculation.createMonthlyAccountCalculation(monthIndex + 1, activeYear!.tahun, grouping?.account[k]?.uuid, activeMonthlyAccountCalculation.total)
                             const reference = await journalReferenceNumber.generateReference()
                             await this.createJournal(activeMonthlyAccountCalculation.total, 'K', activeMonthlyAccountCalculation.account_id, reference!, date, activeYear!.tahun, `Penutupan Akun bulan ${this.listMonth[monthIndex]}`, true)
