@@ -63,22 +63,19 @@ Content-Type: application/json
     "harta":[
         {
             "value":10000,
-            "id":"4846008b-cbcf-4cdf-a481-b1d7037141e0"
+            "id":"ff87dec6-754a-483f-bf87-3417687cfb1e"
         },
         {
             "value":20000,
-            "id":"5259bf2c-f7ee-4150-a52c-43184bb5dd96"
+            "id":"b95613de-ef94-4c5a-89c4-2e5bcdb7ef4e"
         }
-    ],
-    "kewajiban":[],
-    "modal":[]
+    ]
 }
 
 ###
 POST  {{host}}/journal/monthly-account/close-book/?month_index=3
 
 ###
-GET {{host}}/report/balance-statement?month_index=4
-
+GET {{host}}/report/balance-statement?month_index=3
 ###
-GET {{host}}/report/income-statement?start=2024-05-01&end=2024-05-31
+GET {{host}}/report/cash-flow-statement

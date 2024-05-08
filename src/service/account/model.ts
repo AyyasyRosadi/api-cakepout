@@ -31,7 +31,11 @@ const Account = db.define<AccountInstance>('accounts', {
     activity_id: {
         type: DataTypes.STRING,
         allowNull: true
+    },
+    asset:{
+        type:DataTypes.BOOLEAN
     }
+   
 })
 
 DetailOfActivity.hasOne(Account, { foreignKey: 'activity_id', as: 'account' })
