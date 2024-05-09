@@ -136,17 +136,29 @@ class Logic extends LogicBase {
         }
         return { finalAmount, group: result }
     }
+    private async getLabaBerjalan(monthIndex: number): Promise<number> {
+        let finalLabaBerjalan = 0
+        if (monthIndex < 6) {
+            for (let i = 6; i < 12; i++) {
+                finalLabaBerjalan += (await this.getGroupBalanceReport(4, i)).finalAmount - (await this.getGroupBalanceReport(5, i)).finalAmount
+            }
+            for (let i = 0; i <= monthIndex; i++) {
+                finalLabaBerjalan += (await this.getGroupBalanceReport(4, i)).finalAmount - (await this.getGroupBalanceReport(5, i)).finalAmount
+            }
+        } else {
+            for (let i = 6; i <= monthIndex; i++) {
+                finalLabaBerjalan += (await this.getGroupBalanceReport(4, i)).finalAmount - (await this.getGroupBalanceReport(5, i)).finalAmount
+            }
+        }
+        return finalLabaBerjalan
+    }
+
     public async getBalanceSheetReport(monthIndex: number): Promise<messageAttribute<BalanceReportAttributes>> {
         const harta = await this.getGroupBalanceReport(1, monthIndex)
         const kewajiban = await this.getGroupBalanceReport(2, monthIndex)
         const modal = await this.getGroupBalanceReport(3, monthIndex)
-        const pendapatan = await this.getGroupBalanceReport(4, monthIndex)
-        const beban = await this.getGroupBalanceReport(5, monthIndex)
-        let labaBerjalan = 0
-        if (monthIndex !== 6) {
-            labaBerjalan = (await this.getGroupBalanceReport(4, monthIndex - 1)).finalAmount - (await this.getGroupBalanceReport(5, monthIndex - 1)).finalAmount
-        }
-        return this.message(200, { harta: harta, kewajiban: kewajiban, modal: modal, labaRugi: (pendapatan.finalAmount - beban.finalAmount) + labaBerjalan })
+        const labaRugi = await this.getLabaBerjalan(monthIndex)
+        return this.message(200, { harta: harta, kewajiban: kewajiban, modal: modal, labaRugi: labaRugi })
 
     }
 
