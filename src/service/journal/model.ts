@@ -8,7 +8,7 @@ interface JournalCreationAttributes extends Optional<JournalAttributes, 'uuid'> 
 interface JournalInstance extends Model<JournalAttributes, JournalCreationAttributes>, JournalAttributes {
     created_at: Date;
     updated_at: Date;
-    Account: AccountAttributes;
+    account: AccountAttributes;
 };
 
 const Journal = db.define<JournalInstance>('journals', {
