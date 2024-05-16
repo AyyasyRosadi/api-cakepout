@@ -11,7 +11,8 @@ export interface JournalAttributes {
     account_id: string;
     description: string;
     closing:boolean;
-    account?:AccountAttributes
+    automatic_generate:boolean;
+    account?:AccountAttributes;
 }
 
 export interface JournalPaginationAttributes {

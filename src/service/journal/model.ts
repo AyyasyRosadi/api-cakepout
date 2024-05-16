@@ -39,8 +39,14 @@ const Journal = db.define<JournalInstance>('journals', {
         type:DataTypes.STRING
     },
     closing:{
-        type:DataTypes.BOOLEAN
+        type:DataTypes.BOOLEAN,
+        defaultValue:false
+    },
+    automatic_generate:{
+        type:DataTypes.BOOLEAN,
+        defaultValue:false
     }
+    
 })
 
 Account.hasMany(Journal, { foreignKey: 'account_id' })
