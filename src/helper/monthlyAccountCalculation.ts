@@ -1,3 +1,5 @@
+import Account from "../service/account/model";
+import GroupAccount from "../service/groupAccount/model";
 import { MonthlyAccountCalculationAttributes } from "../service/monthlyAccountCalculation/dto";
 import MonthlyAccountCalulation from "../service/monthlyAccountCalculation/model";
 import accountingYear from "./accountingYear";
@@ -43,6 +45,36 @@ class MonthlyAccountCalculationHelper {
         const activeYear = await accountingYear.getActiveAccountingYear()
         const allMonthlyAccountCalculation = await MonthlyAccountCalulation.findAll({ where: { account_id, accounting_year: activeYear!.tahun } })
         return allMonthlyAccountCalculation
+    }
+
+    public async getMonthlyAccountCalculationsByGroupAndIndexMonth(group:number, monthIndex:number, asset:boolean, close:boolean):Promise<any>{
+        const groupAccount = await GroupAccount.findAll({
+            where:{
+                group_account:group
+            },
+            order:[
+                [{model:Account, as:"account"}, "account_number", "asc"]
+            ],
+            include:[
+                {
+                    model:Account,
+                    as:"account",
+                    where:{
+                        asset:asset,
+                    },
+                    include:[
+                        {
+                            model:MonthlyAccountCalulation,
+                            where:{
+                                month_index:monthIndex,
+                                open:close
+                            }
+                        }
+                    ]
+                }
+            ]
+        })
+        return groupAccount
     }
 }
 
