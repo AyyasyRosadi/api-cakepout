@@ -109,7 +109,7 @@ class Logic extends LogicBase {
     }
 
     private async filterJournal(start: string, end:string):Promise<Array<any>>{
-        const journal:Array<JournalAttributes> = await this.getJournalByMounth(start, end, false, true)
+        const journal:Array<JournalAttributes> = await this.getJournalByMounth(start, end, true, true)
         let reference = "";
         let kas  = {name:"", nominal:0, account:"", status:"", references:"", id:""}
         let operationalKas = []
