@@ -1,12 +1,13 @@
-import { FindAttributeOptions, Order } from "sequelize";
+// import {  Order } from "sequelize";
 import { LogicBase, defaultMessage, messageAttribute } from "../logicBase";
 import AccountingYearAttributes from "./dto";
 import AccountingYear from "./model";
 
 
 class AccountingYearLogic extends LogicBase {
-    private attributes: FindAttributeOptions = ['tahun', 'active']
-    private order: Order = [['active', 'DESC'], ['createdAt', 'DESC']]
+    private attributes:Array<string> = ['tahun', 'active']
+    // private order: Order = [['active', 'DESC'], ['createdAt', 'DESC']]
+    private order:Array<Array<string>|any> = [['active', 'DESC'], ['createdAt', 'DESC']]
 
     public async getAllAccountYear(): Promise<messageAttribute<Array<AccountingYearAttributes>>> {
         const allAccountingYear = await AccountingYear.findAll({ attributes: this.attributes, order: this.order })
