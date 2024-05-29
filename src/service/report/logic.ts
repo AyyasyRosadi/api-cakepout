@@ -6,10 +6,11 @@ import GroupAccountAttributes from "../groupAccount/dto";
 import { BalanceReportAttributes, GroupBalanceReportAttributes, listOfAccount } from "./dto";
 import accountingYear from "../../helper/accountingYear";
 import account from "../../helper/account";
-import monthlyAccountCalculation from "../../helper/monthlyAccountCalculation";
 import { AccountAttributes } from "../account/dto";
-import {  Op } from "sequelize";
+import { Op } from "sequelize";
 import { JournalAttributes } from "../journal/dto";
+import Ledger from "../ledger/model";
+import ledger from "../../helper/ledger";
 
 class Logic extends LogicBase {
     private async getJournalByDate(groupAccount: number, start: string, end: string): Promise<Array<GroupAccountAttributes>> {
@@ -87,13 +88,13 @@ class Logic extends LogicBase {
         return journal
     }
 
-    private async getJournalByMounth(start: string, end: string, asset:boolean, closing:boolean): Promise<Array<JournalAttributes>> {
+    private async getJournalByMounth(start: string, end: string, asset: boolean, closing: boolean): Promise<Array<JournalAttributes>> {
         const journal = await Journal.findAll({
             include: [
                 {
                     model: Account,
-                    where:{
-                        asset:asset
+                    where: {
+                        asset: asset
                     }
                 }
             ],
@@ -101,41 +102,41 @@ class Logic extends LogicBase {
                 transaction_date: {
                     [Op.between]: [start, end]
                 },
-                closing:closing
+                closing: closing
             },
             order: [['transaction_date', 'asc'], ['reference', 'asc']]
         })
         return journal
     }
 
-    private async filterJournal(start: string, end:string):Promise<Array<any>>{
-        const journal:Array<JournalAttributes> = await this.getJournalByMounth(start, end, true, true)
+    private async filterJournal(start: string, end: string): Promise<Array<any>> {
+        const journal: Array<JournalAttributes> = await this.getJournalByMounth(start, end, true, true)
         let reference = "";
-        let kas  = {name:"", nominal:0, account:"", status:"", references:"", id:""}
+        let kas = { name: "", nominal: 0, account: "", status: "", references: "", id: "" }
         let operationalKas = []
-        let collectOperationalKas:any = []
-        for(let i=0; i< journal.length;i++){
+        let collectOperationalKas: any = []
+        for (let i = 0; i < journal.length; i++) {
             let accountSplit = journal[i].account!.account_number.split(".")
             let journal_ = journal[i]
-            if(journal_.reference!==reference){
-                if(accountSplit[0]==="1"){
-                    if(operationalKas.length>=2){
+            if (journal_.reference !== reference) {
+                if (accountSplit[0] === "1") {
+                    if (operationalKas.length >= 2) {
                         collectOperationalKas.push(operationalKas)
-                        operationalKas= []
-                    }else{
+                        operationalKas = []
+                    } else {
                         operationalKas = []
                     }
                     reference = journal_.reference
                     kas.name = journal_.account!.name
                     kas.nominal = journal_.amount
                     kas.status = journal_.status
-                    kas.account=journal_.account!.name
+                    kas.account = journal_.account!.name
                     kas.references = journal_.reference
                     kas.id = journal_.uuid
                     operationalKas.push(kas)
                 }
-            }else{
-                if(accountSplit[0]==="1"){
+            } else {
+                if (accountSplit[0] === "1") {
                     kas.name = journal_.account!.name
                     kas.nominal = journal_.amount
                     kas.status = journal_.status
@@ -145,49 +146,76 @@ class Logic extends LogicBase {
                     operationalKas.push(kas)
                 }
             }
-           kas  = {name:"", nominal:0, account:"", status:"", references:"", id:""}
+            kas = { name: "", nominal: 0, account: "", status: "", references: "", id: "" }
         }
         return collectOperationalKas
     }
 
-    private async groupNameCashFlow(name:string, data:Array<any>){
-        
-        let account = {name, accounts:[], total:0}
-        let totalMonthlyAccountCalculation = 0
-        let accounts:any = []
-        for(const d in data){
+    private async groupNameCashFlow(name: string, data: Array<any>) {
+
+        let account = { name, accounts: [], total: 0 }
+        let totalLedger = 0
+        let accounts: any = []
+        for (const d in data) {
             let justAccount = data[d].account
-            for(const e in justAccount){
-                let account_ = {account_number:"", account_name:"", total:0}
-                account_.account_name=justAccount[e].name
-                account_.account_number=justAccount[e].account_number
-                if(justAccount[e].monthly_account_calculations.length!=0){
+            for (const e in justAccount) {
+                let account_ = { account_number: "", account_name: "", total: 0 }
+                account_.account_name = justAccount[e].name
+                account_.account_number = justAccount[e].account_number
+                if (justAccount[e].monthly_account_calculations.length != 0) {
                     account_.total = justAccount[e].monthly_account_calculations[0].total
-                    totalMonthlyAccountCalculation += justAccount[e].monthly_account_calculations[0].total
+                    totalLedger += justAccount[e].monthly_account_calculations[0].total
                 }
                 accounts.push(account_)
             }
-            
-            
+
+
         }
-        account.accounts= accounts
-        account.total = totalMonthlyAccountCalculation
+        account.accounts = accounts
+        account.total = totalLedger
         return account
-        
+
     }
-
+    private async getLedgerByGroupAndMonthIndex(group_account: number, month_index: number, asset: boolean, open: boolean): Promise<GroupAccountAttributes[]> {
+        const allLedger = await GroupAccount.findAll({
+            where: {
+                group_account
+            },
+            order: [
+                [{ model: Account, as: 'account' }, 'account_number', 'asc']
+            ],
+            include: [
+                {
+                    model: Account,
+                    as: 'account',
+                    where: {
+                        asset
+                    },
+                    include: [
+                        {
+                            model: Ledger,
+                            where: {
+                                month_index,
+                                open
+                            }
+                        }
+                    ]
+                }
+            ]
+        })
+        return allLedger
+    }
     public async cashFlowStatement(): Promise<messageAttribute<any>> {
-        const saldoAwal = await monthlyAccountCalculation.getMonthlyAccountCalculationsByGroupAndIndexMonth(1,4, false, false)
+        const saldoAwal = await this.getLedgerByGroupAndMonthIndex(1, 4, false, false)
         const saldoAwalProcess = await this.groupNameCashFlow("Saldo Awal", saldoAwal)
-        const operasionalPendapatan = await monthlyAccountCalculation.getMonthlyAccountCalculationsByGroupAndIndexMonth(4,5, false, false)
+        const operasionalPendapatan = await this.getLedgerByGroupAndMonthIndex(4, 5, false, false)
         const operasionalPendapatanProcess = await this.groupNameCashFlow("Operasional Pendapatan", operasionalPendapatan)
-        const operasionalPengeluaran = await monthlyAccountCalculation.getMonthlyAccountCalculationsByGroupAndIndexMonth(5,5, false, false)
+        const operasionalPengeluaran = await this.getLedgerByGroupAndMonthIndex(5, 5, false, false)
         const operasionalPengeluaranProcess = await this.groupNameCashFlow("Operasional Pengeluaran", operasionalPengeluaran)
-        const pendanaan = await monthlyAccountCalculation.getMonthlyAccountCalculationsByGroupAndIndexMonth(3,5, false, false)
+        const pendanaan = await this.getLedgerByGroupAndMonthIndex(3, 5, false, false)
         const pendanaanProcess = await this.groupNameCashFlow("Pendanaan", pendanaan)
-        const ok = [saldoAwalProcess, [{name:"Operasional", pendapatan:operasionalPendapatanProcess, pengeluaran:operasionalPengeluaranProcess}], pendanaanProcess]
+        const ok = [saldoAwalProcess, [{ name: "Operasional", pendapatan: operasionalPendapatanProcess, pengeluaran: operasionalPengeluaranProcess }], pendanaanProcess]
         const filter = await this.filterJournal('2024-05-01', '2024-05-31')
-
         return this.message(200, filter)
     }
 
@@ -196,10 +224,10 @@ class Logic extends LogicBase {
         let finalAmount = 0
 
         for (let i in accounts) {
-            const oneMonthlyAccount = await monthlyAccountCalculation.getOneMonthlyAccountCalculation(monthIndex, year, accounts[i].uuid)
-            if (oneMonthlyAccount && !oneMonthlyAccount?.open) {
-                finalResult.push({ uuid: accounts[i].uuid, account_number: accounts[i].account_number, name: accounts[i].name, amount: oneMonthlyAccount?.total, account: true })
-                finalAmount += Number(oneMonthlyAccount?.total)
+            const oneLedger = await ledger.getOneLedger(monthIndex, year, accounts[i].uuid)
+            if (oneLedger && !oneLedger?.open) {
+                finalResult.push({ uuid: accounts[i].uuid, account_number: accounts[i].account_number, name: accounts[i].name, amount: oneLedger?.total, account: true })
+                finalAmount += Number(oneLedger?.total)
             }
         }
         return { group_account_name, finalAmount, accounts: finalResult }

@@ -7,7 +7,7 @@ import Authentication from "./authentication/router"
 import AccountingYear from "./accountingYear/router";
 import GroupAccount from "./groupAccount/router";
 import Institution from "./institution/router";
-import MonthlyAccountCalulation from "./monthlyAccountCalculation/router";
+// import MonthlyAccountCalulation from "./monthlyAccountCalculation/router";
 import Journal from "./journal/router";
 import SharingProgram from "./sharingProgram/router";
 import Report from "./report/router"
@@ -22,7 +22,7 @@ serviceRouter.use('/account', Account)
 serviceRouter.use('/accounting-year', AccountingYear)
 serviceRouter.use('/group-account', GroupAccount)
 serviceRouter.use('/institution', Institution)
-serviceRouter.use('/monthly-account-calculation', MonthlyAccountCalulation)
+// serviceRouter.use('/monthly-account-calculation', MonthlyAccountCalulation)
 serviceRouter.use('/journal', Journal)
 serviceRouter.use('/sharing-program',SharingProgram)
 serviceRouter.use('/report', Report)

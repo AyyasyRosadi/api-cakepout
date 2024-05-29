@@ -24,6 +24,7 @@ class AccountLogic extends LogicBase {
             limit: size,
             offset: offset,
             include: this.include,
+            order: [['account_number', 'asc']]
         })
         return this.message(200, {
             page,
@@ -57,9 +58,9 @@ class AccountLogic extends LogicBase {
         const oneAccount = await Account.findOne({ where: { account_number }, include: this.include })
         return this.message(200, oneAccount)
     }
-    public async addAccount(name: string, group_account: number, group_account_label: number, activity_id: string | null, group_account_name: string,asset:boolean): Promise<messageAttribute<defaultMessage>> {
+    public async addAccount(name: string, group_account: number, group_account_label: number, activity_id: string | null, group_account_name: string, asset: boolean): Promise<messageAttribute<defaultMessage>> {
         try {
-            await account.generateAccount(name, group_account, group_account_label, activity_id, group_account_name,asset)
+            await account.generateAccount(name, group_account, group_account_label, activity_id, group_account_name, asset)
             return this.message(200, { message: "Succes" })
         } catch (_) {
             return this.message(403, { message: "Gagal" })

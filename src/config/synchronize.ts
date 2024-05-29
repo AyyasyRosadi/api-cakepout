@@ -18,6 +18,7 @@ import UserSystem from "../service/userSystem/model"
 import User from "../service/user/model"
 import db from "./database"
 import SharingProgram from "../service/sharingProgram/model"
+import Ledger from "../service/ledger/model"
 
 export const Synchronize = async () => {
     try {
@@ -34,12 +35,13 @@ export const Synchronize = async () => {
         await Activity.sync()
         await SharingProgram.sync()
         await BlacklistToken.sync()
-        await DetailOfActivity.sync({alter:true})
+        await DetailOfActivity.sync({ alter: true })
         await JournalReferenceNumber.sync({ alter: true })
         await GroupAccount.sync({ alter: true })
         await Account.sync({ alter: true })
         await Journal.sync({ alter: true })
         await MonthlyAccountCalulation.sync({ alter: true })
+        await Ledger.sync({ alter: true })
         await DisbursementOfFunds.sync({ alter: true })
     } catch (err) {
         throw err

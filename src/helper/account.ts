@@ -2,7 +2,7 @@ import { AccountAttributes } from "../service/account/dto"
 import Account from "../service/account/model"
 import GroupAccountAttributes from "../service/groupAccount/dto"
 import GroupAccount from "../service/groupAccount/model"
-import MonthlyAccountCalulation from "../service/monthlyAccountCalculation/model"
+import Ledger from "../service/ledger/model"
 
 class AccountHelper {
     private async getLastLabelGroupAccountByGroup(group_account: number): Promise<number> {
@@ -59,7 +59,7 @@ class AccountHelper {
                 as: "account",
                 attributes: ['uuid', 'name', 'account_number'],
                 include: [{
-                    model: MonthlyAccountCalulation,
+                    model: Ledger,
                     attributes: ['uuid', 'total', 'month_index'],
                     order: [["accounting_year", "ASC"], ["month_index", "ASC"],]
                 }]
