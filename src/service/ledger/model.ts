@@ -29,7 +29,7 @@ const Ledger = db.define<LedgerInstance>('ledgers', {
     }
 })
 
-Account.hasMany(Ledger, { foreignKey: 'account_id' })
+Account.hasOne(Ledger, { foreignKey: 'account_id' })
 Ledger.belongsTo(Account, { foreignKey: 'account_id' })
 
 export default Ledger
