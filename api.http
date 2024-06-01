@@ -82,4 +82,4 @@ GET {{host}}/report/cash-flow-statement
 ###
 GET {{host}}/ledger
 ###
-GET {{host}}/ledger/detail?id=a915b7ea-a4bd-4037-bf19-29df6c34bbf6&month=1
+GET {{host}}/ledger/detail?id=a915b7ea-a4bd-4037-bf19-29df6c34bbf6&month=4

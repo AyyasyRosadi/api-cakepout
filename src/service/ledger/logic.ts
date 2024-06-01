@@ -39,10 +39,6 @@ class LedgerLogic extends LogicBase{
         const timeSplit = time.dateOnly(new Date()).split("-")
         let start = `${timeSplit[0]}-0${month}-01`
         let end = `${timeSplit[0]}-0${month}-30`
-        console.log("=====")
-        console.log(start)
-        console.log(end)
-        console.log("=====")
         try{
             let account = await Account.findAll({
                 where:{
@@ -60,19 +56,14 @@ class LedgerLogic extends LogicBase{
                         attributes:['reference', 'transaction_date', 'amount', 'status']
                     }
                 ],
-                // order:[[
-                //     {model:Journal, as:'journals'}, 'transaction_date', 'DESC'
-                // ]]
+                order:[[
+                    {model:Journal, as:'journals'}, 'transaction_date', 'DESC'
+                ]]
                 
             })
             
             return this.message(200, account);
         }catch(err){
-           
-        console.log("=====")
-        console.log(start)
-        console.log(end)
-        console.log("=====")
             return this.message(501, {message:"uups something wrong"});
         }
         
