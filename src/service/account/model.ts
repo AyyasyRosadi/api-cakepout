@@ -1,9 +1,10 @@
-import { DataTypes, Model, Optional } from "sequelize";
+import {  DataTypes, Model, Optional } from "sequelize";
 import db from "../../config/database";
 import { AccountAttributes } from "./dto";
 import DetailOfActivity from "../detailOfActivity/model";
 import DetailOfActivityAttributes from "../detailOfActivity/dto";
 import { JournalAttributes } from "../journal/dto";
+import Journal from "../journal/model";
 
 interface AccountCreationsAttributes extends Optional<AccountAttributes, 'uuid' | 'activity_id'> { };
 interface AccountInstance extends Model<AccountAttributes, AccountCreationsAttributes>, AccountAttributes {
@@ -38,8 +39,10 @@ const Account = db.define<AccountInstance>('accounts', {
    
 })
 
-DetailOfActivity.hasOne(Account, { foreignKey: 'activity_id', as: 'account' })
+DetailOfActivity.hasMany(Account, { foreignKey: 'activity_id', as: 'account' })
 Account.belongsTo(DetailOfActivity, { foreignKey: 'activity_id', as: 'detail_of_activity' })
+// Account.hasMany(Journal, {foreignKey:"account_id"})
+// Journal.belongsTo(Account, {foreignKey:"account_id"})
 
 
 export default Account
