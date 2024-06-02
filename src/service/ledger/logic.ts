@@ -35,10 +35,8 @@ class LedgerLogic extends LogicBase{
         return this.message(200, ledger)
     }
     public async detail(uuid_account:string, month:number):Promise<messageAttribute<Array<AccountAttributes>| defaultMessage>>{
-        //split time require by years
-        const timeSplit = time.dateOnly(new Date()).split("-")
-        let start = `${timeSplit[0]}-0${month}-01`
-        let end = `${timeSplit[0]}-0${month}-31`
+        let arrayStartEndDate = await time.getDateStartEnd(month)
+        // console.log(arrayStartEndDate)
         try{
             let account = await Account.findAll({
                 where:{
@@ -49,8 +47,8 @@ class LedgerLogic extends LogicBase{
                         model:Journal,
                         where:{
                             transaction_date:{
-                                [Op.gte]:start,
-                                [Op.lte]: end
+                                [Op.gte]:arrayStartEndDate[0],
+                                [Op.lte]: arrayStartEndDate[1]
                             }
                         },
                         attributes:['reference', 'transaction_date', 'amount', 'status']
@@ -64,6 +62,7 @@ class LedgerLogic extends LogicBase{
             
             return this.message(200, account);
         }catch(err){
+            console.log(err)
             return this.message(501, {message:"uups something wrong"});
         }
         

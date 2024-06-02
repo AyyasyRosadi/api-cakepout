@@ -1,4 +1,6 @@
 import moment from "moment-timezone";
+import accountingYear from "./accountingYear"
+
 
 class TimeHelper {
     public formatTime(date: Date): string {
@@ -31,7 +33,20 @@ class TimeHelper {
     public getLastDayOnMonth(date:string):Date{
         return moment(date).endOf('month').toDate()   
     }
-    
+
+    public async getDateStartEnd(month: number):Promise<Array<string>>{
+        let accountingYear_ = await  accountingYear.getActiveAccountingYear()
+        let yearSplit = accountingYear_!.tahun.split("/")
+        let month_ = month.toString().length===1?`0${month}`:month.toString()
+        let year:string;
+        let date = new Date(parseInt(yearSplit[1]), month, 0).getDate()
+        if(month<=6){
+           year = yearSplit[1]
+        }else{
+            year = yearSplit[0]
+        }
+        return [`${year}-${month_}-01`, `${year}-${month_}-${date}`]
+    }
 }
 
 export default new TimeHelper
