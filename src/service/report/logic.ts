@@ -3,18 +3,13 @@ import GroupAccount from "../groupAccount/model";
 import Account from "../account/model";
 import Journal from "../journal/model";
 import GroupAccountAttributes from "../groupAccount/dto";
-import {
-  BalanceReportAttributes,
-  GroupBalanceReportAttributes,
-  listOfAccount,
-} from "./dto";
+import {BalanceReportAttributes,GroupBalanceReportAttributes,GroupingCashFlow,listOfAccount, resultCashFlow,} from "./dto";
 import accountingYear from "../../helper/accountingYear";
 import account from "../../helper/account";
 import { AccountAttributes } from "../account/dto";
-import sequelize, { Op } from "sequelize";
+import  { Op } from "sequelize";
 import ledger from "../../helper/ledger";
 import Ledger from "../ledger/model";
-import time from "../../helper/time";
 
 class Logic extends LogicBase {
   private async getJournalByDate(
@@ -101,7 +96,7 @@ class Logic extends LogicBase {
    *  3. Funding
    */
 
-  private async getGroupAccount(groupAccount: number, month: Array<number>, asset:boolean): Promise<any> {
+  private async getGroupAccount(groupAccount: number, month: Array<number>, asset:boolean): Promise<Array<GroupAccountAttributes>> {
     let incluedes:any = [
         {
           model: Account,
@@ -146,12 +141,12 @@ class Logic extends LogicBase {
     return total;
   }
 
-  private groupingCashFlow( data:any):any{
+  private groupingCashFlow(data:Array<GroupAccountAttributes>):Array<GroupingCashFlow>{
     let result= []
     for(let d in data){
         let account = data![d].account!
         for(let a in account){
-            result.push({name:account![a].name, total:account![a].ledgers[0].total})
+            result.push({name:account![a].name, total:account![a].ledgers![0].total})
         }
     }
 
@@ -160,14 +155,14 @@ class Logic extends LogicBase {
 
 
  
-  public async cashFlowStatement(month: number): Promise<any> {
+  public async cashFlowStatement(month: number): Promise<messageAttribute<resultCashFlow>> {
     let arrayIndexMonth = Array.from({ length: month }, (_, i) => i);
     const totalAsset =  this.calculateGroup(await this.getGroupAccount(1, arrayIndexMonth, false));
-    const income =  this.groupingCashFlow(await this.getGroupAccount(4, [month-1], false))
-    const cost =  this.groupingCashFlow(await this.getGroupAccount(5, [month-1], false))
-    const investation = this.groupingCashFlow(await this.getGroupAccount(1,[month-1], true))
-    const funding = this.groupingCashFlow(await this.getGroupAccount(3, [month-1], false))
-    const result = {
+    const income:Array<GroupingCashFlow> =  this.groupingCashFlow(await this.getGroupAccount(4, [month-1], false))
+    const cost:Array<GroupingCashFlow> =  this.groupingCashFlow(await this.getGroupAccount(5, [month-1], false))
+    const investation:Array<GroupingCashFlow> = this.groupingCashFlow(await this.getGroupAccount(1,[month-1], true))
+    const funding:Array<GroupingCashFlow> = this.groupingCashFlow(await this.getGroupAccount(3, [month-1], false))
+    const result:resultCashFlow = {
         operational:{
             income:income,
             cost:cost,
@@ -176,8 +171,6 @@ class Logic extends LogicBase {
         funding:funding
     }
 
-    
-    
     return this.message(200, result);
   }
 

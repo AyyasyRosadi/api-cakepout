@@ -27,3 +27,17 @@ export interface BalanceReportAttributes {
     modal: { finalAmount: number, group: GroupBalanceReportAttributes[] };
     labaRugi: number;
 }
+
+export type GroupingCashFlow = {
+    name:string,
+    total:number
+}
+
+export type resultCashFlow = {
+    operational:{
+        income:Array<GroupingCashFlow>,
+        cost:Array<GroupingCashFlow>
+    },
+    investation: Array<GroupingCashFlow>,
+    funding:Array<GroupingCashFlow>
+}
