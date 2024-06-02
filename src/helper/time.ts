@@ -31,6 +31,7 @@ class TimeHelper {
     public getLastDayOnMonth(date:string):Date{
         return moment(date).endOf('month').toDate()   
     }
+    
 }
 
 export default new TimeHelper
