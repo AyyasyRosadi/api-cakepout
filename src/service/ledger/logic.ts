@@ -38,7 +38,7 @@ class LedgerLogic extends LogicBase{
         //split time require by years
         const timeSplit = time.dateOnly(new Date()).split("-")
         let start = `${timeSplit[0]}-0${month}-01`
-        let end = `${timeSplit[0]}-0${month}-30`
+        let end = `${timeSplit[0]}-0${month}-31`
         try{
             let account = await Account.findAll({
                 where:{
