@@ -80,7 +80,7 @@ class JournalRouter extends BaseRouter {
                 const saveJournalDisbursementOfFund = await logic.generateJournalDisbursementOfFund(req.body.from_account, req.body.transaction_date, req.body?.description, req.body.id, req.body.ptk_id, req.body.receipient)
                 return res.status(saveJournalDisbursementOfFund.status).json(saveJournalDisbursementOfFund.data)
             })
-        this.router.post('/monthly-account/close-book',
+        this.router.post('/ledger/close-book',
             authentication.authenticationUser(SYSTEMCAKEPOUT, ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const closeBook = await logic.closeBook(Number(req.query.month_index))

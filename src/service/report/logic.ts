@@ -162,9 +162,9 @@ class Logic extends LogicBase {
                 let account_ = { account_number: "", account_name: "", total: 0 }
                 account_.account_name = justAccount[e].name
                 account_.account_number = justAccount[e].account_number
-                if (justAccount[e].monthly_account_calculations.length != 0) {
-                    account_.total = justAccount[e].monthly_account_calculations[0].total
-                    totalLedger += justAccount[e].monthly_account_calculations[0].total
+                if (justAccount[e].ledger.length != 0) {
+                    account_.total = justAccount[e].ledger[0].total
+                    totalLedger += justAccount[e].ledger[0].total
                 }
                 accounts.push(account_)
             }
