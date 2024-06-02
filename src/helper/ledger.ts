@@ -6,6 +6,17 @@ import Ledger from "../service/ledger/model";
 
 
 class LedgerHelper {
+    public async getOneLedgerByOpenClosed(accounting_year: string,month_index:number, account_id: string): Promise<LedgerAttributes> {
+        const allLedger = await Ledger.findOne({
+            where: {
+                accounting_year,
+                account_id,
+                month_index,
+                open: false
+            }
+        })
+        return allLedger!
+    }
     public async getOneLedger(month_index: number, accounting_year: string, account_id: string): Promise<LedgerAttributes> {
         const oneLadger = await Ledger.findOne({ where: { month_index, accounting_year, account_id } })
         return oneLadger!

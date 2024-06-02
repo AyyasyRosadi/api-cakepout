@@ -22,14 +22,15 @@ const Ledger = db.define<LedgerInstance>('ledgers', {
         type: DataTypes.INTEGER
     },
     open: {
-        type: DataTypes.BOOLEAN
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
     },
     total: {
         type: DataTypes.BIGINT
     }
 })
 
-Account.hasOne(Ledger, { foreignKey: 'account_id' })
+Account.hasMany(Ledger, { foreignKey: 'account_id' })
 Ledger.belongsTo(Account, { foreignKey: 'account_id' })
 
 export default Ledger

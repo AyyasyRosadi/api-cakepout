@@ -86,9 +86,10 @@ class JournalLogic extends LogicBase {
         return oneAccount!
     }
     private async checkFromLedgerAmount(fromAccount: AccountAttributes, fromLedger: LedgerAttributes, toAccount: { amount: number, account_id: string }): Promise<boolean> {
-        if (fromAccount!.group_account?.group_account === 1 && (fromLedger.total - toAccount.amount) < 0) {
-            return false
-        } else if (fromAccount!.group_account?.group_account === 1) {
+        // if (fromAccount!.group_account?.group_account === 1 && (fromLedger.total - toAccount.amount) < 0) {
+        //     return ledger.updateTotalLedger((fromLedger.total - toAccount.amount), fromLedger.uuid)
+        // } else 
+        if (fromAccount!.group_account?.group_account === 1) {
             await ledger.updateTotalLedger((fromLedger.total - toAccount.amount), fromLedger.uuid)
         } else if (fromAccount!.group_account?.group_account === 4) {
             await ledger.updateTotalLedger((fromLedger.total + toAccount.amount), fromLedger.uuid)
@@ -102,7 +103,7 @@ class JournalLogic extends LogicBase {
             const transactionDate = time.date(transaction_date)
             const fromLedger = await ledger.generateLedger(activeYear!.tahun, oneAccount!.uuid, transactionDate.getMonth(), 0)
             if (!fromLedger) {
-                return this.message(403, { message: "Bulan sudah ditutup" })
+                return this.message(400, { message: "Bulan sudah ditutup" })
             }
             let finalAmount = 0
             const referenceNumber = await journalReferenceNumber.generateReference()
@@ -110,7 +111,7 @@ class JournalLogic extends LogicBase {
                 if (oneAccount!.group_account?.group_account === 1 || oneAccount!.group_account?.group_account === 4) {
                     const checkLedgerAmount = await this.checkFromLedgerAmount(oneAccount!, fromLedger as LedgerAttributes, { amount: to_account[i].amount, account_id: to_account[i].account_id })
                     if (!checkLedgerAmount) {
-                        return this.message(403, { message: "Nilai akun sumber tidak mencukupi" })
+                        return this.message(400, { message: "Nilai akun sumber tidak mencukupi" })
                     }
                     await ledger.generateLedger(activeYear!.tahun, to_account[i]?.account_id, transactionDate.getMonth(), to_account[i]?.amount)
                     await this.createJournal(to_account[i].amount, 'D', to_account[i].account_id, referenceNumber!, transactionDate, activeYear!.tahun, description, false, false)
@@ -120,7 +121,7 @@ class JournalLogic extends LogicBase {
             await this.createJournal(finalAmount, 'K', oneAccount!.uuid, referenceNumber!, transactionDate, activeYear!.tahun, description, false, false)
             return this.message(200, { message: "Succes" })
         } catch (r) {
-            return this.message(403, { message: "Gagal" })
+            return this.message(400, { message: "Gagal" })
         }
     }
     private async approveWithDrawDisbursementOfFund(uuid: string, ptk_id: string | null, recipient: string | null): Promise<messageAttribute<defaultMessage>> {
@@ -128,26 +129,26 @@ class JournalLogic extends LogicBase {
             await DisbursementOfFunds.update({ withdraw: true, ptk_id: ptk_id, recipient: recipient }, { where: { uuid } })
             return this.message(200, { message: "Succes" })
         } catch (_) {
-            return this.message(403, { message: "Gagal" })
+            return this.message(400, { message: "Gagal" })
         }
     }
     private async createJournalDisbursementOfFund(fromAccount: AccountAttributes, fromLedger: LedgerAttributes, activity: DetailOfActivityAttributes, transactionDate: Date, year: string, disbursement_of_fund_id: string, amount: number, referenceNumber: string, ptk_id: string | null, recepient: string | null, description: string): Promise<messageAttribute<defaultMessage>> {
         try {
             let toAccount = await account.getAccountByActivity(activity.uuid)
             if (!toAccount) {
-                return this.message(403, { message: `Akun dengan nomor kegiatan ${activity.no_kegiatan!} tidak ditemukan` })
+                return this.message(400, { message: `Akun dengan nomor kegiatan ${activity.no_kegiatan!} tidak ditemukan` })
             }
             await ledger.generateLedger(year, toAccount?.uuid, transactionDate.getMonth(), amount)
             const checkLedger = await this.checkFromLedgerAmount(fromAccount!, fromLedger, { amount: amount, account_id: toAccount.uuid })
             if (!checkLedger) {
-                return this.message(403, { message: "Gagal" })
+                return this.message(400, { message: "Gagal" })
             }
             await this.createJournal(amount, 'D', toAccount?.uuid!, referenceNumber!, transactionDate, year, description, false, false)
             await this.approveWithDrawDisbursementOfFund(disbursement_of_fund_id, ptk_id, recepient)
             return this.message(200, { message: "Succes" })
         } catch (r) {
             console.log(r)
-            return this.message(403, { message: "Gagal" })
+            return this.message(400, { message: "Gagal" })
         }
     }
 
@@ -158,7 +159,7 @@ class JournalLogic extends LogicBase {
             const transactionDate = time.date(transaction_date)
             const fromLedger = await ledger.generateLedger(activeYear!.tahun, fromAccount?.uuid!, transactionDate.getMonth(), 0)
             if (!fromLedger) {
-                return this.message(403, { message: "Bulan sudah ditutup" })
+                return this.message(400, { message: "Bulan sudah ditutup" })
             }
             const checkGroup = await disbursementOfFund.getDisbursementOfFundByGroupId(id, true)
             const referenceNumber = await journalReferenceNumber.generateReference()
@@ -182,7 +183,7 @@ class JournalLogic extends LogicBase {
             await this.createJournal(finalAmount, 'K', fromAccount!.uuid, referenceNumber!, transactionDate, activeYear!.tahun, description, false, false)
             return this.message(200, { message: "Succes" })
         } catch (r) {
-            return this.message(403, { message: "Gagal" })
+            return this.message(400, { message: "Gagal" })
         }
     }
 
@@ -202,7 +203,6 @@ class JournalLogic extends LogicBase {
         for (const i of data) {
             const cekExist = await ledger.getActiveLedgerByAccount(month_index, accounting_year, i.id)
             if (!cekExist) {
-                // await ledger.createLedger(month_index, accounting_year, i.id, i.value)
                 await ledger.createLedger(accounting_year, i?.id, month_index, true, i?.value)
             }
             await Journal.create({
@@ -232,7 +232,7 @@ class JournalLogic extends LogicBase {
             return this.message(200, { message: "saved" })
         } catch (e) {
             console.log(e)
-            return this.message(403, { message: "Gagal" })
+            return this.message(400, { message: "Gagal" })
         }
     }
 
@@ -256,13 +256,14 @@ class JournalLogic extends LogicBase {
                     let grouping = group[j] as GroupAccountAttributes & { account: AccountAttributes[] }
                     for (let k = 0; k < grouping.account.length; k++) {
                         let activeLedger = await ledger.getActiveLedgerByAccount(monthIndex, activeYear!.tahun, grouping.account[k].uuid)
-                        if (!activeLedger && i <= 3 && monthIndex + 1 !== 6) {
-                            await ledger.createLedger(activeYear!.tahun, grouping?.account[k]?.uuid, monthIndex + 1, true, 0)
-                        } else if (i <= 3 && monthIndex + 1 !== 6) {
-                            await ledger.createLedger(activeYear!.tahun, grouping?.account[k]?.uuid, monthIndex + 1, true, activeLedger.total)
+                        // if (!activeLedger && i <= 3 && monthIndex + 1 !== 6) {
+                        //     await ledger.createLedger(activeYear!.tahun, grouping?.account[k]?.uuid, monthIndex + 1, true, 0)
+                        // } else
+                        if (activeLedger && i <= 3 && monthIndex + 1 !== 6) {
+                            // await ledger.createLedger(activeYear!.tahun, grouping?.account[k]?.uuid, monthIndex + 1, true, activeLedger.total)
                             const reference = await journalReferenceNumber.generateReference()
-                            await this.createJournal(activeLedger.total, 'K', activeLedger.account_id, reference!, date, activeYear!.tahun, `Penutupan Akun bulan ${this.listMonth[monthIndex]}`, true, true)
-                            await this.createJournal(activeLedger.total, 'D', activeLedger.account_id, reference!, date, activeYear!.tahun, `Penutupan Akun bulan ${this.listMonth[monthIndex]}`, true, true)
+                            await this.createJournal(activeLedger!.total, 'K', activeLedger?.account_id, reference!, date, activeYear!.tahun, `Penutupan Akun bulan ${this.listMonth[monthIndex]}`, true, true)
+                            await this.createJournal(activeLedger!.total, 'D', activeLedger?.account_id, reference!, date, activeYear!.tahun, `Penutupan Akun bulan ${this.listMonth[monthIndex]}`, true, true)
                         }
                         await this.closeLedger(activeLedger?.uuid)
                     }
@@ -271,11 +272,9 @@ class JournalLogic extends LogicBase {
             return this.message(200, { message: "Succes" })
         } catch (e) {
             console.log(e)
-            return this.message(403, { message: "Gagal" })
+            return this.message(400, { message: "Gagal" })
         }
     }
-
-
 }
 
 export default new JournalLogic;

@@ -219,19 +219,35 @@ class Logic extends LogicBase {
         return this.message(200, filter)
     }
 
-    private async restructureBalanceReport(accounts: AccountAttributes[], monthIndex: number, year: string, group_account_name: string): Promise<GroupBalanceReportAttributes> {
-        let finalResult: any = []
+    private async getAccountByGroup(accounts: AccountAttributes[], monthIndex: number, year: string, group_account_name: string): Promise<GroupBalanceReportAttributes> {
+        let finalResult: (Omit<AccountAttributes, "activity_id" | "group_account_id"> & { amount: number; })[] = []
         let finalAmount = 0
 
         for (let i in accounts) {
-            const oneLedger = await ledger.getOneLedger(monthIndex, year, accounts[i].uuid)
-            if (oneLedger && !oneLedger?.open) {
-                finalResult.push({ uuid: accounts[i].uuid, account_number: accounts[i].account_number, name: accounts[i].name, amount: oneLedger?.total, account: true })
-                finalAmount += Number(oneLedger?.total)
+            let totalAccountAmount = 0
+            if (monthIndex < 6) {
+                for (let j = 6; j < 12; j++) {
+                    const oneLedger = await ledger.getOneLedgerByOpenClosed(year, j, accounts[i]?.uuid!)
+                    finalAmount += oneLedger?.total || 0
+                    totalAccountAmount += oneLedger?.total || 0
+                }
+                for (let j = 0; j <= monthIndex; j++) {
+                    const oneLedger = await ledger.getOneLedgerByOpenClosed(year, j, accounts[i]?.uuid!)
+                    finalAmount += oneLedger?.total || 0
+                    totalAccountAmount += oneLedger?.total || 0
+                }
+            } else {
+                for (let j = 6; j <= monthIndex; j++) {
+                    const oneLedger = await ledger.getOneLedgerByOpenClosed(year, j, accounts[i]?.uuid!)
+                    finalAmount += oneLedger?.total || 0
+                    totalAccountAmount += oneLedger?.total || 0
+                }
             }
+            finalResult.push({ uuid: accounts[i].uuid, account_number: accounts[i].account_number, name: accounts[i].name, amount: totalAccountAmount, asset: accounts[i]?.asset })
         }
         return { group_account_name, finalAmount, accounts: finalResult }
     }
+
     private async getGroupBalanceReport(index: number, monthIndex: number): Promise<{ finalAmount: number, group: GroupBalanceReportAttributes[] }> {
         const activeYear = await accountingYear.getActiveAccountingYear()
         const result = []
@@ -239,36 +255,19 @@ class Logic extends LogicBase {
         const group = await account.getGroupAccountByNumberGroup(index)
         for (let j in group) {
             const grouping = group[j] as GroupAccountAttributes & { account: AccountAttributes[] }
-            const restructurBalanceReport = await this.restructureBalanceReport(grouping.account, monthIndex, activeYear!.tahun, grouping.name)
+            const restructurBalanceReport = await this.getAccountByGroup(grouping.account, monthIndex, activeYear!.tahun, grouping.name)
             result.push(restructurBalanceReport)
             finalAmount += restructurBalanceReport.finalAmount
         }
         return { finalAmount, group: result }
-    }
-    private async getLabaBerjalan(monthIndex: number): Promise<number> {
-        let finalLabaBerjalan = 0
-        if (monthIndex < 6) {
-            for (let i = 6; i < 12; i++) {
-                finalLabaBerjalan += (await this.getGroupBalanceReport(4, i)).finalAmount - (await this.getGroupBalanceReport(5, i)).finalAmount
-            }
-            for (let i = 0; i <= monthIndex; i++) {
-                finalLabaBerjalan += (await this.getGroupBalanceReport(4, i)).finalAmount - (await this.getGroupBalanceReport(5, i)).finalAmount
-            }
-        } else {
-            for (let i = 6; i <= monthIndex; i++) {
-                finalLabaBerjalan += (await this.getGroupBalanceReport(4, i)).finalAmount - (await this.getGroupBalanceReport(5, i)).finalAmount
-            }
-        }
-        return finalLabaBerjalan
     }
 
     public async getBalanceSheetReport(monthIndex: number): Promise<messageAttribute<BalanceReportAttributes>> {
         const harta = await this.getGroupBalanceReport(1, monthIndex)
         const kewajiban = await this.getGroupBalanceReport(2, monthIndex)
         const modal = await this.getGroupBalanceReport(3, monthIndex)
-        const labaRugi = await this.getLabaBerjalan(monthIndex)
+        const labaRugi = (await this.getGroupBalanceReport(4, monthIndex)).finalAmount - (await this.getGroupBalanceReport(5, monthIndex)).finalAmount
         return this.message(200, { harta: harta, kewajiban: kewajiban, modal: modal, labaRugi: labaRugi })
-
     }
 
 
