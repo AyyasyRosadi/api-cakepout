@@ -10,8 +10,9 @@ class ReportRouter extends BaseRouter {
             return res.status(200).json(data.data)
         })
         this.router.get("/cash-flow-statement", async (req: Request, res: Response): Promise<Response> => {
-            const data = await Logic.cashFlowStatement()
-            return res.status(200).json(data.data)
+            let month = req.query.month! as string
+            const data = await Logic.cashFlowStatement(+month)
+            return res.status(data.status).json(data.data)
         })
         this.router.get('/balance-statement', async (req: Request, res: Response): Promise<Response> => {
             const report = await Logic.getBalanceSheetReport(Number(req.query?.month_index))

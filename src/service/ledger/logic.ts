@@ -36,7 +36,6 @@ class LedgerLogic extends LogicBase{
     }
     public async detail(uuid_account:string, month:number):Promise<messageAttribute<Array<AccountAttributes>| defaultMessage>>{
         let arrayStartEndDate = await time.getDateStartEnd(month)
-        // console.log(arrayStartEndDate)
         try{
             let account = await Account.findAll({
                 where:{
@@ -59,6 +58,7 @@ class LedgerLogic extends LogicBase{
                 ]]
                 
             })
+            console.log(account)
             
             return this.message(200, account);
         }catch(err){

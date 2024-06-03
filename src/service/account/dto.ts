@@ -1,4 +1,5 @@
 import GroupAccountAttributes from "../groupAccount/dto";
+import { LedgerAttributes } from "../ledger/dto";
 
 export interface AccountAttributes {
     uuid: string;
@@ -8,6 +9,7 @@ export interface AccountAttributes {
     activity_id: string | null;
     asset: boolean;
     group_account?:GroupAccountAttributes;
+    ledgers?:Array<LedgerAttributes>
 
 }
 

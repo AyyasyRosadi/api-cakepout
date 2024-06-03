@@ -78,8 +78,8 @@ POST  {{host}}/journal/monthly-account/close-book/?month_index=3
 ###
 GET {{host}}/report/balance-statement?month_index=5
 ###
-GET {{host}}/report/cash-flow-statement
+GET {{host}}/report/cash-flow-statement?month=6
 ###
 GET {{host}}/ledger
 ###
-GET {{host}}/ledger/detail?id=a915b7ea-a4bd-4037-bf19-29df6c34bbf6&month=1
+GET {{host}}/ledger/detail?id=78f4ed6f-8e62-4e84-a80e-a209db1fecb4&month=6
