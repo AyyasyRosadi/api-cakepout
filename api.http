@@ -76,9 +76,9 @@ Content-Type: application/json
 POST  {{host}}/journal/monthly-account/close-book/?month_index=3
 
 ###
-GET {{host}}/report/balance-statement?month_index=5
+GET {{host}}/report/balance-statement?month_index=4
 ###
-GET {{host}}/report/cash-flow-statement?month=6
+GET {{host}}/report/cash-flow-statement?month=5
 ###
 GET {{host}}/ledger
 ###

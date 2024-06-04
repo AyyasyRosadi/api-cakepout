@@ -109,7 +109,6 @@ class DisbursementOfFundLogic extends LogicBase {
     }
     public async approveStatusDisbursementOfFund(antrian: Array<string>): Promise<messageAttribute<defaultMessage>> {
         try {
-            console.log(antrian)
             for (let i in antrian) {
                 const checkGroup = await disbursementOfFund.getDisbursementOfFundByGroupId(antrian[i],false)
                 if (checkGroup.length > 0) {

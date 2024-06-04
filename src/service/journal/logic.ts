@@ -147,7 +147,6 @@ class JournalLogic extends LogicBase {
             await this.approveWithDrawDisbursementOfFund(disbursement_of_fund_id, ptk_id, recepient)
             return this.message(200, { message: "Succes" })
         } catch (r) {
-            console.log(r)
             return this.message(400, { message: "Gagal" })
         }
     }
@@ -231,7 +230,6 @@ class JournalLogic extends LogicBase {
             await this.cekAccountBeginingBalanceBeforeSave(data?.modal, ref!, date.getMonth(), yearActive?.tahun!, date, 'K', data.description)
             return this.message(200, { message: "saved" })
         } catch (e) {
-            console.log(e)
             return this.message(400, { message: "Gagal" })
         }
     }
@@ -271,7 +269,6 @@ class JournalLogic extends LogicBase {
             }
             return this.message(200, { message: "Succes" })
         } catch (e) {
-            console.log(e)
             return this.message(400, { message: "Gagal" })
         }
     }

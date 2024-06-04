@@ -9,7 +9,6 @@ class DisbursementOfFundHelper {
         return allDisbursementOfFund
     }
     public async getDisbursementOfFundByUuid(uuid: string): Promise<DisbursementOfFundAttributes> {
-        console.log(uuid)
         const oneDisbursementOfFund = await DisbursementOfFunds.findOne({ where: { uuid: uuid }, include: this.include })
         return oneDisbursementOfFund!
     }

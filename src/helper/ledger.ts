@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import Account from "../service/account/model";
 import GroupAccountAttributes from "../service/groupAccount/dto";
 import GroupAccount from "../service/groupAccount/model";
@@ -6,12 +7,12 @@ import Ledger from "../service/ledger/model";
 
 
 class LedgerHelper {
-    public async getOneLedgerByOpenClosed(accounting_year: string,month_index:number, account_id: string): Promise<LedgerAttributes> {
-        const allLedger = await Ledger.findOne({
+    public async getAllLedgerByOpenClosed(accounting_year: string, month_index: number[], account_id: string): Promise<LedgerAttributes[]> {
+        const allLedger = await Ledger.findAll({
             where: {
                 accounting_year,
                 account_id,
-                month_index,
+                month_index: { [Op.in]: month_index },
                 open: false
             }
         })

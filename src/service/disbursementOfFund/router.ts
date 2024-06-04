@@ -54,7 +54,6 @@ class DisbursementOfFundRouter extends BaseRouter {
         this.router.put('/status',
             authentication.authenticationUser(SYSTEMCAKEPOUT, ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
-                console.log(req.body)
                 const approveStatusDisbursementOfFund = await logic.approveStatusDisbursementOfFund(req.body?.antrian)
                 return res.status(approveStatusDisbursementOfFund.status).json(approveStatusDisbursementOfFund.data)
             })
