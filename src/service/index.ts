@@ -11,6 +11,7 @@ import Journal from "./journal/router";
 import SharingProgram from "./sharingProgram/router";
 import Report from "./report/router"
 import Ledger from "./ledger/router";
+import Apakah from "./apakah"
 
 const serviceRouter: Router = express();
 
@@ -26,6 +27,7 @@ serviceRouter.use('/journal', Journal)
 serviceRouter.use('/sharing-program',SharingProgram)
 serviceRouter.use('/report', Report)
 serviceRouter.use("/ledger", Ledger)
+serviceRouter.use("/apakah", Apakah)
 
 
 export default serviceRouter
