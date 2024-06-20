@@ -18,6 +18,13 @@ import User from "../service/user/model"
 import db from "./database"
 import SharingProgram from "../service/sharingProgram/model"
 import Ledger from "../service/ledger/model"
+import InstanceApakah from "../service/apakah/instance/model"
+import ProgramApakah from "../service/apakah/program/model"
+import ComponentApakah from "../service/apakah/component/model"
+import ActivityApakah from '../service/apakah/activity/model'
+import SubActivityApakah from '../service/apakah/subActivity/model'
+import DetailOfActivityApakah from '../service/apakah/detailOfActivities/model'
+
 
 export const Synchronize = async () => {
     try {
@@ -41,6 +48,12 @@ export const Synchronize = async () => {
         await Journal.sync({ alter: true })
         await Ledger.sync({ alter: true })
         await DisbursementOfFunds.sync({ alter: true })
+        await InstanceApakah.sync({alter:true})
+        await ProgramApakah.sync({alter:true})
+        await ComponentApakah.sync({alter:true})
+        await ActivityApakah.sync({alter:true})
+        await SubActivityApakah.sync({alter:true})
+        await DetailOfActivityApakah.sync({alter:true})
     } catch (err) {
         throw err
     }

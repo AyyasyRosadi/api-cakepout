@@ -83,3 +83,22 @@ GET {{host}}/report/cash-flow-statement?month=5
 GET {{host}}/ledger
 ###
 GET {{host}}/ledger/detail?id=78f4ed6f-8e62-4e84-a80e-a209db1fecb4&month=6
+###
+GET {{host}}/apakah/list-lembaga-apakah
+###
+POST {{host}}/apakah/list-lembaga-apakah
+Content-Type: application/json
+
+{
+    "nama":"testing"
+}
+###
+POST {{host}}/apakah/program
+Content-Type: application/json
+
+{
+       "lembaga":1,
+    "no_program":1,
+    "item": "contoh",
+    "modifable": false
+}
