@@ -1,4 +1,4 @@
-import { AccountAttributes } from "../cakepout/account/dto";
+import { AccountAttributes } from "../account/dto";
 
 export type account = {
     account_number: string,

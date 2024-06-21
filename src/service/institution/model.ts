@@ -1,8 +1,8 @@
 import db from "../../config/database";
 import { DataTypes, Model } from "sequelize";
 import InstitutionAttributes from "./dto";
-import ProgramAttributes from "../program/dto";
-import Program from "../program/model";
+import ProgramAttributes from "../apakah/program/dto";
+import Program from "../apakah/program/model";
 
 interface InstitutionInstance extends Model<InstitutionAttributes>, InstitutionAttributes {
     created_at: Date;

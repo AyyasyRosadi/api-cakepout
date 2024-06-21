@@ -1,8 +1,8 @@
-import { AccountAttributes } from "../service/account/dto"
-import Account from "../service/account/model"
-import GroupAccountAttributes from "../service/groupAccount/dto"
-import GroupAccount from "../service/groupAccount/model"
-import Ledger from "../service/ledger/model"
+import { AccountAttributes } from "../service/cakepout/account/dto"
+import Account from "../service/cakepout/account/model"
+import GroupAccountAttributes from "../service/cakepout/groupAccount/dto"
+import GroupAccount from "../service/cakepout/groupAccount/model"
+import Ledger from "../service/cakepout/ledger/model"
 
 class AccountHelper {
     private async getLastLabelGroupAccountByGroup(group_account: number): Promise<number> {

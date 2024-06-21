@@ -1,9 +1,9 @@
 import { Op } from "sequelize";
-import Account from "../service/account/model";
-import GroupAccountAttributes from "../service/groupAccount/dto";
-import GroupAccount from "../service/groupAccount/model";
-import { LedgerAttributes } from "../service/ledger/dto";
-import Ledger from "../service/ledger/model";
+import Account from "../service/cakepout/account/model";
+import GroupAccountAttributes from "../service/cakepout/groupAccount/dto";
+import GroupAccount from "../service/cakepout/groupAccount/model";
+import { LedgerAttributes } from "../service/cakepout/ledger/dto";
+import Ledger from "../service/cakepout/ledger/model";
 
 
 class LedgerHelper {

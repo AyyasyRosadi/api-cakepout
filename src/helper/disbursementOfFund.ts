@@ -1,6 +1,6 @@
-import DetailOfActivity from "../service/detailOfActivity/model"
-import DisbursementOfFundAttributes from "../service/disbursementOfFund/dto"
-import DisbursementOfFunds from "../service/disbursementOfFund/model"
+import DetailOfActivity from "../service/apakah/detailOfActivities/model"
+import DisbursementOfFundAttributes from "../service/cakepout/disbursementOfFund/dto"
+import DisbursementOfFunds from "../service/cakepout/disbursementOfFund/model"
 
 class DisbursementOfFundHelper {
     private include = [{ model: DetailOfActivity }]

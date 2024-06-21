@@ -1,5 +1,5 @@
-import JournalReferenceNumberAttributes from "../service/journalReferenceNumber/dto"
-import JournalReferenceNumber from "../service/journalReferenceNumber/model"
+import JournalReferenceNumberAttributes from "../service/cakepout/journalReferenceNumber/dto"
+import JournalReferenceNumber from "../service/cakepout/journalReferenceNumber/model"
 import accountingYear from "./accountingYear"
 
 class JournalReferenceNumberHelper {
