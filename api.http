@@ -102,3 +102,40 @@ Content-Type: application/json
     "item": "contoh",
     "modifable": false
 }
+###
+POST  {{host}}/apakah/institution-income
+Content-Type: application/json
+
+{
+    "institution_id":2,
+    "academic_year":"2024/2025",
+    "total":3000000,
+    "approved_total":0
+}
+###
+GET {{host}}/apakah/institution-income/2?status_incomes=0
+###
+PUT {{host}}/apakah/institution-income/approval/
+###
+PUT {{host}}/apakah/institution-income/approval/9e3b9c9a-e4ac-4171-8b50-891510ae1387
+Content-Type: application/json
+
+{
+    "approved_total":150000
+}
+###
+PUT {{host}}/apakah/institution-income/9b1ffb78-01e7-449f-b935-b6eff3a11693
+Content-Type: application/json
+
+{
+    "total":150000,
+    "academic_year":"2023/2024"
+}
+###
+POST {{host}}/institution
+Content-Type: application/json
+
+{
+    "name":"KEBENDAHARAAN"
+}
+
