@@ -97,10 +97,8 @@ POST {{host}}/apakah/program
 Content-Type: application/json
 
 {
-       "lembaga":1,
-    "no_program":1,
-    "item": "contoh",
-    "modifable": false
+   "institution_id":"1",
+   "item":"Beli PS5"
 }
 ###
 POST  {{host}}/apakah/institution-income
@@ -138,4 +136,5 @@ Content-Type: application/json
 {
     "name":"KEBENDAHARAAN"
 }
-
+###
+GET  {{host}}/apakah/program/1
