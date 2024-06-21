@@ -1,26 +1,29 @@
 import db from "../../config/database";
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, Optional } from "sequelize";
 import InstitutionAttributes from "./dto";
 import ProgramAttributes from "../apakah/program/dto";
 import Program from "../apakah/program/model";
 
-interface InstitutionInstance extends Model<InstitutionAttributes>, InstitutionAttributes {
+interface InstitutionCreationAttributes extends Optional<InstitutionAttributes, 'id'>{}
+interface InstitutionInstance extends Model<InstitutionAttributes, InstitutionCreationAttributes>, InstitutionAttributes {
     created_at: Date;
     updated_at: Date;
     programs: Array<ProgramAttributes>;
 }
 
-const Institution = db.define<InstitutionInstance>('list_lembaga', {
-    no_lembaga: {
+const Institution = db.define<InstitutionInstance>('institution', {
+   id: {
         type: DataTypes.INTEGER,
+        autoIncrement:true,
         primaryKey: true
+        
     },
-    nama_lembaga: {
+   name: {
         type: DataTypes.STRING
     }
 })
 
-Institution.hasMany(Program, { foreignKey: 'no_lembaga' })
-Program.belongsTo(Institution, { foreignKey: 'no_lembaga' })
+Institution.hasMany(Program, { foreignKey: 'institution_no' })
+Program.belongsTo(Institution, { foreignKey: 'institution_no' })
 
 export default Institution;

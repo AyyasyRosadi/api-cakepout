@@ -4,7 +4,7 @@ import Program from "./model";
 class ProgramLogic extends LogicBase{
     public async create(institution: number, program_no:number, item:string, modifable:boolean):Promise<messageAttribute<defaultMessage>>{
         await Program.create({
-            institution,
+            institution_no:institution,
            program_no, 
             item,
             modifable

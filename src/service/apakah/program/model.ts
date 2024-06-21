@@ -15,7 +15,7 @@ const Program  = db.define<ProgramInstance>('program', {
         defaultValue:DataTypes.UUIDV4,
         primaryKey:true
     },
-    institution:{
+    institution_no:{
         type:DataTypes.INTEGER,
     },
     program_no:{
