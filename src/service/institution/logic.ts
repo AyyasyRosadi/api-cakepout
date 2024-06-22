@@ -28,6 +28,8 @@ class InstitutionLogic extends LogicBase {
                         item:PROGRAM[p].component[c].item,
                         modifable:false,
                         program_id:program.id,
+                        academic_year,
+                        institution_no:institution.id
                     })
                 }
                 

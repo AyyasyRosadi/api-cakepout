@@ -27,6 +27,12 @@ const Component = db.define<ComponentInstance>('component', {
     },
     program_id:{
         type:DataTypes.STRING
+    },
+    academic_year:{
+        type:DataTypes.STRING
+    },
+    institution_no:{
+        type:DataTypes.INTEGER
     }
 })
 

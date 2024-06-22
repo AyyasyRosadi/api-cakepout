@@ -143,3 +143,11 @@ GET  {{host}}/apakah/program/1?academic_year=2024-2025
 GET {{host}}/institution
 ###
 GET {{host}}/apakah/unit
+###
+POST {{host}}/apakah/component
+Content-Type: application/json
+
+{
+    "item":"Sarana Games dan Refreshing",
+    "program_id":"20599dd5-9fec-43fc-b833-606091116697"
+}

@@ -28,6 +28,12 @@ const Activity = db.define<ActivityInstance>("activity",{
     },
     continue:{
         type:DataTypes.BOOLEAN
+    },
+    institution_no:{
+        type:DataTypes.INTEGER
+    },
+    academic_year:{
+        type:DataTypes.STRING
     }
 })
 
