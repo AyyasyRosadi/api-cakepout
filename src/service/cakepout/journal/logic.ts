@@ -12,7 +12,7 @@ import { AccountAttributes } from "../account/dto";
 import disbursementOfFund from "../../../helper/disbursementOfFund";
 import account from "../../../helper/account";
 import DisbursementOfFunds from "../disbursementOfFund/model";
-import DetailOfActivityAttributes from "../../apakah/detailOfActivities/dto"
+import {DetailOfActivityAttributes} from "../../apakah/detailOfActivities/dto"
 import ledger from "../../../helper/ledger";
 import Ledger from "../ledger/model";
 import { LedgerAttributes } from "../ledger/dto";

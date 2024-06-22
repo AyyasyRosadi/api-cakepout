@@ -20,6 +20,12 @@ const SubActivity = db.define<SubActivityInstance>("sub_activity", {
     name:{
         type:DataTypes.STRING
     },
+    institution_no:{
+        type:DataTypes.INTEGER
+    },
+    academic_year:{
+        type:DataTypes.STRING
+    },
     activity_id:{
         type:DataTypes.STRING
     }

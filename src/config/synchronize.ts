@@ -19,7 +19,7 @@ import ProgramApakah from "../service/apakah/program/model"
 import ComponentApakah from "../service/apakah/component/model"
 import ActivityApakah from '../service/apakah/activity/model'
 import SubActivityApakah from '../service/apakah/subActivity/model'
-import DetailOfActivityApakah from '../service/apakah/detailOfActivities/model'
+import DetailOfActivity from '../service/apakah/detailOfActivities/model'
 import InstitutionIncome from "../service/apakah/institutionIncome/model"
 import Unit from '../service/apakah/unit/model';
 
@@ -38,7 +38,7 @@ export const Synchronize = async () => {
         await BlacklistToken.sync()
         await JournalReferenceNumber.sync({ alter: true })
         await GroupAccount.sync({ alter: true })
-        await DetailOfActivityApakah.sync({alter:true})
+        await DetailOfActivity.sync({alter:true})
         await Account.sync({ alter: true })
         await Journal.sync({ alter: true })
         await Ledger.sync({ alter: true })

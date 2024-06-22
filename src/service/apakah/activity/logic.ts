@@ -1,7 +1,5 @@
 import { defaultMessage, LogicBase, messageAttribute } from "../../logicBase";
-import ComponentAttributes from "../component/dto";
 import Component from "../component/model";
-import ProgramAttributes from "../program/dto";
 import Program from "../program/model";
 import Activity from "./model";
 import {fn, col} from 'sequelize'
@@ -9,9 +7,9 @@ import {fn, col} from 'sequelize'
 class ActivityLogic extends LogicBase{
     private async getMaxActivity(instituton_no:number, academic_year:string):Promise<number>{
         const max = await Activity.findOne({where:{institution_no:instituton_no, academic_year},attributes:[[fn('max', col("activity_no")),'max']], raw:true})
-        const component:any = max;
-        if(component!.max!=null){
-            return component?.max
+        const activity:any = max;
+        if(activity!.max!=null){
+            return activity?.max
         }
         return 0
     }

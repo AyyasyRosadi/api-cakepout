@@ -4,7 +4,7 @@ import DisbursementOfFundAttributes from "./dto";
 import DetailOfActivity from "../../apakah/detailOfActivities/model";
 import Ptk from "../../ptk/model";
 import PtkAttributes from "../../ptk/dto";
-import DetailOfActivityAttributes from "../../apakah/detailOfActivities/dto";
+import {DetailOfActivityAttributes} from "../../apakah/detailOfActivities/dto";
 import SharingProgram from "../../sharingProgram/model";
 
 interface DisbursementOfFundCreationAttributes extends Optional<DisbursementOfFundAttributes, 'uuid' | 'reference_of_jurnal' | 'recipient' | 'ptk_id' | 'sharing_program_id'> { }

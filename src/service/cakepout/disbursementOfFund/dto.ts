@@ -1,4 +1,4 @@
-import DetailOfActivityAttributes from "../../apakah/detailOfActivities/dto";
+import {DetailOfActivityAttributes} from "../../apakah/detailOfActivities/dto";
 import { SharingProgramAttributes } from "../../sharingProgram/dto";
 
 export default interface DisbursementOfFundAttributes {

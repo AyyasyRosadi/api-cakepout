@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import db from "../../../config/database";
-import DetailOfActivityAttributes from "./dto";
+import {DetailOfActivityAttributes} from "./dto";
 
 interface DetailOfActivityCreationAttributes extends Optional<DetailOfActivityAttributes, 'id'>{}
 interface DetailOfActivityInstance extends Model<DetailOfActivityAttributes, DetailOfActivityCreationAttributes>, DetailOfActivityAttributes{
@@ -8,7 +8,7 @@ interface DetailOfActivityInstance extends Model<DetailOfActivityAttributes, Det
     updated_at:Date;
 }
 
-const RincianKegiatan = db.define<DetailOfActivityInstance>("detail_of_activity", {
+const DetailOfActivity = db.define<DetailOfActivityInstance>("detail_of_activity", {
     id:{
         type:DataTypes.STRING,
         defaultValue:DataTypes.UUIDV4,
@@ -62,4 +62,4 @@ const RincianKegiatan = db.define<DetailOfActivityInstance>("detail_of_activity"
 
 })
 
-export default RincianKegiatan
+export default DetailOfActivity

@@ -2,7 +2,7 @@ import {  DataTypes, Model, Optional } from "sequelize";
 import db from "../../../config/database";
 import { AccountAttributes } from "./dto";
 import DetailOfActivity from "../../apakah/detailOfActivities/model";
-import DetailOfActivityAttributes from "../../apakah/detailOfActivities/dto";
+import {DetailOfActivityAttributes} from "../../apakah/detailOfActivities/dto";
 import { JournalAttributes } from "../journal/dto";
 import Journal from "../journal/model";
 

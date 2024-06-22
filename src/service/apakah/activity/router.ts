@@ -1,6 +1,5 @@
 import BaseRouter from "../../routerBase"
 import logic from "./logic";
-import Logic from "./logic";
 import { Request, Response } from "express";
 
 class ActivityRouter extends BaseRouter{
