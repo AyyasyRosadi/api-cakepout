@@ -134,7 +134,12 @@ POST {{host}}/institution
 Content-Type: application/json
 
 {
-    "name":"KEBENDAHARAAN"
+    "name":"SD IT PUTRI",
+    "academic_year":"2024/2025"
 }
 ###
-GET  {{host}}/apakah/program/1
+GET  {{host}}/apakah/program/1?academic_year=2024-2025
+###
+GET {{host}}/institution
+###
+GET {{host}}/apakah/unit

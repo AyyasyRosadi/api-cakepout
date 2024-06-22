@@ -4,4 +4,5 @@ export default interface ProgramAttributes {
     program_no:number;
     item: string;
     modifable: boolean;
+    academic_year: string;
 }

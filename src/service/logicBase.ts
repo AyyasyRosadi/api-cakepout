@@ -13,4 +13,8 @@ export  class LogicBase{
     public message<T>(status:number, data:T):messageAttribute<T>{
         return {data:data, status:status}
     }
+
+    public excludeAttributes():any{
+        return {attributes:{exclude:["createdAt", "updatedAt"]}}
+    }
 }

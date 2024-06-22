@@ -8,10 +8,10 @@ import Component from "../apakah/component/model";
 
 class InstitutionLogic extends LogicBase {
     public async getAllInstitution(): Promise<messageAttribute<Array<InstitutionAttributes>>> {
-        const allInstitution = await Institution.findAll()
+        const allInstitution = await Institution.findAll({attributes:{exclude:["createdAt", "updatedAt"]}})
         return this.message(200,allInstitution)
     }
-    public async create(name:string):Promise<messageAttribute<defaultMessage>>{
+    public async create(name:string, academic_year:string):Promise<messageAttribute<defaultMessage>>{
         const institution = await Institution.create({name})
         if(institution){
             for(let p in PROGRAM){
@@ -20,13 +20,14 @@ class InstitutionLogic extends LogicBase {
                     program_no:PROGRAM[p].no,
                     item:PROGRAM[p].item,
                     modifable:false,
+                    academic_year
                 })
                 for(let c in PROGRAM[p].component){
                     await Component.create({
                         component_no:PROGRAM[p].component[c].no,
                         item:PROGRAM[p].component[c].item,
                         modifable:false,
-                        program_id:program.id
+                        program_id:program.id,
                     })
                 }
                 

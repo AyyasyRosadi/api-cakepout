@@ -21,6 +21,7 @@ import ActivityApakah from '../service/apakah/activity/model'
 import SubActivityApakah from '../service/apakah/subActivity/model'
 import DetailOfActivityApakah from '../service/apakah/detailOfActivities/model'
 import InstitutionIncome from "../service/apakah/institutionIncome/model"
+import Unit from '../service/apakah/unit/model';
 
 
 export const Synchronize = async () => {
@@ -48,6 +49,7 @@ export const Synchronize = async () => {
         await ActivityApakah.sync({alter:true})
         await SubActivityApakah.sync({alter:true})
         await InstitutionIncome.sync({alter:true})
+        await Unit.sync({alter:true})
     } catch (err) {
         throw err
     }

@@ -13,11 +13,15 @@ class InstitutionRouter extends BaseRouter {
         //         const allInstitution = await logic.getAllInstitution()
         //         return res.status(allInstitution.status).json(allInstitution.data)
         //     });
+        this.router.get("/", async(req:Request, res:Response)=>{
+            const status = await logic.getAllInstitution();
+            return res.status(status.status).json(status.data)
+        });
         this.router.post("/", async(req:Request, res:Response):Promise<Response>=>{
-            const {name} = req.body;
-            const status = await logic.create(name);
+            const {name, academic_year} = req.body;
+            const status = await logic.create(name, academic_year);
             return res.status(status.status).json(status.data);
-        })
+        });
     }
 }
 

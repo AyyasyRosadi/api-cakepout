@@ -29,6 +29,9 @@ const Program  = db.define<ProgramInstance>('program', {
     },
     modifable:{
         type:DataTypes.BOOLEAN
+    }, 
+    academic_year:{
+        type:DataTypes.STRING
     }
 })
 
