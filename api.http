@@ -151,3 +151,13 @@ Content-Type: application/json
     "item":"Sarana Games dan Refreshing",
     "program_id":"20599dd5-9fec-43fc-b833-606091116697"
 }
+###
+POST  {{host}}/apakah/activity
+Content-Type: application/json
+
+{
+    "component_id":"b5ff8f5c-72ff-49f6-a689-de3cfb0bcf38",
+    "name":"steak dual shock",
+    "continue_activity":true
+
+}
