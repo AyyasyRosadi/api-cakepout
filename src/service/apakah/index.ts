@@ -11,7 +11,7 @@ import DetailOfActivity from "./detailOfActivities/router";
 
 const serviceApakah: Router = express();
 
-serviceApakah.use("/list-lembaga-apakah", ListLembagaApakah);
+serviceApakah.use("/institution", ListLembagaApakah);
 serviceApakah.use("/program", Program);
 serviceApakah.use("/institution-income", InstitutionIncome);
 serviceApakah.use("/unit", Unit);

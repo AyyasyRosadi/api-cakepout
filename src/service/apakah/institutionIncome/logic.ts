@@ -5,10 +5,11 @@ import InstitutionIncome from "./model";
 import { Op } from "sequelize";
 
 class InstitutionIncomeLogic extends LogicBase{
-    public async create(institution_id:number, academic_year:string, total:number, approved_total:number):Promise<messageAttribute<defaultMessage>>{
+    public async create(institution_id:number, academic_year:string,name:string, total:number, approved_total:number):Promise<messageAttribute<defaultMessage>>{
         try{
             await InstitutionIncome.create({
                 institution_id,
+                name,
                 academic_year,
                 total,
                 approved_total
@@ -20,8 +21,8 @@ class InstitutionIncomeLogic extends LogicBase{
         }
     }
 
-    public async getByInstitution(institution_number:number, status:number|undefined):Promise<messageAttribute<Array<InstitutionIncomeAttributes>>>{
-        const fixStatus:{where: any, attributes?:any} = status===0 ? {where:{approved_total:0,institution_id:institution_number}}:status===1?{where:{approved_total:{[Op.not]:0}, institution_id:institution_number}}:{where:{institution_id:institution_number}}
+    public async getByInstitution(institution_number:number,academic_year:string, status:number|undefined):Promise<messageAttribute<Array<InstitutionIncomeAttributes>>>{
+        const fixStatus:{where: any, attributes?:any} = status===0 ? {where:{approved_total:0,institution_id:institution_number,academic_year}}:status===1?{where:{approved_total:{[Op.not]:0}, institution_id:institution_number,academic_year}}:{where:{institution_id:institution_number,academic_year}}
         fixStatus.attributes = {exclude:['createdAt', 'updatedAt']}
         const institution = await InstitutionIncome.findAll(fixStatus)
         return this.message(200, institution)

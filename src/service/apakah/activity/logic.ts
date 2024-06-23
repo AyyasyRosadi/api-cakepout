@@ -1,6 +1,7 @@
 import { defaultMessage, LogicBase, messageAttribute } from "../../logicBase";
 import Component from "../component/model";
 import Program from "../program/model";
+import ActivityAttributes from "./dto";
 import Activity from "./model";
 import {fn, col} from 'sequelize'
 
@@ -12,6 +13,9 @@ class ActivityLogic extends LogicBase{
             return activity?.max
         }
         return 0
+    }
+    public async getByComponentId(component_id:string,academic_year:string):Promise<messageAttribute<ActivityAttributes[]>>{
+        return this.message(200, await Activity.findAll({where:{component_id,academic_year}}))
     }
 
     public async create(component_id:string, name: string,  continue_activity:boolean):Promise<messageAttribute<defaultMessage>>{

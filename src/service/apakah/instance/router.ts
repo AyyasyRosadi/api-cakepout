@@ -10,7 +10,8 @@ class ListLembagaApakah extends BaseRouter{
             return res.status(createStatus.status).json(createStatus.data)
         });
         this.router.get("/", async(req:Request, res:Response):Promise<Response>=>{
-            return res.status(200).json({msg:"hello"})
+            const allLembaga = await logic.getAll()
+            return res.status(allLembaga.status).json(allLembaga.data)
         })
     }
 }

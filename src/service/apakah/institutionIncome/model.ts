@@ -17,6 +17,9 @@ const InstitutionIncome = db.define<InstitutionIncomeInstance>("institution_inco
     institution_id:{
         type:DataTypes.INTEGER,
     },
+    name:{
+        type:DataTypes.STRING
+    },
     academic_year: {
         type:DataTypes.STRING
     },

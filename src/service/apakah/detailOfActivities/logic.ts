@@ -1,9 +1,12 @@
 import { defaultMessage, LogicBase, messageAttribute } from "../../logicBase";
-import { detailOfActivityList } from "./dto";
+import { DetailOfActivityAttributes, detailOfActivityList } from "./dto";
 import DetailOfActivity from "./model";
 
 
 class DetailOfActivityLogic extends LogicBase{
+    public async getByActivityId(activity_id:string,sub_activity_id:string,academic_year:string):Promise<messageAttribute<DetailOfActivityAttributes[]>>{
+        return this.message(200,await DetailOfActivity.findAll({where:{activity_id,sub_activity_id,academic_year}}))
+    }
     public async create(activity_id:string, sub_activity_id:string|null, detailOfActivityList:Array<detailOfActivityList>):Promise<messageAttribute<defaultMessage>>{
         for(let d in detailOfActivityList){
             await DetailOfActivity.create({

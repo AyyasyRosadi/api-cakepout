@@ -4,6 +4,7 @@ import Component from "../component/model";
 import Program from "../program/model";
 import {fn, col} from 'sequelize';
 import SubActivity from "./model";
+import SubActivityAttributes from "./dto";
 
 
 class SubActivityLogic extends LogicBase{
@@ -17,6 +18,10 @@ class SubActivityLogic extends LogicBase{
         return 0
 
     }
+    public async getByActivityId(activity_id:string,academic_year:string):Promise<messageAttribute<SubActivityAttributes[]>>{
+        return this.message(200,await SubActivity.findAll({where:{activity_id,academic_year}}))
+    }
+
 
     public async create(activity_id: string, name:string):Promise<messageAttribute<defaultMessage>>{
         const activity = await Activity.findOne({where:{id:activity_id}})
