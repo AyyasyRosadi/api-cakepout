@@ -10,9 +10,9 @@ class RouterDetailOfActivity extends BaseRouter {
             const data = await logic.getByActivityId(req.params?.activity_id, req.params?.sub_activity_id, queryToString(req.query?.academic_year))
             return res.status(data.status).json(data.data)
         });
+        
         this.router.post("/", async (req: Request, res: Response): Promise<Response> => {
             const { activity_id, sub_activity_id, detail_of_activity_list } = req.body;
-            console.log("apa??")
             const status = await logic.create(activity_id, sub_activity_id, detail_of_activity_list)
             return res.status(status.status).json(status.data)
         });

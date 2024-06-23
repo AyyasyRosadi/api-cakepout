@@ -38,7 +38,6 @@ class ComponentLogic extends LogicBase {
        let componentNow:ComponentBreakDown[] = [];
        const component = data.map((element:any)=>element.get({plain:true}))
        for(let c in component){
-        let no:string = "";
         let total:number=0;
         let activity = component[c].activities
         if(activity.length>0){
@@ -51,7 +50,7 @@ class ComponentLogic extends LogicBase {
                 }
             }
         }
-        componentNow.push({no:component[c].component_no, total:total, item:component[c].item})
+        componentNow.push({no:component[c].component_no,id:component[c].id, total:total, item:component[c].item})
        }
        return componentNow;
     }

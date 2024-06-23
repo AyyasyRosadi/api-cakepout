@@ -5,7 +5,7 @@ import ProgramAttributes from "./dto";
 import Component from "../component/model";
 import Activity from "../activity/model";
 import DetailOfActivity from "../detailOfActivities/model";
-import { programResponseBreakDown } from "../../ptk/dto";
+import { programResponseBreakDown } from "./dto";
 
 class ProgramLogic extends LogicBase{
 
@@ -62,7 +62,7 @@ class ProgramLogic extends LogicBase{
                 
             }
             no = `${program[p].institution_no}.${program[p].program_no}`
-            programNow.push({no:no, item:program[p].item, total:total})
+            programNow.push({no:no, id: program[p].id, item:program[p].item, total:total})
         }
         return programNow
     }

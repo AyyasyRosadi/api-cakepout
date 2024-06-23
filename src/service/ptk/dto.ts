@@ -15,9 +15,3 @@ export default interface PtkAttributes{
     gelar:string;
     gol_darah:string;
 }
-
-export interface programResponseBreakDown {
-    no: string,
-    item:string,
-    total:number
-}

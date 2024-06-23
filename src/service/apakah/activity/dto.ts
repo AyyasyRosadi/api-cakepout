@@ -16,12 +16,15 @@ export default interface ActivityAttributes{
 
 export interface SubActivityBreakDown{
     no:number;
+    id:string;
     name:string;
     total:number;
+
 }
 
 export interface ActivityBreakDown{
     no:number;
+    id:string;
     name:string;
     total:number;
     sub_activity?:Array<SubActivityBreakDown>|null

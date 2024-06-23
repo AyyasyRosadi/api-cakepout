@@ -52,7 +52,7 @@ class ActivityLogic extends LogicBase{
                     for(let d in detailOfActivityOnSubActivity){
                         totalSub+=detailOfActivityOnSubActivity[d].total
                         total +=totalSub
-                        subActivityNow.push({no:subActivity[s].sub_activity_no, name:subActivity[s].name, total:totalSub})
+                        subActivityNow.push({no:subActivity[s].sub_activity_no, id:subActivity[s].id,name:subActivity[s].name, total:totalSub})
                     }
                 }
             }
@@ -63,7 +63,7 @@ class ActivityLogic extends LogicBase{
                     total += detailOfActivity[d].total
                 }
             }
-            activityNow.push({no:activity[a].activity_no, name:activity[a].name, total:total, sub_activity:subActivityNow.length>0?subActivityNow:null})
+            activityNow.push({no:activity[a].activity_no, id:activity[a].id, name:activity[a].name, total:total, sub_activity:subActivityNow.length>0?subActivityNow:null})
         }
         return activityNow
     }

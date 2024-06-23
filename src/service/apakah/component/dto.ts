@@ -13,6 +13,7 @@ export default interface ComponentAttributes{
 
 export interface ComponentBreakDown{
     no:string;
+    id:string;
     item:string;
     total:number;
 }

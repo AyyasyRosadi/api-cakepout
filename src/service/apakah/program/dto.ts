@@ -9,3 +9,11 @@ export default interface ProgramAttributes {
     academic_year: string;
     component?:Array<ComponentAttributes>
 }
+
+
+export interface programResponseBreakDown {
+    no: string,
+    id: string,
+    item:string,
+    total:number
+}

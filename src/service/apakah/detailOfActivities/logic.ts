@@ -29,6 +29,10 @@ class DetailOfActivityLogic extends LogicBase{
         }
         return this.message(200, {message:"saved"});
     }
+
+    // public async getDetailOfActivity():Promise<>{
+
+    // }
 }
 
 export default  new DetailOfActivityLogic;
