@@ -52,8 +52,8 @@ class ActivityLogic extends LogicBase{
                     for(let d in detailOfActivityOnSubActivity){
                         totalSub+=detailOfActivityOnSubActivity[d].total
                         total +=totalSub
-                        subActivityNow.push({no:subActivity[s].sub_activity_no, id:subActivity[s].id,name:subActivity[s].name, total:totalSub})
                     }
+                    subActivityNow.push({no:subActivity[s].sub_activity_no, id:subActivity[s].id,name:subActivity[s].name, total:totalSub})
                 }
             }
             let detailOfActivity = activity[a].detail_of_activities
