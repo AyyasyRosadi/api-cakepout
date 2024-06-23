@@ -1,7 +1,9 @@
 import { defaultMessage, LogicBase, messageAttribute } from "../../logicBase";
 import Component from "../component/model";
+import DetailOfActivity from "../detailOfActivities/model";
 import Program from "../program/model";
-import ActivityAttributes from "./dto";
+import SubActivity from "../subActivity/model";
+import ActivityAttributes, { ActivityBreakDown, SubActivityBreakDown } from "./dto";
 import Activity from "./model";
 import {fn, col} from 'sequelize'
 
@@ -14,8 +16,62 @@ class ActivityLogic extends LogicBase{
         }
         return 0
     }
-    public async getByComponentId(component_id:string,academic_year:string):Promise<messageAttribute<ActivityAttributes[]>>{
-        return this.message(200, await Activity.findAll({where:{component_id,academic_year}}))
+    private async getByComponentId(component_id: string): Promise<ActivityAttributes[]> {
+        const activity = await Activity.findAll({
+            where:{component_id:component_id},
+            include:[
+                {
+                    model:DetailOfActivity
+                },
+                {
+                    model:SubActivity,
+                    include:[
+                        {
+                            model:DetailOfActivity
+                        }
+                    ]
+                }
+            ],
+        })
+        return activity
+    }
+
+    private async calculate(data:any):Promise<ActivityBreakDown[]>{
+        let activityNow:ActivityBreakDown[] = [];
+        const activity = data.map((element:any)=>element.get({plain:true}))
+        // console.log(activity)
+       
+        for(let a in activity){
+            let total = 0;
+            let subActivity = activity[a].sub_activities
+            let subActivityNow:SubActivityBreakDown[]=[]
+            if(subActivity.length>0){
+                for(let s in subActivity){
+                    let totalSub =0;
+                    let detailOfActivityOnSubActivity = subActivity[s].detail_of_activities
+                    for(let d in detailOfActivityOnSubActivity){
+                        totalSub+=detailOfActivityOnSubActivity[d].total
+                        total +=totalSub
+                        subActivityNow.push({no:subActivity[s].sub_activity_no, name:subActivity[s].name, total:totalSub})
+                    }
+                }
+            }
+            let detailOfActivity = activity[a].detail_of_activities
+            console.log(detailOfActivity)
+            for(let d in detailOfActivity){
+                if(detailOfActivity[d].sub_activity_id===null){
+                    total += detailOfActivity[d].total
+                }
+            }
+            activityNow.push({no:activity[a].activity_no, name:activity[a].name, total:total, sub_activity:subActivityNow.length>0?subActivityNow:null})
+        }
+        return activityNow
+    }
+
+
+    public async getAllActivityBreakDown(compoent_id:string):Promise<messageAttribute<ActivityBreakDown[]>>{
+        const activity = await this.getByComponentId(compoent_id)
+        return this.message(200, await this.calculate(activity))
     }
 
     public async create(component_id:string, name: string,  continue_activity:boolean):Promise<messageAttribute<defaultMessage>>{

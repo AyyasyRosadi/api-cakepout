@@ -6,8 +6,8 @@ import { Request, Response } from "express";
 class ActivityRouter extends BaseRouter{
     routes(): void {
         this.router.get("/:component_id", async(req:Request, res:Response):Promise<Response>=>{
-            const academic_year:string = queryToString(req?.query?.academic_year)
-            const data = await logic.getByComponentId(req?.params?.component_id,academic_year)
+            const {component_id} = req.params
+            const data = await logic.getAllActivityBreakDown(component_id)
             return res.status(data.status).json(data.data);
         });
         this.router.post("/", async(req:Request, res:Response):Promise<Response>=>{

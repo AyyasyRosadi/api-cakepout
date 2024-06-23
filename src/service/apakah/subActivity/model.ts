@@ -1,6 +1,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import SubActivityAttributes from "./dto";
 import db from "../../../config/database";
+import DetailOfActivity from "../detailOfActivities/model";
 
 interface SubActivityCreationAttributes extends Optional<SubActivityAttributes, 'id'>{}
 interface SubActivityInstance extends Model<SubActivityAttributes, SubActivityCreationAttributes>, SubActivityAttributes{
@@ -30,5 +31,9 @@ const SubActivity = db.define<SubActivityInstance>("sub_activity", {
         type:DataTypes.STRING
     }
 })
+
+SubActivity.hasMany(DetailOfActivity, {foreignKey:"sub_activity_id"})
+DetailOfActivity.belongsTo(SubActivity, {foreignKey:"sub_activity_id"})
+
 
 export default SubActivity

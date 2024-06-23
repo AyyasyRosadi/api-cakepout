@@ -26,7 +26,6 @@ class SubActivityLogic extends LogicBase{
     public async create(activity_id: string, name:string):Promise<messageAttribute<defaultMessage>>{
         const activity = await Activity.findOne({where:{id:activity_id}})
         const component = await Component.findOne({where:{id:activity!.component_id}})
-        console.log(component)
         const program = await Program.findOne({where:{id:component!.program_id}})
         const max = await this.getMaxSubActivity(program!.institution_no, program!.academic_year)
         await SubActivity.create({

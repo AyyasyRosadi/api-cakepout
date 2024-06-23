@@ -1,3 +1,5 @@
+import ActivityAttributes from "../activity/dto";
+
 export default interface ComponentAttributes{
     id: string;
     component_no: number;
@@ -6,4 +8,11 @@ export default interface ComponentAttributes{
     program_id: string;
     academic_year:string;
     institution_no:number;
+    activity?:Array<ActivityAttributes>
+}
+
+export interface ComponentBreakDown{
+    no:string;
+    item:string;
+    total:number;
 }

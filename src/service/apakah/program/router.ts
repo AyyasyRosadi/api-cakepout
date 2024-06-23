@@ -13,7 +13,7 @@ class Program extends BaseRouter{
         this.router.get("/:institutionId", async(req:Request, res:Response):Promise<Response>=>{
             const {institutionId} = req.params
             const academic_year:string =queryToString(req.query.academic_year)
-            const status = await logic.getProgramByInstitution(parseInt(institutionId), academic_year)
+            const status = await logic.getAllProgramByInstitution(parseInt(institutionId), academic_year)
             return res.status(status.status).json(status.data)
         });
     }

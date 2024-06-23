@@ -33,7 +33,7 @@ const Program  = db.define<ProgramInstance>('program', {
     academic_year:{
         type:DataTypes.STRING
     }
-})
+});
 
 Program.hasMany(Component, {foreignKey:"program_id"})
 Component.belongsTo(Program, {foreignKey:"program_id"})

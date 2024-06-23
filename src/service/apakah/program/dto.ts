@@ -1,3 +1,5 @@
+import ComponentAttributes from "../component/dto";
+
 export default interface ProgramAttributes {
     id: string;
     institution_no:number;
@@ -5,4 +7,5 @@ export default interface ProgramAttributes {
     item: string;
     modifable: boolean;
     academic_year: string;
+    component?:Array<ComponentAttributes>
 }

@@ -137,8 +137,7 @@ Content-Type: application/json
     "name":"SD IT PUTRI",
     "academic_year":"2024/2025"
 }
-###
-GET  {{host}}/apakah/program/1?academic_year=2024-2025
+
 ###
 GET {{host}}/institution
 ###
@@ -156,10 +155,9 @@ POST  {{host}}/apakah/activity
 Content-Type: application/json
 
 {
-    "component_id":"b5ff8f5c-72ff-49f6-a689-de3cfb0bcf38",
-    "name":"steak dual shock",
+    "component_id":"120139ab-fdfd-4956-9dbe-0916699a5d13",
+    "name":"Mak Cong",
     "continue_activity":true
-
 }
 ###
 POST {{host}}/apakah/sub-activity
@@ -174,22 +172,28 @@ POST {{host}}/apakah/detail-of-activity
 Content-Type: application/json
 
 {
-    "activity_id":"6118ceaf-1f2c-4570-9921-66df7bbefea4",
-    "sub_activity_id":"438abe0f-dab4-4e37-9d32-2044e46d1465",
+    "activity_id":"c9eac850-5334-4871-a596-13a4651c1451",
+    "sub_activity_id":null,
     "detail_of_activity_list":[
         {
-            "description":"ini adalah yah itu dah",
-            "unit_id":"1", 
-            "vol":1,
+            "description":"blablabla",
+            "unit_id":"2", 
+            "vol":2,
             "unit_price":1,
-            "thawing_method":"triwulan",
+            "thawing_method":"semester",
             "from":1,
             "until":12,
-            "total":1200000,
-            "academic_year":"2023/2024",
+            "total":3000000,
+            "academic_year":"2024/2025",
             "sharing_program":true,
             "post":1,
             "income_id": "9898998"
         }
     ]
 }
+###
+GET  {{host}}/apakah/program/1?academic_year=2024-2025
+###
+GET {{host}}/apakah/component/64ef5fde-0ace-4909-9795-6f464a3870f2
+###
+GET {{host}}/apakah/activity/b5ff8f5c-72ff-49f6-a689-de3cfb0bcf38

@@ -1,11 +1,14 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import db from "../../../config/database";
 import ComponentAttributes from "./dto";
+import Activity from "../activity/model";
+import ActivityAttributes from "../activity/dto";
 
 interface ComponentCreationAttributes extends Optional<ComponentAttributes, 'id'|'modifable'>{}
 interface ComponentInstance extends Model<ComponentAttributes, ComponentCreationAttributes>, ComponentAttributes{
     created_at:Date;
     updated_at:Date;
+    activity?:Array<ActivityAttributes>
 }
 
 const Component = db.define<ComponentInstance>('component', {
@@ -35,5 +38,8 @@ const Component = db.define<ComponentInstance>('component', {
         type:DataTypes.INTEGER
     }
 })
+
+Component.hasMany(Activity, {foreignKey:"component_id"})
+Activity.belongsTo(Component, {foreignKey:"component_id"})
 
 export default Component
