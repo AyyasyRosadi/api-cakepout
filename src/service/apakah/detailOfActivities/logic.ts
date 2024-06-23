@@ -4,8 +4,13 @@ import DetailOfActivity from "./model";
 
 
 class DetailOfActivityLogic extends LogicBase{
-    public async getByActivityId(activity_id:string,sub_activity_id:string,academic_year:string):Promise<messageAttribute<DetailOfActivityAttributes[]>>{
-        return this.message(200,await DetailOfActivity.findAll({where:{activity_id,sub_activity_id,academic_year}}))
+    public async getByActivityId(activityId:string):Promise<messageAttribute<DetailOfActivityAttributes[]>>{
+        console.log(activityId)
+        return this.message(200,await DetailOfActivity.findAll({where:{activity_id:activityId}}))
+    }
+
+    public async getBySubActivityId(subActivityId:string):Promise<messageAttribute<DetailOfActivityAttributes[]>>{
+        return this.message(200, await DetailOfActivity.findAll({where:{sub_activity_id:subActivityId}}))
     }
     public async create(activity_id:string, sub_activity_id:string|null, detailOfActivityList:Array<detailOfActivityList>):Promise<messageAttribute<defaultMessage>>{
         for(let d in detailOfActivityList){

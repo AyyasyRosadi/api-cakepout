@@ -197,3 +197,7 @@ GET  {{host}}/apakah/program/1?academic_year=2024-2025
 GET {{host}}/apakah/component/64ef5fde-0ace-4909-9795-6f464a3870f2
 ###
 GET {{host}}/apakah/activity/b5ff8f5c-72ff-49f6-a689-de3cfb0bcf38
+###
+GET {{host}}/apakah/detail-of-activity/6118ceaf-1f2c-4570-9921-66df7bbefea4
+###
+GET {{host}}/apakah/detail-of-activity/sub/438abe0f-dab4-4e37-9d32-2044e46d1465
