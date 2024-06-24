@@ -11,7 +11,7 @@ export interface DetailOfActivityAttributes{
     sub_activity_id:string|null;
     activity_id:string;
     academic_year:string;
-    income_id:string;
+    institution_income_id:string;
     sharing_program:boolean;
     post:number;
 }
@@ -28,5 +28,5 @@ export interface detailOfActivityList {
     academic_year:string;
     sharing_program:boolean;
     post:number;
-    income_id: string;
+    institution_income_id: string;
 }

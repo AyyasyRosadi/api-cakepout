@@ -41,7 +41,7 @@ const Activity = db.define<ActivityInstance>("activity",{
     academic_year:{
         type:DataTypes.STRING
     }
-})
+}, {paranoid:true})
 
 Activity.hasMany(SubActivity, {foreignKey:"activity_id"})
 SubActivity.belongsTo(Activity,{foreignKey:"activity_id"})

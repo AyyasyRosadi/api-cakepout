@@ -30,7 +30,7 @@ const SubActivity = db.define<SubActivityInstance>("sub_activity", {
     activity_id:{
         type:DataTypes.STRING
     }
-})
+}, {paranoid:true})
 
 SubActivity.hasMany(DetailOfActivity, {foreignKey:"sub_activity_id"})
 DetailOfActivity.belongsTo(SubActivity, {foreignKey:"sub_activity_id"})

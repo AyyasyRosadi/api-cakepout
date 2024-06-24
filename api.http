@@ -172,7 +172,7 @@ POST {{host}}/apakah/detail-of-activity
 Content-Type: application/json
 
 {
-    "activity_id":"c9eac850-5334-4871-a596-13a4651c1451",
+    "activity_id":"110e2471-e893-4098-86b1-5f6aa0a93a29",
     "sub_activity_id":null,
     "detail_of_activity_list":[
         {
@@ -183,11 +183,11 @@ Content-Type: application/json
             "thawing_method":"semester",
             "from":1,
             "until":12,
-            "total":3000000,
+            "total":9000000000000000000000000,
             "academic_year":"2024/2025",
             "sharing_program":true,
             "post":1,
-            "income_id": "9898998"
+            "institution_income_id": "3e97c4fa-e101-4c5f-bf16-a0ad7e17f420"
         }
     ]
 }
@@ -196,7 +196,7 @@ GET  {{host}}/apakah/program/1?academic_year=2024-2025
 ###
 GET {{host}}/apakah/component/64ef5fde-0ace-4909-9795-6f464a3870f2
 ###
-GET {{host}}/apakah/activity/b5ff8f5c-72ff-49f6-a689-de3cfb0bcf38
+GET {{host}}/apakah/activity/b66710b8-2e34-4f62-b233-e98070afde22
 ###
 GET {{host}}/apakah/detail-of-activity/6118ceaf-1f2c-4570-9921-66df7bbefea4
 ###
@@ -214,3 +214,11 @@ Content-Type: application/json
 GET {{host}}/year-active-system?system=kuc
 ###
 GET {{host}}/apakah/institution-income/1?academic_year=2024-2025
+###
+DELETE {{host}}/apakah/detail-of-activity/
+###
+DELETE {{host}}/apakah/sub-activity/ab5c2afb-6a59-4974-a37e-3bfa432d9509
+###
+DELETE {{host}}/apakah/detail-of-activity/71612035-0e41-47b5-b01a-94cdbfe73a7b
+
+

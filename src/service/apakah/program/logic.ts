@@ -6,6 +6,7 @@ import Component from "../component/model";
 import Activity from "../activity/model";
 import DetailOfActivity from "../detailOfActivities/model";
 import { programResponseBreakDown } from "./dto";
+import InstitutionIncome from "../institutionIncome/model";
 
 class ProgramLogic extends LogicBase{
 
@@ -88,7 +89,54 @@ class ProgramLogic extends LogicBase{
         }
     }
 
-   
+    private async getById(id:string):Promise<ProgramAttributes|null>{
+        return await Program.findOne({
+            where:{
+                id:id
+            },
+            include:[
+                {
+                    model:Component,
+                    include:[
+                        {
+                            model:Activity,
+                            include:[
+                                {
+                                    model:DetailOfActivity
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        })
+    }
+    public async delete(id:string):Promise<messageAttribute<defaultMessage>>{
+        const program:any = await this.getById(id)
+        const programPlan = program.get({plain:true})
+        if(program.modifable){
+            if(program.components.length>0){
+                const components = program!.components
+                for(let c in components){
+                    const activitys = components[c].activities
+                    for(let a in activitys){
+                        const detail = activitys[a].detail_of_activities
+                        for(let d in detail){
+                            const institutionIncome = await InstitutionIncome.findOne({where:{id:detail[d].institution_income_id}})
+                            await InstitutionIncome.update({budgeted:institutionIncome!.budgeted-detail[d].total}, {where:{id:detail[d].institution_income_id}})
+                            await DetailOfActivity.destroy({where:{id:detail[d].id}})
+                        }
+                        await Activity.destroy({where:{id:activitys[a].id}})
+                    }
+                    await Component.destroy({where:{id:components[c].id}})
+                }
+                await Program.destroy({where:{id:id}})
+            }
+            return this.message(400, {message:"deleted"})
+        }
+        return this.message(400, {message:"uuups"})
+        
+    }
 }
 
 export default new ProgramLogic

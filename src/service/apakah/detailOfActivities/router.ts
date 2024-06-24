@@ -21,6 +21,11 @@ class RouterDetailOfActivity extends BaseRouter {
             const status = await logic.create(activity_id, sub_activity_id, detail_of_activity_list)
             return res.status(status.status).json(status.data)
         });
+        this.router.delete("/:id", async (req: Request, res: Response): Promise<Response> => {
+            const {id} = req.params
+            const status = await logic.delete(id)
+            return res.status(status.status).json(status.data)
+        })
     }
 }
 

@@ -15,6 +15,12 @@ class SubActivityRouter extends BaseRouter {
             return res.status(status.status).json(status.data)
         });
 
+        this.router.delete("/:id", async (req: Request, res: Response): Promise<Response> => {
+            const {id} = req.params;
+            const status = await logic.delete(id)
+            return res.status(status.status).json(status.data)
+        });
+
     }
 
 }

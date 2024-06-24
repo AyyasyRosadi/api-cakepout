@@ -1,6 +1,7 @@
 import { defaultMessage, LogicBase, messageAttribute } from "../../logicBase";
 import Component from "../component/model";
 import DetailOfActivity from "../detailOfActivities/model";
+import InstitutionIncome from "../institutionIncome/model";
 import Program from "../program/model";
 import SubActivity from "../subActivity/model";
 import ActivityAttributes, { ActivityBreakDown, SubActivityBreakDown } from "./dto";
@@ -50,14 +51,14 @@ class ActivityLogic extends LogicBase{
                     let totalSub =0;
                     let detailOfActivityOnSubActivity = subActivity[s].detail_of_activities
                     for(let d in detailOfActivityOnSubActivity){
-                        totalSub+=detailOfActivityOnSubActivity[d].total
-                        total +=totalSub
+                        totalSub= totalSub + detailOfActivityOnSubActivity[d].total                     
                     }
+                    total +=totalSub
                     subActivityNow.push({no:subActivity[s].sub_activity_no, id:subActivity[s].id,name:subActivity[s].name, total:totalSub})
                 }
             }
             let detailOfActivity = activity[a].detail_of_activities
-            console.log(detailOfActivity)
+            // console.log(detailOfActivity)
             for(let d in detailOfActivity){
                 if(detailOfActivity[d].sub_activity_id===null){
                     total += detailOfActivity[d].total
@@ -89,6 +90,33 @@ class ActivityLogic extends LogicBase{
             continue:continue_activity
         })
         return this.message(200, {message:"saved"})
+    }
+
+    private async getActivityId(id:string):Promise<ActivityAttributes|null>{
+        const activity = await Activity.findOne({
+            where:{id:id},
+            include:[
+                {
+                    model:DetailOfActivity
+                }
+            ]
+        })
+        return activity
+    }
+
+    public async delete(id: string):Promise<messageAttribute<defaultMessage>>{
+        const activity:any = await this.getActivityId(id)
+        const planActivity = activity.get({plain:true})
+        if(planActivity!.detail_of_activities.length>0){
+            let detail = planActivity!.detail_of_activities
+            for(let p in detail){
+                const institutionIncome = await InstitutionIncome.findOne({where:{id:detail[p].institution_income_id}})
+                await InstitutionIncome.update({budgeted:institutionIncome!.budgeted-detail[p].total}, {where:{id:detail[p].institution_income_id}})
+                await DetailOfActivity.destroy({where:{id:detail[p].id}})
+            }
+        }
+        await Activity.destroy({where:{id:id}})
+        return this.message(200, {message:"deleted"})
     }
     
 }

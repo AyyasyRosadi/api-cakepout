@@ -37,7 +37,7 @@ const Component = db.define<ComponentInstance>('component', {
     institution_no:{
         type:DataTypes.INTEGER
     }
-})
+},{paranoid:true})
 
 Component.hasMany(Activity, {foreignKey:"component_id"})
 Activity.belongsTo(Component, {foreignKey:"component_id"})

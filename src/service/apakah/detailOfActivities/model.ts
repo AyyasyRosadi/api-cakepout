@@ -49,7 +49,7 @@ const DetailOfActivity = db.define<DetailOfActivityInstance>("detail_of_activity
     academic_year:{
         type:DataTypes.STRING
     },
-    income_id:{
+    institution_income_id:{
         type:DataTypes.STRING
     },
     sharing_program:{
@@ -60,6 +60,6 @@ const DetailOfActivity = db.define<DetailOfActivityInstance>("detail_of_activity
         type:DataTypes.INTEGER
     }
 
-})
+}, {paranoid:true})
 
 export default DetailOfActivity

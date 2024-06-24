@@ -2,9 +2,11 @@ import { defaultMessage, LogicBase, messageAttribute } from "../../logicBase";
 import Activity from "../activity/model";
 import Component from "../component/model";
 import Program from "../program/model";
-import {fn, col} from 'sequelize';
+import {fn, col, where} from 'sequelize';
 import SubActivity from "./model";
 import SubActivityAttributes from "./dto";
+import DetailOfActivity from "../detailOfActivities/model";
+import InstitutionIncome from "../institutionIncome/model";
 
 
 class SubActivityLogic extends LogicBase{
@@ -37,6 +39,30 @@ class SubActivityLogic extends LogicBase{
         })
         return this.message(200, {message:"saved"})
         
+    }
+
+    private async getSubActivityById(id:string):Promise<any>{
+        const subActivity = await SubActivity.findOne({where:{id:id}, include:[
+            {
+                model:DetailOfActivity
+            }
+        ]})
+        return subActivity;
+    }
+
+    public async delete(id:string):Promise<messageAttribute<defaultMessage>>{
+        const subActivity = await this.getSubActivityById(id)
+        const planSubActivity = subActivity.get({plain:true})
+        if(planSubActivity!.detail_of_activities.length>0){
+            let detail = planSubActivity!.detail_of_activities
+            for(let p in detail){
+                const institutionIncome = await InstitutionIncome.findOne({where:{id:detail[p].institution_income_id}})
+                await InstitutionIncome.update({budgeted:institutionIncome!.budgeted-detail[p].total}, {where:{id:detail[p].institution_income_id}})
+                await DetailOfActivity.destroy({where:{id:detail[p].id}})
+            }
+        }
+        await SubActivity.destroy({where:{id:id}})
+        return this.message(200, {message:"deleted"})
     }
 }
 

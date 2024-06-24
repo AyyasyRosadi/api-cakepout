@@ -6,6 +6,7 @@ import ComponentAttributes from "./dto";
 import Activity from "../activity/model";
 import DetailOfActivity from "../detailOfActivities/model";
 import { ComponentBreakDown } from "./dto";
+import InstitutionIncome from "../institutionIncome/model";
 
 class ComponentLogic extends LogicBase {
     private async getMaxComponent(instituton_no: number, academic_year: string): Promise<number> {
@@ -72,6 +73,48 @@ class ComponentLogic extends LogicBase {
         })
         return this.message(200, { message: "saved" })
 
+    }
+
+    private async getComponentById(id: string):Promise<ComponentAttributes|null>{
+        const component = await Component.findOne({
+            where:{
+                id,
+            },
+            include:[
+                {
+                    model:Activity,
+                    include:[
+                        {
+                            model:DetailOfActivity
+                        }
+                    ]
+                }
+            ]
+        })
+        return component
+    }
+
+    public async delete(id:string):Promise<messageAttribute<defaultMessage>>{
+        const componet:any = await this.getComponentById(id)
+        const componentPlan = componet.get({plain:true})
+        if(componentPlan.modifable){
+            if(componentPlan.activities.length>0){
+                const activity = componentPlan.activities
+                for(let a in  activity){
+                    const detail = activity[a].detail_of_activities
+                    for(let d in detail){
+                        const institutionIncome = await InstitutionIncome.findOne({where:{id:detail[d].institution_income_id}})
+                        await InstitutionIncome.update({budgeted:institutionIncome!.budgeted-detail[d].total}, {where:{id:detail[d].institution_income_id}})
+                        await DetailOfActivity.destroy({where:{id:detail[d].id}})
+                    }
+                    await Activity.destroy({where:{id:activity[a].id}})
+                }
+                
+            }
+            await Component.destroy({where:{id:id}})
+        }
+        
+        return this.message(200, {message:"deleted"})
     }
 }
 
