@@ -23,6 +23,7 @@ import DetailOfActivity from '../service/apakah/detailOfActivities/model'
 import InstitutionIncome from "../service/apakah/institutionIncome/model"
 import Unit from '../service/apakah/unit/model';
 import IncomeGroup from "../service/apakah/incomeGroup/model"
+import YearActiveInSystem from "../service/yearActiveInSystem/model"
 
 
 export const Synchronize = async () => {
@@ -33,25 +34,26 @@ export const Synchronize = async () => {
         await Role.sync()
         await User.sync()
         await UserSystem.sync()
+        await ProgramApakah.sync({alter:true})
+        await ComponentApakah.sync({alter:true})
+        await ActivityApakah.sync({alter:true})
+        await SubActivityApakah.sync({alter:true})
+        await DetailOfActivity.sync({alter:true})
         await AccountingYear.sync()
         await Institution.sync()
         await SharingProgram.sync()
         await BlacklistToken.sync()
         await JournalReferenceNumber.sync({ alter: true })
         await GroupAccount.sync({ alter: true })
-        await DetailOfActivity.sync({alter:true})
         await Account.sync({ alter: true })
         await Journal.sync({ alter: true })
         await Ledger.sync({ alter: true })
         await DisbursementOfFunds.sync({ alter: true })
         await InstanceApakah.sync({alter:true})
-        await ProgramApakah.sync({alter:true})
-        await ComponentApakah.sync({alter:true})
-        await ActivityApakah.sync({alter:true})
-        await SubActivityApakah.sync({alter:true})
         await IncomeGroup.sync({alter:true})
         await InstitutionIncome.sync({alter:true})
         await Unit.sync({alter:true})
+        await YearActiveInSystem.sync({alter:true})
     } catch (err) {
         throw err
     }

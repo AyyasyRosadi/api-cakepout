@@ -6,6 +6,7 @@ import AccountingYear from "./accountingYear/router";
 import Institution from "./institution/router";
 import Apakah from "./apakah"
 import Cakepout from "./cakepout";
+import YearActiveInSystem from "./yearActiveInSystem/router";
 
 const serviceRouter: Router = express();
 
@@ -16,6 +17,7 @@ serviceRouter.use('/accounting-year', AccountingYear)
 serviceRouter.use('/institution', Institution)
 serviceRouter.use("/apakah", Apakah)
 serviceRouter.use("/cakepout",Cakepout)
+serviceRouter.use("/year-active-system", YearActiveInSystem)
 
 
 

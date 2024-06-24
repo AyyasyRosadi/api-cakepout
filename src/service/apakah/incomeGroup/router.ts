@@ -11,6 +11,10 @@ class IncomeGroupRouter extends BaseRouter {
             const status = await logic.create(name, parseInt(parent_id));
             return res.status(status.status).json(status.data)
         })
+        this.router.get("/", async(req:Request, res:Response): Promise<Response> =>{
+            const status = await logic.get();
+            return res.status(status.status).json(status.data)
+        })
     }
 }
 

@@ -22,6 +22,12 @@ class InstitutionIncomeLogic extends LogicBase{
         }
     }
 
+    public async getById(institution_id:number, academic_year:string):Promise<messageAttribute<InstitutionIncomeAttributes[]>>{
+        const newAcademicYear = academic_year.replace("-", "/")
+        const intitutionIncome = await InstitutionIncome.findAll({where:{institution_id, academic_year:newAcademicYear}})
+        return this.message(200, intitutionIncome)
+    }
+
     // public async getByInstitution(institution_number:number,academic_year:string, status:number|undefined):Promise<messageAttribute<Array<InstitutionIncomeAttributes>>>{
     //     const fixStatus:{where: any, attributes?:any} = status===0 ? {where:{approved_total:0,institution_id:institution_number,academic_year}}:status===1?{where:{approved_total:{[Op.not]:0}, institution_id:institution_number,academic_year}}:{where:{institution_id:institution_number,academic_year}}
     //     fixStatus.attributes = {exclude:['createdAt', 'updatedAt']}

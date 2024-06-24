@@ -6,5 +6,4 @@ export default interface InstitutionIncomeAttributes{
     total: number;
     budgeted:number;
     income_group_id:string;
-
 }

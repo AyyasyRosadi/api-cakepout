@@ -13,6 +13,7 @@ class InstitutionLogic extends LogicBase {
     }
     public async create(name:string, academic_year:string):Promise<messageAttribute<defaultMessage>>{
         const institution = await Institution.create({name})
+        console.log("***********")
         if(institution){
             for(let p in PROGRAM){
                 const program = await Program.create({

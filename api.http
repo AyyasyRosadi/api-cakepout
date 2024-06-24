@@ -209,3 +209,8 @@ Content-Type: application/json
     "name":"test",
     "parent_id":20222
 }
+
+###
+GET {{host}}/year-active-system?system=kuc
+###
+GET {{host}}/apakah/institution-income/1?academic_year=2024-2025
