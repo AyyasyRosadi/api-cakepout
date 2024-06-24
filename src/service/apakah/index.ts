@@ -7,7 +7,7 @@ import Component from "./component/router";
 import Activity from './activity/router';
 import SubActivity from "./subActivity/router";
 import DetailOfActivity from "./detailOfActivities/router";
-
+import IncomeGroug from "./incomeGroup/router";
 
 const serviceApakah: Router = express();
 
@@ -19,5 +19,6 @@ serviceApakah.use("/component", Component);
 serviceApakah.use("/activity", Activity);
 serviceApakah.use("/sub-activity", SubActivity)
 serviceApakah.use("/detail-of-activity", DetailOfActivity)
+serviceApakah.use("/income-group", IncomeGroug)
 
 export default serviceApakah;

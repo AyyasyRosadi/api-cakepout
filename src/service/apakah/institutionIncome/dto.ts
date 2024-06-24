@@ -4,6 +4,7 @@ export default interface InstitutionIncomeAttributes{
     name:string;
     academic_year: string
     total: number;
-    approved_total:number;
+    budgeted:number;
+    income_group_id:string;
 
 }

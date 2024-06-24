@@ -22,6 +22,7 @@ import SubActivityApakah from '../service/apakah/subActivity/model'
 import DetailOfActivity from '../service/apakah/detailOfActivities/model'
 import InstitutionIncome from "../service/apakah/institutionIncome/model"
 import Unit from '../service/apakah/unit/model';
+import IncomeGroup from "../service/apakah/incomeGroup/model"
 
 
 export const Synchronize = async () => {
@@ -48,6 +49,7 @@ export const Synchronize = async () => {
         await ComponentApakah.sync({alter:true})
         await ActivityApakah.sync({alter:true})
         await SubActivityApakah.sync({alter:true})
+        await IncomeGroup.sync({alter:true})
         await InstitutionIncome.sync({alter:true})
         await Unit.sync({alter:true})
     } catch (err) {

@@ -26,9 +26,13 @@ const InstitutionIncome = db.define<InstitutionIncomeInstance>("institution_inco
     total: {
         type:DataTypes.BIGINT
     },
-    approved_total:{
+    budgeted:{
         type:DataTypes.BIGINT
+    },
+    income_group_id:{
+        type:DataTypes.STRING
     }
+    
 })
 
 export default InstitutionIncome;

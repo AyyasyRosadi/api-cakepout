@@ -201,3 +201,11 @@ GET {{host}}/apakah/activity/b5ff8f5c-72ff-49f6-a689-de3cfb0bcf38
 GET {{host}}/apakah/detail-of-activity/6118ceaf-1f2c-4570-9921-66df7bbefea4
 ###
 GET {{host}}/apakah/detail-of-activity/sub/438abe0f-dab4-4e37-9d32-2044e46d1465
+###
+POST {{host}}/apakah/income-group
+Content-Type: application/json
+
+{
+    "name":"test",
+    "parent_id":20222
+}
