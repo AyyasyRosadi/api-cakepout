@@ -8,6 +8,7 @@ import Activity from './activity/router';
 import SubActivity from "./subActivity/router";
 import DetailOfActivity from "./detailOfActivities/router";
 import IncomeGroug from "./incomeGroup/router";
+import Dashboard from './dashboard/router'
 
 const serviceApakah: Router = express();
 
@@ -20,5 +21,6 @@ serviceApakah.use("/activity", Activity);
 serviceApakah.use("/sub-activity", SubActivity)
 serviceApakah.use("/detail-of-activity", DetailOfActivity)
 serviceApakah.use("/income-group", IncomeGroug)
+serviceApakah.use("/dashboard",Dashboard)
 
 export default serviceApakah;
