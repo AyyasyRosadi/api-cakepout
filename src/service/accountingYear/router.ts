@@ -9,7 +9,7 @@ import validator from "./validator";
 class AccountingYearRouter extends BaseRouter {
     routes(): void {
         this.router.get('/',
-        authentication.authenticationUser(SYSTEMCAKEPOUT,ALLROLE),
+        // authentication.authenticationUser(SYSTEMCAKEPOUT,ALLROLE),
             async (req: Request, res: Response): Promise<Response> => {
                 const allAccountingYear = await logic.getAllAccountYear()
                 return res.status(allAccountingYear.status).json(allAccountingYear.data)
