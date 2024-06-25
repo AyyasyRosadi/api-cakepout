@@ -9,7 +9,7 @@ import validator from "./validator";
 class ActivityRouter extends BaseRouter {
     routes(): void {
         this.router.get("/:component_id",
-            authentication.authenticationUser(SYSTEMAPAKAH, ALLROLEAPAKAH),
+            // authentication.authenticationUser(SYSTEMAPAKAH, ALLROLEAPAKAH),
             async (req: Request, res: Response): Promise<Response> => {
                 const { component_id } = req.params
                 const data = await logic.getAllActivityBreakDown(component_id)

@@ -196,9 +196,9 @@ Content-Type: application/json
 GET  {{host}}/apakah/program/24?academic_year=2024-2025
 Authorization: Bearer {{token}}
 ###
-GET {{host}}/apakah/component/64ef5fde-0ace-4909-9795-6f464a3870f2
+GET {{host}}/apakah/component/f852d701-7dde-4cae-91cc-25cc389c858b
 ###
-GET {{host}}/apakah/activity/b66710b8-2e34-4f62-b233-e98070afde22
+GET {{host}}/apakah/activity/f852d701-7dde-4cae-91cc-25cc389c858b
 ###
 GET {{host}}/apakah/detail-of-activity/6118ceaf-1f2c-4570-9921-66df7bbefea4
 ###

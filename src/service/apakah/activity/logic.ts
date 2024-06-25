@@ -55,8 +55,7 @@ class ActivityLogic extends LogicBase{
                         totalSub= totalSub + detailOfActivityOnSubActivity[d].total                     
                     }
                     // totalWeight = totalWeight + subActivity[s].weight;
-                    console.log("------")
-                    console.log(subActivity[s].weight)
+                    total = total + totalSub
                     subActivityNow.push({no:subActivity[s].sub_activity_no, id:subActivity[s].id,name:subActivity[s].name, continue:subActivity[s].continue, total:totalSub, weight:subActivity[s].weight})
                 }
             }
@@ -67,9 +66,10 @@ class ActivityLogic extends LogicBase{
                     total += detailOfActivity[d].total
                 }
             }
-            
+            console.log(total)
             activityNow.push({no:activity[a].activity_no, id:activity[a].id, name:activity[a].name, continue:activity[a].continue, total:total, sub_activity:subActivityNow.length>0?subActivityNow:null, weight:activity[a].weight})
         }
+        // console.log(activityNow)
         return activityNow
     }
 
