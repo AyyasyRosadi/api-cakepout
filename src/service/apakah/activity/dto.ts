@@ -12,6 +12,7 @@ export default interface ActivityAttributes{
     continue: boolean;
     sub_activity?:Array<SubActivityAttributes>
     detail_of_activity?:Array<DetailOfActivityAttributes>
+    weight:number,
 }
 
 export interface SubActivityBreakDown{
@@ -19,7 +20,6 @@ export interface SubActivityBreakDown{
     id:string;
     name:string;
     total:number;
-
 }
 
 export interface ActivityBreakDown{

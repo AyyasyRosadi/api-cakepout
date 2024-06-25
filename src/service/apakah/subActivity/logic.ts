@@ -35,7 +35,8 @@ class SubActivityLogic extends LogicBase{
             name,
             institution_no:program!.institution_no,
             academic_year:activity!.academic_year,
-            activity_id:activity!.id
+            activity_id:activity!.id,
+            weight:0,
         })
         return this.message(200, {message:"saved"})
         

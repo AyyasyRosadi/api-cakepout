@@ -227,5 +227,9 @@ GET {{host}}/apakah/dashboard
 ###
 GET {{host}}/apakah/dashboard/24
 Authorization: Bearer {{token}}
+###
+GET {{host}}/apakah/weight-activity
+###
+GET {{host}}/apakah/weight-activity/question
 
 

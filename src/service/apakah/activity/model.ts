@@ -40,6 +40,10 @@ const Activity = db.define<ActivityInstance>("activity",{
     },
     academic_year:{
         type:DataTypes.STRING
+    },
+    weight:{
+        type:DataTypes.INTEGER,
+        defaultValue:0
     }
 }, {paranoid:true})
 

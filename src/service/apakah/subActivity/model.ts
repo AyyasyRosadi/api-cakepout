@@ -29,6 +29,10 @@ const SubActivity = db.define<SubActivityInstance>("sub_activity", {
     },
     activity_id:{
         type:DataTypes.STRING
+    },
+    weight:{
+        type:DataTypes.INTEGER,
+        defaultValue:0
     }
 }, {paranoid:true})
 

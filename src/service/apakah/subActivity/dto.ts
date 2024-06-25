@@ -5,4 +5,5 @@ export default interface SubActivityAttributes {
     institution_no: number,
     academic_year:string,
     activity_id: string;
+    weight: number;
 }

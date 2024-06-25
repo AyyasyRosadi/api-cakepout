@@ -87,7 +87,8 @@ class ActivityLogic extends LogicBase{
             component_id,
             institution_no:program!.institution_no,
             academic_year:program!.academic_year,
-            continue:continue_activity
+            continue:continue_activity,
+            weight:0
         })
         return this.message(200, {message:"saved"})
     }
