@@ -30,7 +30,7 @@ class SubActivityLogic extends LogicBase{
         const component = await Component.findOne({where:{id:activity!.component_id}})
         const program = await Program.findOne({where:{id:component!.program_id}})
         const max = await this.getMaxSubActivity(program!.institution_no, program!.academic_year)
-        await SubActivity.create({
+        const subActivity = await SubActivity.create({
             sub_activity_no: max+1,
             name,
             institution_no:program!.institution_no,
@@ -38,7 +38,7 @@ class SubActivityLogic extends LogicBase{
             activity_id:activity!.id,
             weight:0,
         })
-        return this.message(200, {message:"saved"})
+        return this.message(200, {message:`${subActivity.id}`})
         
     }
 

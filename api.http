@@ -231,5 +231,19 @@ Authorization: Bearer {{token}}
 GET {{host}}/apakah/weight-activity
 ###
 GET {{host}}/apakah/weight-activity/question
+###
+POST  {{host}}/apakah/weight-activity/answer
+Content-Type: application/json
+
+{
+    "activity_id":"e8a8db4e-26b7-4e25-9e08-f44eeb015063",
+    "answer":[
+        {
+            "question_id":1,
+            "answer_id":1,
+            "weight":1
+        }
+    ]
+}
 
 

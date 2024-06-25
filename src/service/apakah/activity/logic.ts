@@ -46,7 +46,7 @@ class ActivityLogic extends LogicBase{
             let total = 0;
             let subActivity = activity[a].sub_activities
             let subActivityNow:SubActivityBreakDown[]=[]
-            let totalWeight = 0;
+            // let totalWeight = 0;
             if(subActivity.length>0){
                 for(let s in subActivity){
                     let totalSub =0;
@@ -54,7 +54,9 @@ class ActivityLogic extends LogicBase{
                     for(let d in detailOfActivityOnSubActivity){
                         totalSub= totalSub + detailOfActivityOnSubActivity[d].total                     
                     }
-                    totalWeight = totalWeight + subActivity[s].weight;
+                    // totalWeight = totalWeight + subActivity[s].weight;
+                    console.log("------")
+                    console.log(subActivity[s].weight)
                     subActivityNow.push({no:subActivity[s].sub_activity_no, id:subActivity[s].id,name:subActivity[s].name, continue:subActivity[s].continue, total:totalSub, weight:subActivity[s].weight})
                 }
             }
@@ -65,8 +67,8 @@ class ActivityLogic extends LogicBase{
                     total += detailOfActivity[d].total
                 }
             }
-            let finalWeight = totalWeight/subActivity.length
-            activityNow.push({no:activity[a].activity_no, id:activity[a].id, name:activity[a].name, continue:activity[a].continue, total:total, sub_activity:subActivityNow.length>0?subActivityNow:null, weight:finalWeight})
+            
+            activityNow.push({no:activity[a].activity_no, id:activity[a].id, name:activity[a].name, continue:activity[a].continue, total:total, sub_activity:subActivityNow.length>0?subActivityNow:null, weight:activity[a].weight})
         }
         return activityNow
     }
@@ -82,7 +84,7 @@ class ActivityLogic extends LogicBase{
         
         const program = await Program.findOne({where:{id:component!.program_id}})
         const max = await this.getMaxActivity(program!.institution_no, program!.academic_year)
-        await Activity.create({
+        const activity = await Activity.create({
             activity_no:max+1,
             name:name,
             status:0,
@@ -92,7 +94,7 @@ class ActivityLogic extends LogicBase{
             continue:continue_activity,
             weight:0
         })
-        return this.message(200, {message:"saved"})
+        return this.message(200, {message:`${activity.id}`})
     }
 
     private async getActivityId(id:string):Promise<ActivityAttributes|null>{

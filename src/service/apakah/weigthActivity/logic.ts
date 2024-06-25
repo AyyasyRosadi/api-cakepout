@@ -27,8 +27,11 @@ class WeightActivityLogic extends LogicBase{
     public async create(activityId:string, answer:Array<Answer>):Promise<messageAttribute<defaultMessage>>{
         let total = 0;
         const sub = await SubActivity.findOne({where:{id:activityId}})
+        console.log("******")
+        console.log(answer.length)
+        console.log("******")
         for(let a in answer){
-            const weightActivity = await WeightActivity.findOne({where:{activity_id:activityId}})
+            const weightActivity = await WeightActivity.findOne({where:{activity_id:activityId, weight_question_id:answer[a].question_id}})
             if(weightActivity){
                 await WeightActivity.update({weight_question_id:answer[a]!.question_id, weight_answer_id:answer[a].answer_id}, {where:{activity_id:activityId}})
             }else{
@@ -42,6 +45,7 @@ class WeightActivityLogic extends LogicBase{
         }else{
             await Activity.update({weight:weight},{where:{id:activityId}})
         }
+        console.log("finish")
         return this.message(200, {message:"created"})
     }
 }
