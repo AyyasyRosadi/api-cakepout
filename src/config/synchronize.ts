@@ -24,6 +24,7 @@ import InstitutionIncome from "../service/apakah/institutionIncome/model"
 import Unit from '../service/apakah/unit/model';
 import IncomeGroup from "../service/apakah/incomeGroup/model"
 import YearActiveInSystem from "../service/yearActiveInSystem/model"
+import UserApakah from "../service/userApakah/model"
 
 
 export const Synchronize = async () => {
@@ -54,6 +55,7 @@ export const Synchronize = async () => {
         await IncomeGroup.sync({alter:true})
         await Unit.sync({alter:true})
         await YearActiveInSystem.sync({alter:true})
+        await UserApakah.sync()
     } catch (err) {
         throw err
     }

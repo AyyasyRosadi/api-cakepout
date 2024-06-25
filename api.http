@@ -1,13 +1,14 @@
 @host = http://localhost:9191
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiZDJlMDhkZjgtYjkxNy00NDM2LWI3N2UtNmRjNDBlYWI1MGFkIiwiaWF0IjoxNzE2OTY3NDgzLCJleHAiOjE3MTY5ODkwODMsImp0aSI6IjA2MmU3ZDNjLWQxNWUtNDU5OS1hZmUyLTkyZTUzZjA0MjBkYyJ9.UwYJCTetNPk57zPnEsfJc9zYbyW19HfrmFu46CqxAK4
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMWMyMDQ4NjYtYTRkZS00ZmVkLWI0OWMtMTg1NzgwMTRmOTllIiwiaWF0IjoxNzE5Mjc5MjUwLCJleHAiOjE3MTkzMDA4NTAsImp0aSI6IjVmN2M4MzY5LWE2ZWEtNDY2Mi04MzM2LTg0YjFlZjI0YTJhNCJ9.Ng_cd8_sCmXgLrDWx-N06-grekdcXeYX6m_h-iiuPOA
 
 ###
 POST {{host}}/authentication/login
 Content-Type: application/json
 
 {
-    "username":"19910320141139",
-    "password":"Ayambakarkecap!212"
+    "username":"19931120211014",
+    "password":"bismillah212",
+    "system":"apakah"
 }
 
 ###
@@ -192,7 +193,8 @@ Content-Type: application/json
     ]
 }
 ###
-GET  {{host}}/apakah/program/1?academic_year=2024-2025
+GET  {{host}}/apakah/program/24?academic_year=2024-2025
+Authorization: Bearer {{token}}
 ###
 GET {{host}}/apakah/component/64ef5fde-0ace-4909-9795-6f464a3870f2
 ###
@@ -223,6 +225,7 @@ DELETE {{host}}/apakah/detail-of-activity/71612035-0e41-47b5-b01a-94cdbfe73a7b
 ###
 GET {{host}}/apakah/dashboard
 ###
-GET {{host}}/apakah/dashboard/29
+GET {{host}}/apakah/dashboard/24
+Authorization: Bearer {{token}}
 
 

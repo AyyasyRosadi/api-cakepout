@@ -5,6 +5,8 @@ import System from "../service/system/model"
 import UserSystem from "../service/userSystem/model"
 import UserAttributes from "../service/user/dto"
 import User from "../service/user/model"
+import UserApakah from "../service/userApakah/model"
+import { Op } from "sequelize"
 
 interface UserSystemAttributes {
     id: number;
@@ -20,14 +22,24 @@ interface UserSystemAttributes {
 
 class UserHelper {
     public async getUserByUuid(uuid: string): Promise<UserAttributes | null> {
-        const oneUser = User.findOne({ where: { uuid } })
+        const oneUser = User.findOne({
+            where: { uuid },
+            include: [
+                {
+                    model: UserApakah,
+                    as: "user_apakah",
+                    where: { no_lembaga: { [Op.not]: null } },
+                    required: false,
+                }
+            ],
+        })
         return oneUser
     }
     public async getUserSystemByUuidUser(uuid_user: string): Promise<Array<UserSystemAttributes>> {
         try {
             const userSystemByUser = await UserSystem.findAll({
                 where: { uuid_user },
-                attributes:['uuid_user'],
+                attributes: ['uuid_user'],
                 include: [
                     { model: System, attributes: ["uuid", "nama_sistem"] },
                     { model: Role, attributes: ["uuid", "nama_role"] },
@@ -54,6 +66,11 @@ class UserHelper {
                         model: Role,
                         attributes: ['nama_role']
                     }]
+                }, {
+                    model: UserApakah,
+                    as: "user_apakah",
+                    where: { no_lembaga: { [Op.not]: null } },
+                    required: false,
                 }]
             })
             return oneUser

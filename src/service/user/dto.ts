@@ -1,3 +1,4 @@
+import { UserApakahAttributes } from "../userApakah/dto";
 import UserSystemAttributes from "../userSystem/dto";
 
 export default interface UserAttributes {
@@ -7,4 +8,5 @@ export default interface UserAttributes {
     password: string;
     general_user: boolean;
     user_sistems?: Array<UserSystemAttributes>
+    user_apakah?: UserApakahAttributes
 }

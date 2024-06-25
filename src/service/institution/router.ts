@@ -2,8 +2,7 @@ import { Request, Response } from "express";
 import BaseRouter from "../routerBase";
 import logic from "./logic";
 import authentication from "../../middleware/authentication";
-import { ALLROLE, SYSTEMCAKEPOUT } from "../constant";
-
+import { ALLROLEGLOBAL, SYSTEMGLOBAL } from "../constant";
 
 class InstitutionRouter extends BaseRouter {
     routes(): void {
@@ -13,11 +12,15 @@ class InstitutionRouter extends BaseRouter {
         //         const allInstitution = await logic.getAllInstitution()
         //         return res.status(allInstitution.status).json(allInstitution.data)
         //     });
-        this.router.get("/", async(req:Request, res:Response)=>{
+        this.router.get("/", 
+            authentication.authenticationUser(SYSTEMGLOBAL, ALLROLEGLOBAL),
+            async(req:Request, res:Response)=>{
             const status = await logic.getAllInstitution();
             return res.status(status.status).json(status.data)
         });
-        this.router.post("/", async(req:Request, res:Response):Promise<Response>=>{
+        this.router.post("/", 
+            authentication.authenticationUser(SYSTEMGLOBAL, ALLROLEGLOBAL),
+            async(req:Request, res:Response):Promise<Response>=>{
             const {name, academic_year} = req.body;
             const status = await logic.create(name, academic_year);
             return res.status(status.status).json(status.data);

@@ -2,10 +2,11 @@ import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken"
 import BlacklistToken from "../service/blacklistToken/model";
 import userHelper from "../helper/user";
+import { UserApakahAttributes } from "../service/userApakah/dto";
 
 
 class Authentication {
-    public authenticationUser(system: string, allowedRole: string[]): (req: Request, res: Response, next: NextFunction) => Promise<Response | void> {
+    public authenticationUser(systems: string[], allowedRole: string[]): (req: Request, res: Response, next: NextFunction) => Promise<Response | void> {
         return async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
             const splitter = req.headers.authorization?.split(' ')
             if (splitter?.length !== 2 || splitter[0] !== "Bearer") {
@@ -14,22 +15,26 @@ class Authentication {
             try {
                 const token = jwt.verify(splitter[1], process.env['SECRET_KEY']!)
                 if (typeof (token) === 'string') {
+                    console.log(1)
                     return res.status(401).json({ msg: 'Unauthorized' })
                 }
                 const blacklistToken = await BlacklistToken.findOne({ where: { jti: token?.jti } })
                 const user = await userHelper.getUserByUuid(token.uuid)
                 if (blacklistToken || !user) {
+                    console.log(2)
                     return res.status(401).json({ msg: "Unauthorized" })
                 }
                 const userSystem = await userHelper.getUserSystemByUuidUser(user.uuid)
-                if (!userSystem.some((e) => e.sistem.nama_sistem === system && allowedRole.includes(e.role.nama_role))) {
+                if (!userSystem.some((e) => systems.includes(e.sistem.nama_sistem) && allowedRole.includes(e.role.nama_role))) {
+                    console.log(3)
                     return res.status(401).json({ msg: "Unauthorized" })
                 }
                 req.app.locals.token = token;
                 req.app.locals.user = {
                     uuid: user.uuid,
                     general_user: user.general_user,
-                    password: user.password
+                    password: user.password,
+                    apakahInstitute:user.user_apakah?.no_lembaga
                 }
                 req.app.locals.system = userSystem.map(e => {
                     return {
@@ -42,6 +47,7 @@ class Authentication {
                 })
 
             } catch (e) {
+                console.log(e)
                 return res.status(401).json({ msg: "Unauthorized" })
             }
             next()

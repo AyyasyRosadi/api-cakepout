@@ -6,7 +6,7 @@ class AuthenticationRouter extends BaseRouter {
     routes(): void {
         this.router.post('/login',
             async (req: Request, res: Response): Promise<Response> => {
-                const login = await logic.login(req.body.username, req.body.password)
+                const login = await logic.login(req.body.username, req.body.password,req.body.system)
                 return res.status(login.status).json(login.data)
             })
         this.router.get('/logout',

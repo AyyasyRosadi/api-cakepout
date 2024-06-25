@@ -1,8 +1,11 @@
 
-const ALLROLE = ['superAdmin', 'akuntan']
-const SUPERADMIN = ['superAdmin']
-const APAKAHROLE = ["bendahara", "admin-lembaga", "eksekutif"]
-const SYSTEMAPAKAH = 'apakah'
-const SYSTEMCAKEPOUT = 'cakepout'
+const ALLROLEGLOBAL = ['superAdmin', 'akuntan',"bendahara", "admin-lembaga", "eksekutif"]
+const ALLROLECAKEPOUT = ['superAdmin', 'akuntan']
+const ALLROLEAPAKAH = ["bendahara", "admin-lembaga", "eksekutif"]
+const SUPERADMINCAKEPOUT = ['superAdmin']
+const SUPERADMINAPAKAH = ['bendahara']
+const SYSTEMGLOBAL = ['apakah','cakepout']
+const SYSTEMAPAKAH = ['apakah']
+const SYSTEMCAKEPOUT = ['cakepout']
 
-export { ALLROLE, SUPERADMIN, APAKAHROLE, SYSTEMAPAKAH, SYSTEMCAKEPOUT }
+export { ALLROLECAKEPOUT, SUPERADMINCAKEPOUT, ALLROLEAPAKAH, SYSTEMAPAKAH, SYSTEMCAKEPOUT,SYSTEMGLOBAL,SUPERADMINAPAKAH,ALLROLEGLOBAL }
