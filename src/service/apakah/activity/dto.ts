@@ -20,6 +20,8 @@ export interface SubActivityBreakDown{
     id:string;
     name:string;
     total:number;
+    continue:boolean;
+    weight:number;
 }
 
 export interface ActivityBreakDown{
@@ -27,5 +29,7 @@ export interface ActivityBreakDown{
     id:string;
     name:string;
     total:number;
+    continue:boolean;
     sub_activity?:Array<SubActivityBreakDown>|null
+    weight:number;
 }

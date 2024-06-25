@@ -20,7 +20,7 @@ class WeightActivityLogic extends LogicBase{
     }
 
     public async getQuestion():Promise<messageAttribute<WeightQuestionAttributes[]>>{
-        const quesiton = await WeightQuestion.findAll({include:[{model:WeightAnswer}]})
+        const quesiton = await WeightQuestion.findAll({include:[{model:WeightAnswer}], order:[[WeightAnswer,"id", "ASC"]]})
         return this.message(200, quesiton)
     }
 
@@ -28,10 +28,15 @@ class WeightActivityLogic extends LogicBase{
         let total = 0;
         const sub = await SubActivity.findOne({where:{id:activityId}})
         for(let a in answer){
-            await WeightActivity.create({activity_id:activityId, weight_question_id:answer[a]!.question_id, weight_answer_id:answer[a].answer_id})
+            const weightActivity = await WeightActivity.findOne({where:{activity_id:activityId}})
+            if(weightActivity){
+                await WeightActivity.update({weight_question_id:answer[a]!.question_id, weight_answer_id:answer[a].answer_id}, {where:{activity_id:activityId}})
+            }else{
+                await WeightActivity.create({activity_id:activityId, weight_question_id:answer[a]!.question_id, weight_answer_id:answer[a].answer_id})
+            }
             total = total + answer[a].weight
         }
-        let weight = total/6
+        let weight = total/answer.length
         if(sub){
             await SubActivity.update({weight:weight},{where:{id:activityId}})
         }else{

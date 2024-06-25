@@ -46,6 +46,7 @@ class ActivityLogic extends LogicBase{
             let total = 0;
             let subActivity = activity[a].sub_activities
             let subActivityNow:SubActivityBreakDown[]=[]
+            let totalWeight = 0;
             if(subActivity.length>0){
                 for(let s in subActivity){
                     let totalSub =0;
@@ -53,8 +54,8 @@ class ActivityLogic extends LogicBase{
                     for(let d in detailOfActivityOnSubActivity){
                         totalSub= totalSub + detailOfActivityOnSubActivity[d].total                     
                     }
-                    total +=totalSub
-                    subActivityNow.push({no:subActivity[s].sub_activity_no, id:subActivity[s].id,name:subActivity[s].name, total:totalSub})
+                    totalWeight = totalWeight + subActivity[s].weight;
+                    subActivityNow.push({no:subActivity[s].sub_activity_no, id:subActivity[s].id,name:subActivity[s].name, continue:subActivity[s].continue, total:totalSub, weight:subActivity[s].weight})
                 }
             }
             let detailOfActivity = activity[a].detail_of_activities
@@ -64,7 +65,8 @@ class ActivityLogic extends LogicBase{
                     total += detailOfActivity[d].total
                 }
             }
-            activityNow.push({no:activity[a].activity_no, id:activity[a].id, name:activity[a].name, total:total, sub_activity:subActivityNow.length>0?subActivityNow:null})
+            let finalWeight = totalWeight/subActivity.length
+            activityNow.push({no:activity[a].activity_no, id:activity[a].id, name:activity[a].name, continue:activity[a].continue, total:total, sub_activity:subActivityNow.length>0?subActivityNow:null, weight:finalWeight})
         }
         return activityNow
     }
