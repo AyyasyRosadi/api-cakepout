@@ -111,6 +111,16 @@ class ProgramLogic extends LogicBase{
             ]
         })
     }
+
+    public async update(id:string, item:string):Promise<messageAttribute<defaultMessage>>{
+        const program = await this.getById(id)
+        if(program?.modifable){
+            await Program.update({item}, {where:{id}})
+            return this.message(200, {message:"updated"})
+        }
+        return this.message(400, {message:"program tidak bisa diupdate"})
+    }
+
     public async delete(id:string):Promise<messageAttribute<defaultMessage>>{
         const program:any = await this.getById(id)
         const programPlan = program.get({plain:true})

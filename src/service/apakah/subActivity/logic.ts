@@ -65,6 +65,12 @@ class SubActivityLogic extends LogicBase{
         await SubActivity.destroy({where:{id:id}})
         return this.message(200, {message:"deleted"})
     }
+
+    public async update(id:string, name:string):Promise<messageAttribute<defaultMessage>>{
+        await SubActivity.update({name}, {where:{id}})
+        return this.message(200, {message:"updated"})
+    }
+
 }
 
 export default new SubActivityLogic;

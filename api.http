@@ -112,6 +112,17 @@ Content-Type: application/json
     "approved_total":0
 }
 ###
+PUT  {{host}}/apakah/institution-income/568a9d31-49f4-407f-8bad-1c4f6b8d408d
+Content-Type: application/json
+
+{
+    "name":"BOS",
+    "total": 100000000
+}
+###
+DELETE {{host}}/apakah/institution-income/568a9d31-49f4-407f-8bad-1c4f6b8d408d
+
+###
 GET {{host}}/apakah/institution-income/2?status_incomes=0
 ###
 PUT {{host}}/apakah/institution-income/approval/
@@ -245,5 +256,21 @@ Content-Type: application/json
         }
     ]
 }
+###
+PUT {{host}}/apakah/program/0272c0da-c437-497d-93e7-49069f4260d8
+Content-Type: application/json
+
+{
+    "item":"airsentianrsti"
+}
+###
+
+PUT {{host}}/apakah/component/79b88ccc-bdd7-4767-b6f8-b8199f590044
+Content-Type: application/json
+
+{
+    "item":"arstartart"
+}
+###
 
 

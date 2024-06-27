@@ -116,6 +116,15 @@ class ComponentLogic extends LogicBase {
         
         return this.message(200, {message:"deleted"})
     }
+
+    public async update(id:string, item:string):Promise<messageAttribute<defaultMessage>>{
+        const component = await this.getComponentById(id);
+        if(component?.modifable){
+            await Component.update({item},{where:{id}})
+            return this.message(200, {message:"updated"})
+        }
+        return this.message(400, {message:"component tidak dapat diupdate"})
+    }
 }
 
 export default new ComponentLogic

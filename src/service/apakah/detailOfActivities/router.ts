@@ -4,6 +4,7 @@ import logic from "./logic";
 import authentication from "../../../middleware/authentication";
 import { ALLROLEAPAKAH, SYSTEMAPAKAH } from "../../constant";
 import validator from "./validator";
+import { detailOfActivityList } from "./dto";
 
 
 class RouterDetailOfActivity extends BaseRouter {
@@ -37,7 +38,15 @@ class RouterDetailOfActivity extends BaseRouter {
                 const { id } = req.params
                 const status = await logic.delete(id)
                 return res.status(status.status).json(status.data)
-            })
+        });
+
+        this.router.put("/:id", 
+            async (req: Request, res: Response): Promise<Response> => {
+                const {id} = req.params
+                let detailOfActivity:detailOfActivityList = {...req.body};
+                const status = await logic.update(id, detailOfActivity)
+                return res.status(status.status).json(status.data)
+        })
     }
 }
 

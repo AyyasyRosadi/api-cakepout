@@ -30,7 +30,15 @@ class RouterComponent extends BaseRouter{
             const {id} = req.params
             const status = await logic.delete(id)
             return res.status(status.status).json(status.data)
-        })
+        });
+
+        this.router.put("/:id", 
+            async(req:Request, res:Response):Promise<Response>=>{
+               const {id} = req.params;
+               const {item} = req.params;
+               const status = await logic.update(id, item)
+               return res.status(status.status).json(status.data) 
+        });
 
     }
 

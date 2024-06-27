@@ -13,7 +13,8 @@ class SubActivityRouter extends BaseRouter {
             async (req: Request, res: Response): Promise<Response> => {
                 const data = await logic.getByActivityId(req.params?.activity_id, queryToString(req.query?.academic_year))
                 return res.status(data.status).json(data.data)
-            });
+        });
+
         this.router.post("/",
             authentication.authenticationUser(SYSTEMAPAKAH, ALLROLEAPAKAH),
             validator.create(),
@@ -21,7 +22,7 @@ class SubActivityRouter extends BaseRouter {
                 const { activity_id, name } = req.body;
                 const status = await logic.create(activity_id, name)
                 return res.status(status.status).json(status.data)
-            });
+        });
 
         this.router.delete("/:id",
             authentication.authenticationUser(SYSTEMAPAKAH, ALLROLEAPAKAH),
@@ -29,7 +30,15 @@ class SubActivityRouter extends BaseRouter {
                 const { id } = req.params;
                 const status = await logic.delete(id)
                 return res.status(status.status).json(status.data)
-            });
+        });
+
+        this.router.put("/:id",
+            async (req: Request, res: Response): Promise<Response> => {
+                const {id} = req.params;
+                const {name} = req.body;
+                const status = await logic.update(id, name)
+                return res.status(status.status).json(status.data)
+        });
 
     }
 

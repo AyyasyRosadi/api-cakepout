@@ -14,7 +14,8 @@ class ActivityRouter extends BaseRouter {
                 const { component_id } = req.params
                 const data = await logic.getAllActivityBreakDown(component_id)
                 return res.status(data.status).json(data.data);
-            });
+        });
+        
         this.router.post("/",
             authentication.authenticationUser(SYSTEMAPAKAH, ALLROLEAPAKAH),
             validator.create(),
@@ -22,7 +23,7 @@ class ActivityRouter extends BaseRouter {
                 const { component_id, name, continue_activity } = req.body;
                 const activityStatus = await logic.create(component_id, name, continue_activity);
                 return res.status(activityStatus.status).json(activityStatus.data);
-            });
+        });
 
         this.router.delete("/:id",
             authentication.authenticationUser(SYSTEMAPAKAH, ALLROLEAPAKAH),
@@ -30,7 +31,15 @@ class ActivityRouter extends BaseRouter {
                 const { id } = req.params
                 const status = await logic.delete(id)
                 return res.status(status.status).json(status.data)
-            })
+        });
+
+        this.router.put("/:id",
+            async (req: Request, res: Response): Promise<Response> => {
+                const {id} = req.params
+                const {name} = req.body
+                const status = await logic.update(id, name)
+                return res.status(status.status).json(status.data)
+        });
     }
 
 }
