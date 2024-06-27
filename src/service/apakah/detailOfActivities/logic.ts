@@ -79,6 +79,7 @@ class DetailOfActivityLogic extends LogicBase{
                 if(institutionIncomeOld!.total>=budgetUpdateOld){
                     await InstitutionIncome.update({budgeted:budgetOld}, {where:{id:detailOfActivity.institution_income_id}})
                     await DetailOfActivity.update(detailOfActivity, {where:{id:id}})
+                    return this.message(200, {message:"updated"})
                 }
                 
             }else{
@@ -88,6 +89,7 @@ class DetailOfActivityLogic extends LogicBase{
                     await InstitutionIncome.update({budgeted:budgetOld-totalDetailOfActivity},{where:{id:getDetailOfActivitiy.institution_income_id}})
                     await InstitutionIncome.update({budgeted:budgetUpdateNew},{where:{id:detailOfActivity.institution_income_id}})
                     await DetailOfActivity.update(detailOfActivity, {where:{id:id}})
+                    return this.message(200, {message:"updated"})
                 }
             }
             return this.message(400, {message:"tidak bisa diupdate dikarenakan biaya lebih besar dari anggaran!"})
