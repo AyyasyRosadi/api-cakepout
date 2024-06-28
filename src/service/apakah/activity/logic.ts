@@ -1,12 +1,14 @@
 import { defaultMessage, LogicBase, messageAttribute } from "../../logicBase";
+import YearActiveInSystem from "../../yearActiveInSystem/model";
 import Component from "../component/model";
 import DetailOfActivity from "../detailOfActivities/model";
 import InstitutionIncome from "../institutionIncome/model";
 import Program from "../program/model";
+import SubActivityAttributes from "../subActivity/dto";
 import SubActivity from "../subActivity/model";
 import ActivityAttributes, { ActivityBreakDown, SubActivityBreakDown } from "./dto";
 import Activity from "./model";
-import {fn, col} from 'sequelize'
+import {fn, col, where} from 'sequelize'
 
 class ActivityLogic extends LogicBase{
     private async getMaxActivity(instituton_no:number, academic_year:string):Promise<number>{
@@ -40,13 +42,11 @@ class ActivityLogic extends LogicBase{
     private async calculate(data:any):Promise<ActivityBreakDown[]>{
         let activityNow:ActivityBreakDown[] = [];
         const activity = data.map((element:any)=>element.get({plain:true}))
-        // console.log(activity)
        
         for(let a in activity){
             let total = 0;
             let subActivity = activity[a].sub_activities
             let subActivityNow:SubActivityBreakDown[]=[]
-            // let totalWeight = 0;
             if(subActivity.length>0){
                 for(let s in subActivity){
                     let totalSub =0;
@@ -66,7 +66,6 @@ class ActivityLogic extends LogicBase{
                     total += detailOfActivity[d].total
                 }
             }
-            console.log(total)
             activityNow.push({no:activity[a].activity_no, id:activity[a].id, name:activity[a].name, continue:activity[a].continue, total:total, sub_activity:subActivityNow.length>0?subActivityNow:null, weight:activity[a].weight})
         }
         // console.log(activityNow)
@@ -126,6 +125,44 @@ class ActivityLogic extends LogicBase{
 
     public async update(id:string, name:string):Promise<messageAttribute<defaultMessage>>{
         await Activity.update({name}, {where:{id}})
+        return this.message(200, {message:"updated"})
+    }
+
+    private async getActivityByStatus(statusActivity: number, institutionNo:number, academic_year:string):Promise<ActivityAttributes[]>{
+        const activity = await Activity.findAll({where:{status:statusActivity, institution_no:institutionNo, academic_year:academic_year},
+            include:[
+                {
+                    model:DetailOfActivity
+                },
+                {
+                   model:SubActivity,
+                   include:[
+                    {
+                        model:DetailOfActivity
+                    }
+                   ]
+                }
+            ]
+        });
+        return activity
+    }
+
+    public async getAllActivityByStatusBreakDown(status:number, institution_no:number):Promise<messageAttribute<ActivityBreakDown[]>>{
+        const academicYear = await YearActiveInSystem.findOne({where:{name:"apakah"}});
+        const activity = await this.getActivityByStatus(status, institution_no, academicYear!.academic_year)
+        return this.message(200, await this.calculate(activity))
+    }
+
+    public async updateStatus(status:number, id:string[]):Promise<messageAttribute<defaultMessage>>{
+        console.log("ok")
+        for(let i in id){
+            const activity = await Activity.findOne({where:{id:id[i]}})
+            console.log(status)
+            console.log(id[i])
+            if (activity){
+                await Activity.update({status:status}, {where:{id:id[i]}})
+            }
+        }
         return this.message(200, {message:"updated"})
     }
     

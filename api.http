@@ -1,4 +1,4 @@
-@host = http://localhost:9191
+@host = http://localhost:9933
 @token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMWMyMDQ4NjYtYTRkZS00ZmVkLWI0OWMtMTg1NzgwMTRmOTllIiwiaWF0IjoxNzE5Mjc5MjUwLCJleHAiOjE3MTkzMDA4NTAsImp0aSI6IjVmN2M4MzY5LWE2ZWEtNDY2Mi04MzM2LTg0YjFlZjI0YTJhNCJ9.Ng_cd8_sCmXgLrDWx-N06-grekdcXeYX6m_h-iiuPOA
 
 ###
@@ -272,5 +272,14 @@ Content-Type: application/json
     "item":"arstartart"
 }
 ###
+GET {{host}}/apakah/activity/status/1?status=1
+###
+PUT {{host}}/apakah/activity/update/status
+Content-Type: application/json
+
+{
+    "status":1,
+    "id":["12f3b23b-cb86-4aa4-83fd-b842ec040d73"]
+}
 
 

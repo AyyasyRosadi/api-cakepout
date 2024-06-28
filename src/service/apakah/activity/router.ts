@@ -40,6 +40,20 @@ class ActivityRouter extends BaseRouter {
                 const status = await logic.update(id, name)
                 return res.status(status.status).json(status.data)
         });
+
+        this.router.get("/status/:institution_no",async (req: Request, res: Response): Promise<Response> => {
+            const {institution_no} = req.params;
+            const status = req.query.status;
+            const statusString = queryToString(status)
+            const statusActivity = await logic.getAllActivityByStatusBreakDown(parseInt(statusString), parseInt(institution_no))
+            return res.status(statusActivity.status).json(statusActivity.data)
+        });
+
+        this.router.put("/update/status",async (req: Request, res: Response): Promise<Response> => {
+            const {status, id} = req.body
+            const statusUpdate = await logic.updateStatus(status, id);
+            return res.status(statusUpdate.status).json(statusUpdate.data)
+        });
     }
 
 }
