@@ -18,7 +18,6 @@ class ProgramLogic extends LogicBase{
 
     private async getProgramByInstitution(institutionId:number, academic_year:string):Promise<ProgramAttributes[]>{
         let newAcademicYear:string = academic_year.replace("-", "/")
-        console.log(this.excludeAttributes().attributes)
         const program = await Program.findAll({where:{institution_no:institutionId, academic_year:newAcademicYear},
         include:[
                     {
@@ -72,7 +71,6 @@ class ProgramLogic extends LogicBase{
 
     public async getAllProgramByInstitution(institutionId:number, academic_year:string):Promise<any>{
         const program = await this.getProgramByInstitution(institutionId, academic_year);
-        // console.log(await this.calculateProgram(program))
         return this.message(200, await this.calculateProgram(program))
         
     }
@@ -83,7 +81,6 @@ class ProgramLogic extends LogicBase{
             await Program.create({institution_no, program_no:max+1, item:item, modifable:true, academic_year})
             return this.message(200, {message:"saved"})
         }catch(r){
-            console.log(r)
             return this.message(500, {message:"error"})
 
         }

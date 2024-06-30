@@ -60,7 +60,6 @@ class ActivityLogic extends LogicBase{
                 }
             }
             let detailOfActivity = activity[a].detail_of_activities
-            // console.log(detailOfActivity)
             for(let d in detailOfActivity){
                 if(detailOfActivity[d].sub_activity_id===null){
                     total += detailOfActivity[d].total
@@ -68,7 +67,6 @@ class ActivityLogic extends LogicBase{
             }
             activityNow.push({no:activity[a].activity_no, id:activity[a].id, name:activity[a].name, continue:activity[a].continue, total:total, sub_activity:subActivityNow.length>0?subActivityNow:null, weight:activity[a].weight})
         }
-        // console.log(activityNow)
         return activityNow
     }
 
@@ -154,11 +152,8 @@ class ActivityLogic extends LogicBase{
     }
 
     public async updateStatus(status:number, id:string[]):Promise<messageAttribute<defaultMessage>>{
-        console.log("ok")
         for(let i in id){
             const activity = await Activity.findOne({where:{id:id[i]}})
-            console.log(status)
-            console.log(id[i])
             if (activity){
                 await Activity.update({status:status}, {where:{id:id[i]}})
             }

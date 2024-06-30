@@ -15,7 +15,6 @@ class WeightActivityRouter extends BaseRouter{
         this.router.post("/answer", async(req: Request, res: Response): Promise<Response>=>{
             const {activity_id, answer} = req.body
             const answerStatus = await logic.create(activity_id, answer)
-            console.log(answerStatus.data)
             return res.status(answerStatus.status).json(answerStatus.data)
         })
     }

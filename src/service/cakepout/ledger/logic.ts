@@ -16,7 +16,6 @@ class LedgerLogic extends LogicBase {
 
     public async get(monthIndex: number): Promise<messageAttribute<Array<LedgerAttributes>>> {
         const activeYear = await accountingYear.getActiveAccountingYear()
-        console.log(monthIndex)
         const ledger = await Ledger.findAll(
             {
                 where: {

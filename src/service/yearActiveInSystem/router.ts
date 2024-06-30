@@ -12,7 +12,6 @@ class YearActiveInSystemRouter extends BaseRouter {
             async (req: Request, res: Response): Promise<Response> => {
                 const system = req.query.system;
                 const query = queryToString(system)
-                console.log(system)
                 const status = await logic.get(query)
                 return res.status(status.status).json(status.data)
             });

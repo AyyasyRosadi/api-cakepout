@@ -35,7 +35,7 @@ class RouterComponent extends BaseRouter{
         this.router.put("/:id", 
             async(req:Request, res:Response):Promise<Response>=>{
                const {id} = req.params;
-               const {item} = req.params;
+               const {item} = req.body;
                const status = await logic.update(id, item)
                return res.status(status.status).json(status.data) 
         });

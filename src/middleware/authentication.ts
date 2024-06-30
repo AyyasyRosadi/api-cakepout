@@ -15,18 +15,15 @@ class Authentication {
             try {
                 const token = jwt.verify(splitter[1], process.env['SECRET_KEY']!)
                 if (typeof (token) === 'string') {
-                    console.log(1)
                     return res.status(401).json({ msg: 'Unauthorized' })
                 }
                 const blacklistToken = await BlacklistToken.findOne({ where: { jti: token?.jti } })
                 const user = await userHelper.getUserByUuid(token.uuid)
                 if (blacklistToken || !user) {
-                    console.log(2)
                     return res.status(401).json({ msg: "Unauthorized" })
                 }
                 const userSystem = await userHelper.getUserSystemByUuidUser(user.uuid)
                 if (!userSystem.some((e) => systems.includes(e.sistem.nama_sistem) && allowedRole.includes(e.role.nama_role))) {
-                    console.log(3)
                     return res.status(401).json({ msg: "Unauthorized" })
                 }
                 req.app.locals.token = token;
@@ -47,7 +44,6 @@ class Authentication {
                 })
 
             } catch (e) {
-                console.log(e)
                 return res.status(401).json({ msg: "Unauthorized" })
             }
             next()
