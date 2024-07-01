@@ -7,7 +7,7 @@ import { Request, Response } from "express";
 class DashboardRouter extends BaseRouter {
     routes(): void {
         this.router.get("/", 
-            authentication.authenticationUser(SYSTEMAPAKAH, SUPERADMINAPAKAH),
+            authentication.authenticationUser(SYSTEMAPAKAH, ALLROLEAPAKAH),
             async (req: Request, res: Response): Promise<Response> => {
             const data = await logic.getAll()
             return res.status(data.status).json(data.data)

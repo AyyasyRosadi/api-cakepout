@@ -120,6 +120,7 @@ class ProgramLogic extends LogicBase{
 
     public async delete(id:string):Promise<messageAttribute<defaultMessage>>{
         const program:any = await this.getById(id)
+        console.log(program)
         const programPlan = program.get({plain:true})
         if(program.modifable){
             if(program.components.length>0){
@@ -137,9 +138,9 @@ class ProgramLogic extends LogicBase{
                     }
                     await Component.destroy({where:{id:components[c].id}})
                 }
-                await Program.destroy({where:{id:id}})
             }
-            return this.message(400, {message:"deleted"})
+            await Program.destroy({where:{id:id}})
+            return this.message(200, {message:"deleted"})
         }
         return this.message(400, {message:"uuups"})
         

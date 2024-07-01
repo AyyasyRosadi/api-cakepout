@@ -28,6 +28,7 @@ import UserApakah from "../service/userApakah/model"
 import WeightQuestion from "../service/apakah/weigthActivity/modelQustion"
 import WeightAnswer from "../service/apakah/weigthActivity/modelAnswer"
 import WeightActivity from "../service/apakah/weigthActivity/model"
+import Realization from "../service/apakah/realization/model"
 
 
 export const Synchronize = async () => {
@@ -39,12 +40,12 @@ export const Synchronize = async () => {
         await User.sync()
         await Institution.sync()
         await UserSystem.sync()
-        await ProgramApakah.sync({alter:true})
-        await ComponentApakah.sync({alter:true})
-        await ActivityApakah.sync({alter:true})
-        await SubActivityApakah.sync({alter:true})
-        await InstitutionIncome.sync({alter:true})
-        await DetailOfActivity.sync({alter:true})
+        await ProgramApakah.sync({ alter: true })
+        await ComponentApakah.sync({ alter: true })
+        await ActivityApakah.sync({ alter: true })
+        await SubActivityApakah.sync({ alter: true })
+        await InstitutionIncome.sync({ alter: true })
+        await DetailOfActivity.sync({ alter: true })
         await AccountingYear.sync()
         await SharingProgram.sync()
         await BlacklistToken.sync()
@@ -54,14 +55,15 @@ export const Synchronize = async () => {
         await Journal.sync({ alter: true })
         await Ledger.sync({ alter: true })
         await DisbursementOfFunds.sync({ alter: true })
-        await InstanceApakah.sync({alter:true})
-        await IncomeGroup.sync({alter:true})
-        await Unit.sync({alter:true})
-        await YearActiveInSystem.sync({alter:true})
+        await InstanceApakah.sync({ alter: true })
+        await IncomeGroup.sync({ alter: true })
+        await Unit.sync({ alter: true })
+        await YearActiveInSystem.sync({ alter: true })
         await UserApakah.sync()
-        await WeightQuestion.sync({alter:true})
-        await WeightAnswer.sync({alter:true})
-        await WeightActivity.sync({alter:true})
+        await WeightQuestion.sync({ alter: true })
+        await WeightAnswer.sync({ alter: true })
+        await WeightActivity.sync({ alter: true })
+        await Realization.sync({ alter: true })
     } catch (err) {
         throw err
     }

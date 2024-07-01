@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken'
 import UserSystemAttributes from "../userSystem/dto";
 import BlacklistToken from "../blacklistToken/model";
 import { LogicBase, defaultMessage, messageAttribute } from "../logicBase";
+import BcryptHelper from "../../helper/bcrypt";
 
 interface LoginAttributes {
     status: boolean,
@@ -23,7 +24,7 @@ class AuthenticationLogic extends LogicBase {
     public async login(username: string, password: string, system: string): Promise<messageAttribute<defaultMessage | LoginAttributes>> {
         try {
             const user = await userHelper.getUserByUsername(username)
-            if (!user || !await bcrypt.compare(password, user.password) || !user.user_sistems?.some((val) => val.sistem?.nama_sistem === system)) {
+                if (!user || !await BcryptHelper.compare(password,user.password) || !user.user_sistems?.some((val) => val.sistem?.nama_sistem === system)) {
                 return this.message(404, { message: "User tidak ditemukan" })
             }
             const jti = v4()

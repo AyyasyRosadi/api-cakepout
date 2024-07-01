@@ -7,17 +7,23 @@ import Institution from "./institution/router";
 import Apakah from "./apakah"
 import Cakepout from "./cakepout";
 import YearActiveInSystem from "./yearActiveInSystem/router";
+import User from "./user/router";
+import System from "./system/router";
+import Role from "./role/router";
 
 const serviceRouter: Router = express();
 
 serviceRouter.use('/authentication', Authentication)
 serviceRouter.use('/ptk', Ptk)
-serviceRouter.use('/sharing-program',SharingProgram)
+serviceRouter.use('/sharing-program', SharingProgram)
 serviceRouter.use('/accounting-year', AccountingYear)
 serviceRouter.use('/institution', Institution)
 serviceRouter.use("/apakah", Apakah)
-serviceRouter.use("/cakepout",Cakepout)
+serviceRouter.use("/cakepout", Cakepout)
 serviceRouter.use("/year-active-system", YearActiveInSystem)
+serviceRouter.use("/user", User)
+serviceRouter.use("/system", System)
+serviceRouter.use("/role", Role)
 
 
 
