@@ -80,7 +80,7 @@ class DetailOfActivityLogic extends LogicBase {
             const budgetUpdateOld = (budgetOld - totalDetailOfActivity) + detailOfActivity.total
             if (getDetailOfActivitiy.institution_income_id === detailOfActivity.institution_income_id) {
                 if (institutionIncomeOld!.total >= budgetUpdateOld) {
-                    await InstitutionIncome.update({ budgeted: budgetOld }, { where: { id: detailOfActivity.institution_income_id } })
+                    await InstitutionIncome.update({ budgeted: budgetUpdateOld }, { where: { id: detailOfActivity.institution_income_id } })
                     await DetailOfActivity.update(detailOfActivity, { where: { id: id } })
                     return this.message(200, { message: "updated" })
                 }
