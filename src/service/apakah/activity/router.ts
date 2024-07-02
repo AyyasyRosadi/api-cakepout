@@ -36,8 +36,8 @@ class ActivityRouter extends BaseRouter {
         this.router.put("/:id",
             async (req: Request, res: Response): Promise<Response> => {
                 const { id } = req.params
-                const { name } = req.body
-                const status = await logic.update(id, name)
+                const { name,continue_activity } = req.body
+                const status = await logic.update(id, name,continue_activity)
                 return res.status(status.status).json(status.data)
             });
 

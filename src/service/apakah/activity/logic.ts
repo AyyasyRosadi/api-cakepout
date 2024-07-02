@@ -123,8 +123,8 @@ class ActivityLogic extends LogicBase {
         return this.message(200, { message: "deleted" })
     }
 
-    public async update(id: string, name: string): Promise<messageAttribute<defaultMessage>> {
-        await Activity.update({ name }, { where: { id } })
+    public async update(id: string, name: string,continue_activity:boolean): Promise<messageAttribute<defaultMessage>> {
+        await Activity.update({ name,continue:continue_activity }, { where: { id } })
         return this.message(200, { message: "updated" })
     }
 
