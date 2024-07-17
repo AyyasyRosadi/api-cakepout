@@ -169,12 +169,12 @@ class ActivityLogic extends LogicBase {
         const academicYear = await YearActiveInSystem.findOne({ where: { name: "apakah" } });
         for (const detail of detail_of_activities) {
             const realization = await Realization.findOne({ where: { detail_of_activity_id: detail.id } })
-            console.log(realization,+old_status,+new_status)
-            if ((+old_status === 0 || +old_status === 2) && +new_status === 1 && !realization) {
+            console.log(realization,old_status,new_status)
+            if ((old_status === 0 || old_status === 2) && new_status === 1 && !realization) {
                 console.log('new')
                 Realization.create({ academic_year: academicYear!.academic_year, total_budget: detail.total, total_realization: 0, detail_of_activity_id: detail.id })
 
-            } else if (+old_status === 1 && +new_status === 2 && realization) {
+            } else if (old_status === 1 && new_status === 2 && realization) {
                 console.log('remove')
                 Realization.destroy({ where: { detail_of_activity_id: detail.id } })
             }
@@ -184,15 +184,10 @@ class ActivityLogic extends LogicBase {
     }
 
     public async updateStatusActivity(new_status: number, all_activity: any): Promise<messageAttribute<defaultMessage>> {
-        try{
-            for (const activity of all_activity) {
-                await this.generateRealization(activity.id, activity.status, new_status)
-            }
-            return this.message(200, { message: 'succes' })
-        }catch(e){
-            console.log(e)
-            return this.message(500,{message:"error"})
+        for (const activity of all_activity) {
+            await this.generateRealization(activity.id, activity.status, new_status)
         }
+        return this.message(200, { message: 'succes' })
     }
 
 }
