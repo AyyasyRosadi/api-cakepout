@@ -171,12 +171,12 @@ class ActivityLogic extends LogicBase {
             const realization = await Realization.findOne({ where: { detail_of_activity_id: detail.id } })
             console.log(realization,old_status,new_status)
             if ((old_status === 0 || old_status === 2) && new_status === 1 && !realization) {
-                console.log('new')
-                Realization.create({ academic_year: academicYear!.academic_year, total_budget: detail.total, total_realization: 0, detail_of_activity_id: detail.id })
+                // console.log('new')
+                await Realization.create({ academic_year: academicYear!.academic_year, total_budget: detail.total, total_realization: 0, detail_of_activity_id: detail.id })
 
             } else if (old_status === 1 && new_status === 2 && realization) {
-                console.log('remove')
-                Realization.destroy({ where: { detail_of_activity_id: detail.id } })
+                // console.log('remove')
+                await Realization.destroy({ where: { detail_of_activity_id: detail.id } })
             }
         }
         await Activity.update({ status: new_status }, { where: { id: activity_id } })
