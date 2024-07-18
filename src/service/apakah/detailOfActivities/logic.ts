@@ -3,6 +3,9 @@ import { DetailOfActivityAttributes, detailOfActivityList } from "./dto";
 import DetailOfActivity from "./model";
 import InstitutionIncome from "../institutionIncome/model";
 import { where } from "sequelize";
+import Activity from "../activity/model";
+import Institution from "../instance/model";
+import ActivityAttributes from "../activity/dto";
 
 
 class DetailOfActivityLogic extends LogicBase {
@@ -28,6 +31,14 @@ class DetailOfActivityLogic extends LogicBase {
             ]
         }))
     }
+
+    public async getDetailOfActivityByInstitution(institution_no: number): Promise<messageAttribute<ActivityAttributes[]>> {
+        const detailOfActivity = await Activity.findAll({
+            where: { institution_no,status:1 }
+        })
+        return this.message(200, detailOfActivity)
+    }
+
     public async create(activity_id: string, sub_activity_id: string | null, detailOfActivityList: Array<detailOfActivityList>): Promise<messageAttribute<defaultMessage>> {
         for (let d in detailOfActivityList) {
             const institutionIncome = await InstitutionIncome.findOne({ where: { id: detailOfActivityList[d].institution_income_id } })

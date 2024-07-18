@@ -25,8 +25,8 @@ const DisbursementOfFunds = db.define<DisbursementOfFundInstance>('disbursement_
         type: DataTypes.BIGINT
     },
     status: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false
+        type: DataTypes.INTEGER,
+        defaultValue: 0
     },
     withdraw: {
         type: DataTypes.BOOLEAN,

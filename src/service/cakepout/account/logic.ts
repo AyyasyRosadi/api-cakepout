@@ -62,6 +62,7 @@ class AccountLogic extends LogicBase {
             await account.generateAccount(name, group_account, group_account_label, activity_id, group_account_name, asset)
             return this.message(200, { message: "Succes" })
         } catch (_) {
+            console.log(_)
             return this.message(403, { message: "Gagal" })
         }
     }
