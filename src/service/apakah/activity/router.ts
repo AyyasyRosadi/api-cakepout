@@ -55,15 +55,15 @@ class ActivityRouter extends BaseRouter {
             return res.status(statusUpdate.status).json(statusUpdate.data)
         });
 
-        this.router.post("/approve",
-            authentication.authenticationUser(SYSTEMAPAKAH, APAKAHEKSEKUTIF),
-            async (req: Request, res: Response): Promise<Response> => {
-                const { all_activity, new_status } = req.body;
-                const data = await logic.updateStatusActivity(new_status, all_activity)
-                return res.status(data.status).json(data.data)
-            }
+        // this.router.post("/approve",
+        //     authentication.authenticationUser(SYSTEMAPAKAH, APAKAHEKSEKUTIF),
+        //     async (req: Request, res: Response): Promise<Response> => {
+        //         const { all_activity, new_status } = req.body;
+        //         const data = await logic.updateStatusActivity(new_status, all_activity)
+        //         return res.status(data.status).json(data.data)
+        //     }
 
-        )
+        // )
     }
 
 }

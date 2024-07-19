@@ -299,4 +299,7 @@ Content-Type: application/json
     "id":["12f3b23b-cb86-4aa4-83fd-b842ec040d73"]
 }
 
+###
+GET {{host}}/executive/approval/1?status=0
+
 

@@ -10,6 +10,7 @@ import YearActiveInSystem from "./yearActiveInSystem/router";
 import User from "./user/router";
 import System from "./system/router";
 import Role from "./role/router";
+import Executive from "./executive";
 
 const serviceRouter: Router = express();
 
@@ -24,6 +25,7 @@ serviceRouter.use("/year-active-system", YearActiveInSystem)
 serviceRouter.use("/user", User)
 serviceRouter.use("/system", System)
 serviceRouter.use("/role", Role)
+serviceRouter.use("/executive",Executive)
 
 
 

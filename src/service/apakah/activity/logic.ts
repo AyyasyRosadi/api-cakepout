@@ -1,4 +1,3 @@
-import accountingYear from "../../../helper/accountingYear";
 import { defaultMessage, LogicBase, messageAttribute } from "../../logicBase";
 import YearActiveInSystem from "../../yearActiveInSystem/model";
 import Component from "../component/model";
@@ -6,11 +5,11 @@ import DetailOfActivity from "../detailOfActivities/model";
 import InstitutionIncome from "../institutionIncome/model";
 import Program from "../program/model";
 import Realization from "../realization/model";
-import SubActivityAttributes from "../subActivity/dto";
 import SubActivity from "../subActivity/model";
 import ActivityAttributes, { ActivityBreakDown, SubActivityBreakDown } from "./dto";
 import Activity from "./model";
-import { fn, col, where } from 'sequelize'
+import { fn, col } from 'sequelize'
+import ActivityHelper from "../../../helper/activity"
 
 class ActivityLogic extends LogicBase {
     private async getMaxActivity(instituton_no: number, academic_year: string): Promise<number> {
@@ -41,41 +40,10 @@ class ActivityLogic extends LogicBase {
         return activity
     }
 
-    private async calculate(data: any): Promise<ActivityBreakDown[]> {
-        let activityNow: ActivityBreakDown[] = [];
-        const activity = data.map((element: any) => element.get({ plain: true }))
-
-        for (let a in activity) {
-            let total = 0;
-            let subActivity = activity[a].sub_activities
-            let subActivityNow: SubActivityBreakDown[] = []
-            if (subActivity.length > 0) {
-                for (let s in subActivity) {
-                    let totalSub = 0;
-                    let detailOfActivityOnSubActivity = subActivity[s].detail_of_activities
-                    for (let d in detailOfActivityOnSubActivity) {
-                        totalSub = totalSub + detailOfActivityOnSubActivity[d].total
-                    }
-                    // totalWeight = totalWeight + subActivity[s].weight;
-                    total = total + totalSub
-                    subActivityNow.push({ no: subActivity[s].sub_activity_no, id: subActivity[s].id, name: subActivity[s].name, continue: subActivity[s].continue, total: totalSub, weight: subActivity[s].weight })
-                }
-            }
-            let detailOfActivity = activity[a].detail_of_activities
-            for (let d in detailOfActivity) {
-                if (detailOfActivity[d].sub_activity_id === null) {
-                    total += detailOfActivity[d].total
-                }
-            }
-            activityNow.push({ no: activity[a].activity_no, id: activity[a].id, name: activity[a].name, continue: activity[a].continue, total: total, sub_activity: subActivityNow.length > 0 ? subActivityNow : null, weight: activity[a].weight })
-        }
-        return activityNow
-    }
-
-
+    
     public async getAllActivityBreakDown(compoent_id: string): Promise<messageAttribute<ActivityBreakDown[]>> {
         const activity = await this.getByComponentId(compoent_id)
-        return this.message(200, await this.calculate(activity))
+        return this.message(200, await ActivityHelper.calculate(activity))
     }
 
     public async create(component_id: string, name: string, continue_activity: boolean): Promise<messageAttribute<defaultMessage>> {
@@ -128,30 +96,11 @@ class ActivityLogic extends LogicBase {
         return this.message(200, { message: "updated" })
     }
 
-    private async getActivityByStatus(statusActivity: number, institutionNo: number, academic_year: string): Promise<ActivityAttributes[]> {
-        const activity = await Activity.findAll({
-            where: { status: statusActivity, institution_no: institutionNo, academic_year: academic_year },
-            include: [
-                {
-                    model: DetailOfActivity
-                },
-                {
-                    model: SubActivity,
-                    include: [
-                        {
-                            model: DetailOfActivity
-                        }
-                    ]
-                }
-            ]
-        });
-        return activity
-    }
+  
 
     public async getAllActivityByStatusBreakDown(status: number, institution_no: number): Promise<messageAttribute<ActivityBreakDown[]>> {
-        const academicYear = await YearActiveInSystem.findOne({ where: { name: "apakah" } });
-        const activity = await this.getActivityByStatus(status, institution_no, academicYear!.academic_year)
-        return this.message(200, await this.calculate(activity))
+       const activity = await ActivityHelper.getAllActivityByStatus(status, institution_no)
+       return this.message(200, activity)
     }
 
     public async updateStatus(status: number, id: string[]): Promise<messageAttribute<defaultMessage>> {
