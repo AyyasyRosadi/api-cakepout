@@ -1,11 +1,12 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import db from "../../../config/database";
 import {DetailOfActivityAttributes} from "./dto";
+import Realization from "../realization/model";
 
 interface DetailOfActivityCreationAttributes extends Optional<DetailOfActivityAttributes, 'id'>{}
 interface DetailOfActivityInstance extends Model<DetailOfActivityAttributes, DetailOfActivityCreationAttributes>, DetailOfActivityAttributes{
-    created_at:Date;
-    updated_at:Date;
+    createdAt:Date;
+    updatedAt:Date;
 }
 
 const DetailOfActivity = db.define<DetailOfActivityInstance>("detail_of_activity", {
@@ -61,5 +62,7 @@ const DetailOfActivity = db.define<DetailOfActivityInstance>("detail_of_activity
     }
 
 }, {paranoid:true})
+
+
 
 export default DetailOfActivity

@@ -15,7 +15,16 @@ class ApprovalRouter extends BaseRouter{
                 return res.status(statusActivity.status).json(statusActivity.data);
             }
         );
+        this.router.post("",
+            async(req:Request, res:Response)=>{
+                const {activity, status} = req.body;
+                const save = await logic.approveActivity(status, activity)
+                return res.status(save.status).json(save.data)
+            }
+        )
+    
     }
+    
 }
 
 export default new ApprovalRouter().router
