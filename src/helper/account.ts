@@ -3,6 +3,7 @@ import Account from "../service/cakepout/account/model"
 import GroupAccountAttributes from "../service/cakepout/groupAccount/dto"
 import GroupAccount from "../service/cakepout/groupAccount/model"
 import Ledger from "../service/cakepout/ledger/model"
+import Institution from "../service/institution/model"
 
 class AccountHelper {
     private async getLastLabelGroupAccountByGroup(group_account: number): Promise<number> {
@@ -35,7 +36,20 @@ class AccountHelper {
 
     public async generateAccount(name: string, group_account: number, group_account_label: number, activity_id: string | null, group_account_name: string, asset: boolean): Promise<boolean> {
         if (group_account_label === 0) {
-            const lastGroupAccountLabel = await this.getLastLabelGroupAccountByGroup(group_account)
+           
+            let lastGroupAccountLabel:number =0
+            if (group_account===5){
+                const institution = await Institution.findOne({where:{name:group_account_name}})
+                console.log(institution)
+                console.log(name)
+                if(institution){
+                    lastGroupAccountLabel = institution.id
+                    console.log(lastGroupAccountLabel)
+                }
+            }else{
+                lastGroupAccountLabel = await this.getLastLabelGroupAccountByGroup(group_account)
+            }
+            
             const generateGroupAccount = await this.generateGroupAccount(group_account, lastGroupAccountLabel, group_account_name)
             await Account.create({ name, group_account_id: generateGroupAccount.uuid!, activity_id, account_number: `${group_account}.${lastGroupAccountLabel}.1`, asset })
         } else {

@@ -1,10 +1,9 @@
 import {  DataTypes, Model, Optional } from "sequelize";
 import db from "../../../config/database";
 import { AccountAttributes } from "./dto";
-import DetailOfActivity from "../../apakah/detailOfActivities/model";
 import {DetailOfActivityAttributes} from "../../apakah/detailOfActivities/dto";
 import { JournalAttributes } from "../journal/dto";
-import Journal from "../journal/model";
+import Activity from "../../apakah/activity/model";
 
 interface AccountCreationsAttributes extends Optional<AccountAttributes, 'uuid' | 'activity_id'> { };
 interface AccountInstance extends Model<AccountAttributes, AccountCreationsAttributes>, AccountAttributes {
@@ -39,8 +38,8 @@ const Account = db.define<AccountInstance>('accounts', {
    
 })
 
-DetailOfActivity.hasMany(Account, { foreignKey: 'activity_id', as: 'account' })
-Account.belongsTo(DetailOfActivity, { foreignKey: 'activity_id', as: 'detail_of_activity' })
+Activity.hasOne(Account, { foreignKey: 'activity_id' })
+Account.belongsTo(Activity, { foreignKey: 'activity_id' })
 // Account.hasMany(Journal, {foreignKey:"account_id"})
 // Journal.belongsTo(Account, {foreignKey:"account_id"})
 

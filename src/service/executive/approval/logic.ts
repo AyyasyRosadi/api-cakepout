@@ -10,6 +10,9 @@ import Institution from "../../institution/model";
 import GroupAccountAttributes from "../../cakepout/groupAccount/dto";
 import GroupAccount from "../../cakepout/groupAccount/model";
 import YearActiveInSystem from "../../yearActiveInSystem/model";
+import { AccountAttributes } from "../../cakepout/account/dto";
+import Account from "../../cakepout/account/model";
+import AccountHelper from "../../../helper/account"
 
 class ExecutiveLogic extends LogicBase{
     public async  getActivity(status:number, institutionNo:number):Promise<messageAttribute<ActivityBreakDown[]>>{
@@ -52,19 +55,25 @@ class ExecutiveLogic extends LogicBase{
         return groupAccount ? groupAccount.get({plain:true}) : null
     }
 
-    private async processGroupAccount(name:string, groupAccountLabel:number):Promise<void>{
-        const groupAccount = await this.findGroupAccount(name, groupAccountLabel);
-        if (!groupAccount){
-            await GroupAccount.create({group_account_label:groupAccountLabel, name, group_account:5})
-        }
+
+    private async cekAccountExist(groupAccountId:string, activityId:string):Promise<AccountAttributes|null>{
+        const account = await Account.findOne({where:{group_account_id:groupAccountId, activity_id:activityId}})
+        return account ? account.get({plain:true}): null;
     }
 
     private async generateRealization(activityId: string,  newStatus:number):Promise<boolean>{
         const academicYear:any = await YearActiveInSystem.findOne({ where: { name: "apakah" } });
         try{
             const detailActivity = await this.detailOfActivity(activityId)
+            
             for(const d of detailActivity){
-                await this.processGroupAccount(d.activity.component.program.institution.name, d.activity.component.program.institution_no)
+                const groupAccount_ = await this.findGroupAccount(d.activity.component.program.institution.name, d.activity.component.program.institution_no)
+        
+                const account = await this.cekAccountExist(groupAccount_!==null ? groupAccount_.uuid:"", d.activity.id,)
+                if(!account){
+                    await AccountHelper.generateAccount(d.activity.name, 5, groupAccount_!==null ? groupAccount_.group_account_label :0, d.activity.id, d.activity.component.program.institution.name,false)
+                }
+                
                 if(!d.realization && newStatus===1){
                    await Realization.create({
                     academic_year:academicYear!.academic_year,
