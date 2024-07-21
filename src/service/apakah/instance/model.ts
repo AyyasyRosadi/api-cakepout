@@ -9,7 +9,7 @@ interface InstitutionInstance extends Model<InstitutionAttributes, InstitutionCr
     updated_at:Date;
 }
 
-const Institution  = db.define<InstitutionInstance>('institution', {
+const InstitutionApakah  = db.define<InstitutionInstance>('institution', {
     id:{
         type:DataTypes.INTEGER,
         autoIncrement:true,
@@ -21,4 +21,4 @@ const Institution  = db.define<InstitutionInstance>('institution', {
     }
 })
 
-export default Institution
+export default InstitutionApakah

@@ -1,16 +1,17 @@
 import { Op } from "sequelize";
-import DetailOfActivity from "../../apakah/detailOfActivities/model";
+// import DetailOfActivity from "../../apakah/detailOfActivities/model";
 import GroupAccount from "../groupAccount/model";
 import { AccountPaginationAttributes, AccountAttributes } from "./dto";
 import Account from "./model";
 import { LogicBase, messageAttribute, defaultMessage } from '../../logicBase';
 import account from "../../../helper/account";
+import Activity from "../../apakah/activity/model";
 
 
 
 class AccountLogic extends LogicBase {
     private include = [
-        { model: DetailOfActivity, as: 'detail_of_activity' },
+        { model: Activity },
         { model: GroupAccount }
     ]
     public async getAllAccount(): Promise<messageAttribute<Array<AccountAttributes>>> {
@@ -47,7 +48,7 @@ class AccountLogic extends LogicBase {
         const queryGroupAccount = group_account === "-" ? { group_account: 0 } : parseInt(group_account as string) === 4 ? { [Op.not]: { group_account } } : { group_account }
         const allAccount = await Account.findAll({
             include: [
-                { model: DetailOfActivity, as: 'detail_of_activity' },
+                { model: Activity },
                 { model: GroupAccount, where: queryGroupAccount }
             ]
         })
