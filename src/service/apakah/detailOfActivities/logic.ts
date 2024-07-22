@@ -4,7 +4,7 @@ import DetailOfActivity from "./model";
 import InstitutionIncome from "../institutionIncome/model";
 import { where } from "sequelize";
 import Activity from "../activity/model";
-import Institution from "../instance/model";
+import InstitutionApakah from "../instance/model";
 import ActivityAttributes from "../activity/dto";
 
 

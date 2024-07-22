@@ -1,11 +1,11 @@
 import { defaultMessage, LogicBase, messageAttribute } from "../../logicBase";
 import InstitutionAttributes from "./dto";
-import Institution from "./model";
+import InstitutionApakah from "./model";
 import ListLembagaApakah from "./model";
 
 class ListLembagaApakahLogic extends LogicBase {
     public async getAll(): Promise<messageAttribute<InstitutionAttributes[]>> {
-        return this.message(200, await Institution.findAll())
+        return this.message(200, await InstitutionApakah.findAll())
     }
     public async create(name: string): Promise<messageAttribute<defaultMessage>> {
         await ListLembagaApakah.create({

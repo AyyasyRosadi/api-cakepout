@@ -53,7 +53,16 @@ POST {{host}}/system
 Content-Type: application/json
 
 {
-    "name":"cakepout"
+    "name":"eksekutif"
+}
+
+###
+POST {{host}}/role
+Content-Type: application/json
+
+{
+    "name":"superadmin",
+    "system_id":"5f39c66e-197b-41c1-9ab6-f085faf60efe"
 }
 
 
@@ -306,8 +315,8 @@ POST {{host}}/executive/approval
 Content-Type: application/json
 
 {
-    "status":2,
-    "activity":["f9e603c2-1f40-4ca8-a1f3-a63c1e3de56c", "fcda17f5-0945-4250-97b1-69f4b60cacdf"]
+    "status":1,
+    "activity":["1f47e74f-6d33-45c4-b54e-e411396044e6"]
 }
 ###
 GET {{host}}/apakah/disbrusment-of-fund
