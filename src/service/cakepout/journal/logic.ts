@@ -160,7 +160,7 @@ class JournalLogic extends LogicBase {
             if (!fromLedger) {
                 return this.message(400, { message: "Bulan sudah ditutup" })
             }
-            const checkGroup = await disbursementOfFund.getDisbursementOfFundByGroupId(id, true)
+            const checkGroup = await disbursementOfFund.getDisbursementOfFundBySharingProgram(id, 2)
             const referenceNumber = await journalReferenceNumber.generateReference()
             let finalAmount = 0
             if (checkGroup.length > 0) {

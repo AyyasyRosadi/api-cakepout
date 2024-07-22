@@ -8,7 +8,7 @@ import validaor from "./validator";
 class ListLembagaApakah extends BaseRouter{
     routes():void{
         this.router.post("/", 
-            authentication.authenticationUser(SYSTEMAPAKAH, ALLROLEAPAKAH),
+            // authentication.authenticationUser(SYSTEMAPAKAH, ALLROLEAPAKAH),
             validaor.create(),
             async(req:Request, res:Response):Promise<Response>=>{
             const {name} = req.body;
