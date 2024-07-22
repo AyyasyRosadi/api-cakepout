@@ -10,6 +10,7 @@ import DetailOfActivity from "./detailOfActivities/router";
 import IncomeGroug from "./incomeGroup/router";
 import Dashboard from './dashboard/router'
 import WeightActivityRouter from './weigthActivity/router';
+import DisbursementOfFunds from "./disbursmentOfFund/router";
 
 const serviceApakah: Router = express();
 
@@ -24,5 +25,6 @@ serviceApakah.use("/detail-of-activity", DetailOfActivity)
 serviceApakah.use("/income-group", IncomeGroug)
 serviceApakah.use("/dashboard",Dashboard)
 serviceApakah.use('/weight-activity', WeightActivityRouter)
+serviceApakah.use("/disbrusment-of-fund", DisbursementOfFunds)
 
 export default serviceApakah;

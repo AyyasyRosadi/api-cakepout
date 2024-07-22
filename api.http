@@ -1,13 +1,13 @@
 @host = http://localhost:9933
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMWMyMDQ4NjYtYTRkZS00ZmVkLWI0OWMtMTg1NzgwMTRmOTllIiwiaWF0IjoxNzE5Mjc5MjUwLCJleHAiOjE3MTkzMDA4NTAsImp0aSI6IjVmN2M4MzY5LWE2ZWEtNDY2Mi04MzM2LTg0YjFlZjI0YTJhNCJ9.Ng_cd8_sCmXgLrDWx-N06-grekdcXeYX6m_h-iiuPOA
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiZDJlMDhkZjgtYjkxNy00NDM2LWI3N2UtNmRjNDBlYWI1MGFkIiwiaWF0IjoxNzIxNjMwMzgyLCJleHAiOjE3MjE2NTE5ODIsImp0aSI6Ijg1NWJhNTA5LTE1YTEtNDA5Yy1hNThlLWFkNjJmNGMxYzkwNCJ9.opU_8AgEX363pqCiN6sqnbfJrtI6GTVM0UcP-YfBgNY
 
 ###
 POST {{host}}/authentication/login
 Content-Type: application/json
 
 {
-    "username":"19931120211014",
-    "password":"bismillah212",
+    "username":"19910320141139",
+    "password":"Ayambakarkecap!212",
     "system":"apakah"
 }
 ###
@@ -309,5 +309,8 @@ Content-Type: application/json
     "status":2,
     "activity":["f9e603c2-1f40-4ca8-a1f3-a63c1e3de56c", "fcda17f5-0945-4250-97b1-69f4b60cacdf"]
 }
+###
+GET {{host}}/apakah/disbrusment-of-fund
+Authorization: Bearer {{token}}
 
 

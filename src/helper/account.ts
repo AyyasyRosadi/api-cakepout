@@ -36,7 +36,6 @@ class AccountHelper {
 
     public async generateAccount(name: string, group_account: number, group_account_label: number, activity_id: string | null, group_account_name: string, asset: boolean): Promise<boolean> {
         if (group_account_label === 0) {
-           
             let lastGroupAccountLabel:number =0
             if (group_account===5){
                 const institution = await Institution.findOne({where:{name:group_account_name}})

@@ -1,5 +1,4 @@
 import db from "../../../config/database";
-import { Request, Response } from "express";
 import { RealizationAttributes } from "./dto";
 import { DataTypes, Model, Optional } from "sequelize";
 import DetailOfActivity from "../detailOfActivities/model";
