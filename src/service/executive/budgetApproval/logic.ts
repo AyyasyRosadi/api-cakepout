@@ -14,7 +14,7 @@ import { AccountAttributes } from "../../cakepout/account/dto";
 import Account from "../../cakepout/account/model";
 import AccountHelper from "../../../helper/account"
 
-class ExecutiveLogic extends LogicBase {
+class BudgetApprovalLogic extends LogicBase {
     public async getActivity(status: number, institutionNo: number): Promise<messageAttribute<ActivityBreakDown[]>> {
         const activity = await ActivityHelper.getAllActivityByStatus(status, institutionNo)
         return this.message(200, activity)
@@ -107,4 +107,4 @@ class ExecutiveLogic extends LogicBase {
 
 }
 
-export default new ExecutiveLogic
+export default new BudgetApprovalLogic

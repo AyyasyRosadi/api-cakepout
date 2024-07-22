@@ -5,7 +5,7 @@ import DetailOfActivity from "../../apakah/detailOfActivities/model";
 import Ptk from "../../ptk/model";
 import PtkAttributes from "../../ptk/dto";
 import {DetailOfActivityAttributes} from "../../apakah/detailOfActivities/dto";
-import SharingProgram from "../../sharingProgram/model";
+import SharingProgram from "../../apakah/sharingProgram/model";
 
 interface DisbursementOfFundCreationAttributes extends Optional<DisbursementOfFundAttributes, 'uuid' | 'reference_of_jurnal' | 'recipient' | 'ptk_id' | 'sharing_program_id'> { }
 interface DisbursementOfFundInstance extends Model<DisbursementOfFundAttributes, DisbursementOfFundCreationAttributes>, DisbursementOfFundAttributes {
@@ -48,7 +48,7 @@ const DisbursementOfFunds = db.define<DisbursementOfFundInstance>('disbursement_
     ptk_id: {
         type: DataTypes.STRING
     },
-    activity_id: {
+    detail_of_activity_id: {
         type: DataTypes.STRING
     },
     reference_of_jurnal: {
@@ -62,8 +62,8 @@ const DisbursementOfFunds = db.define<DisbursementOfFundInstance>('disbursement_
 
 
 
-DetailOfActivity.hasMany(DisbursementOfFunds, { foreignKey: 'activity_id' })
-DisbursementOfFunds.belongsTo(DetailOfActivity, { foreignKey: 'activity_id' })
+DetailOfActivity.hasMany(DisbursementOfFunds, { foreignKey: 'detail_of_activity_id' })
+DisbursementOfFunds.belongsTo(DetailOfActivity, { foreignKey: 'detail_of_activity_id' })
 
 Ptk.hasMany(DisbursementOfFunds, { foreignKey: 'ptk_id' })
 DisbursementOfFunds.belongsTo(Ptk, { foreignKey: 'ptk_id' })

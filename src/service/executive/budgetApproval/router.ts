@@ -1,10 +1,9 @@
-import { Router } from "express";
 import BaseRouter from "../../routerBase";
 import {Request, Response} from "express";
 import { queryToString } from "../../../helper/convertQuery";
 import logic from "./logic";
 
-class ApprovalRouter extends BaseRouter{
+class BudgetApprovalRouter extends BaseRouter{
     routes():void{
         this.router.get("/:institution_no",
             async(req:Request, res:Response)=>{
@@ -27,4 +26,4 @@ class ApprovalRouter extends BaseRouter{
     
 }
 
-export default new ApprovalRouter().router
+export default new BudgetApprovalRouter().router

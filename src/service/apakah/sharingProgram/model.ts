@@ -1,5 +1,5 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import db from "../../config/database";
+import db from "../../../config/database";
 import { SharingProgramAttributes } from "./dto";
 
 interface SharingProgramCreationAttriutes extends Optional<SharingProgramAttributes, 'uuid'> { }
