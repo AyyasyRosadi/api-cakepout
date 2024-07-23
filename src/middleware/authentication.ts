@@ -23,7 +23,6 @@ class Authentication {
                 }
                 const userSystem = await userHelper.getUserSystemByUuidUser(user.uuid)
                 if (!userSystem.some((e) => systems.includes(e.sistem.nama_sistem) && allowedRole.includes(e.role.nama_role))) {
-                    console.log(3)
                     return res.status(401).json({ msg: "Unauthorized" })
                 }
                 req.app.locals.token = token;

@@ -7,11 +7,12 @@ import SharingProgram from "../../apakah/sharingProgram/model";
 import disbursementOfFund from "../../../helper/disbursementOfFund";
 import yearActiveInSystem from "../../../helper/yearActiveInSystem";
 import realization from "../../../helper/realization";
+import Activity from "../../apakah/activity/model";
 
 
 
 class DisbursementOfFundLogic extends LogicBase {
-    private inlcude: Includeable[] = [{ model: DetailOfActivity }, { model: SharingProgram, as: "sharing_programs" }]
+    private inlcude: Includeable[] = [{ model: DetailOfActivity, include: [{ model: Activity,attributes:['institution_no'] }] }, { model: SharingProgram, as: "sharing_programs" }]
     private order: Order = [['sharing_program', 'DESC'], ["createdAt", "ASC"]]
 
     public async getAllDisbursementOfFund(): Promise<messageAttribute<Array<DisbursementOfFundAttributes>>> {
@@ -57,29 +58,6 @@ class DisbursementOfFundLogic extends LogicBase {
         const activeYear = await yearActiveInSystem.getYear('cakepout')
         const allDisbursementOfFund = await DisbursementOfFunds.findAll({ where: { withdraw, accounting_year: activeYear }, include: this.inlcude, order: this.order })
         return this.message(200, allDisbursementOfFund)
-    }
-
-
-    public async addDisbursementOfFund(detail_of_activities: Array<AddDisbursementOfFund>, sharing_program_id: string): Promise<messageAttribute<defaultMessage>> {
-        for (let a of detail_of_activities) {
-            const checkAmount = await realization.checkAmountRealizations(a?.uuid, a?.amount)
-            if (!checkAmount) {
-                return this.message(500, { message: "Failed" })
-            }
-        }
-        for (let data of detail_of_activities) {
-            await DisbursementOfFunds.create({
-                accounting_year: data.accounting_year,
-                detail_of_activity_id: data.uuid,
-                amount: data.amount,
-                month_index: data.month_index,
-                sharing_program: data.sharing_program,
-                status: 0,
-                withdraw: false,
-                sharing_program_id: data.sharing_program ? sharing_program_id : null
-            })
-        }
-        return this.message(200, { message: "Succes" })
     }
 
     public async approveByFinance(queue: Array<string>): Promise<messageAttribute<defaultMessage>> {

@@ -1,4 +1,7 @@
-import { LogicBase, messageAttribute } from "../../logicBase";
+import disbursementOfFund from "../../../helper/disbursementOfFund";
+import realization from "../../../helper/realization";
+import { AddDisbursementOfFund } from "../../cakepout/disbursementOfFund/dto";
+import { defaultMessage, LogicBase, messageAttribute } from "../../logicBase";
 import ActivityAttributes from "../activity/dto";
 import Activity from "../activity/model";
 import { DetailOfActivityAttributes } from "../detailOfActivities/dto";
@@ -52,6 +55,22 @@ class DisbrusmentOfFundLogicApakah extends LogicBase {
             detail_of_activity_id: detailOfActivityId
         })
     }
+
+    public async addDisbursementOfFund(detail_of_activities: Array<AddDisbursementOfFund>, sharing_program_id: string): Promise<messageAttribute<defaultMessage>> {
+        for (let a of detail_of_activities) {
+            const checkAmount = await realization.checkAmountRealizations(a?.uuid, a?.amount)
+            const checkExist = await disbursementOfFund.checkHasDisbursementOfFundByDetailActivity(a.uuid)
+            if (!checkAmount || checkExist) {
+                return this.message(500, { message: "Failed" })
+            }
+        }
+        const month = new Date().getMonth()
+        for (let data of detail_of_activities) {
+            await disbursementOfFund.createDisbursementOfFund(data.accounting_year, data.uuid, data.amount, month, data.sharing_program, sharing_program_id)
+        }
+        return this.message(200, { message: "Succes" })
+    }
+
 
     // public async approvalRealization():{
     //     const year = await YearActiveInSystemHelper.getYear("apakah");

@@ -43,14 +43,6 @@ class DisbursementOfFundRouter extends BaseRouter {
                 const data = await logic.getDisbursementOfFundByWithDraw(parseInt(req.params?.withdraw))
                 return res.status(data.status).json(data.data)
             })
-        this.router.post('/',
-            // authentication.authenticationUser(SYSTEMAPAKAH, APAKAHROLE),
-            validator.create(),
-            async (req: Request, res: Response): Promise<Response> => {
-                const { activity, sharing_program_id } = req.body
-                const data = await logic.addDisbursementOfFund(activity, sharing_program_id)
-                return res.status(data.status).json(data.data)
-            })
         this.router.put('/status',
             authentication.authenticationUser(SYSTEMCAKEPOUT, ALLROLECAKEPOUT),
             async (req: Request, res: Response): Promise<Response> => {

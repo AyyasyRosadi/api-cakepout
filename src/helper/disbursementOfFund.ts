@@ -1,3 +1,4 @@
+import { Op } from "sequelize"
 import ActivityAttributes from "../service/apakah/activity/dto"
 import Activity from "../service/apakah/activity/model"
 import { DetailOfActivityAttributes } from "../service/apakah/detailOfActivities/dto"
@@ -16,20 +17,28 @@ class DisbursementOfFundHelper {
         return oneDisbursementOfFund!
     }
 
+    public async checkHasDisbursementOfFundByDetailActivity(detail_of_activity_id: string): Promise<boolean> {
+        const oneDisbursementOfFund = await DisbursementOfFunds.findOne({ where: { detail_of_activity_id, status: { [Op.not]: 3 } } })
+        if (oneDisbursementOfFund) {
+            return true
+        }
+        return false
+    }
+
     public async groupingDisbursementOfFund(data: Array<DisbursementOfFundAttributes>): Promise<Array<any>> {
         let result: Array<GroupingDisbursementOfFund> = []
-        for (let i in data) {
-            if (data[i].sharing_program_id) {
-                const find = result.find((value) => value.sharing_program_id === data[i].sharing_program_id)
+        for (let value of data) {
+            if (value.sharing_program_id) {
+                const find = result.find((value) => value.sharing_program_id === value.sharing_program_id)
                 if (find) {
-                    find.amount += data[i].amount
-                    find.activity_id += `/${data[i].rincian_kegiatan?.activity_id}`
-                    find.activity?.push(data[i])
+                    find.amount += value.amount
+                    find.detail_of_activities?.push(value.detail_of_activity!)
                 } else {
-                    result.push({ accounting_year: data[i].accounting_year, amount: data[i].amount, ptk_id: data[i].ptk_id, receipient: data[i].recipient, reference_of_journal: data[i].reference_of_jurnal, sharing_program_id: data[i].sharing_program_id, sharing_program_name: data[i].sharing_programs!.name, status: data[i].status, withdraw: data[i].withdraw, uuid: data[i].uuid, uraian: data[i].rincian_kegiatan!.description, activity_id: data[i].rincian_kegiatan!.activity_id, activity: [data[i]] })
+                    result.push({ accounting_year: value.accounting_year, amount: value.amount, ptk_id: value.ptk_id, receipient: value.recipient, reference_of_journal: value.reference_of_jurnal, sharing_program_id: value.sharing_program_id, sharing_program_name: value.sharing_programs!.name, status: value.status, withdraw: value.withdraw, id: value.uuid, uraian: value.detail_of_activity?.description!, detail_of_activity_id: value.detail_of_activity_id, detail_of_activities: [value.detail_of_activity!] })
                 }
-            } else {
-                result.push({ accounting_year: data[i].accounting_year, amount: data[i].amount, ptk_id: data[i].ptk_id, receipient: data[i].recipient, reference_of_journal: data[i].reference_of_jurnal, sharing_program_id: null, sharing_program_name: null, status: data[i].status, withdraw: data[i].withdraw, uuid: data[i].uuid, uraian: data[i].rincian_kegiatan!.description, activity_id: data[i].rincian_kegiatan!.activity_id })
+            }
+            else {
+                result.push({ accounting_year: value.accounting_year, amount: value.amount, ptk_id: value.ptk_id, receipient: value.recipient, reference_of_journal: value.reference_of_jurnal, sharing_program_id: null, sharing_program_name: null, status: value.status, withdraw: value.withdraw, id: value.uuid, uraian: value?.detail_of_activity!.description, detail_of_activity_id: value.detail_of_activity_id, detail_of_activities: [value.detail_of_activity!] })
             }
         }
         return result
@@ -70,6 +79,19 @@ class DisbursementOfFundHelper {
         }
         return finalData
 
+    }
+
+    public async createDisbursementOfFund(accounting_year: string, detail_of_activity_id: string, amount: number, month_index: number, sharing_program: boolean, sharing_program_id: string): Promise<void> {
+        await DisbursementOfFunds.create({
+            accounting_year,
+            detail_of_activity_id,
+            amount,
+            month_index,
+            sharing_program,
+            status: 0,
+            withdraw: false,
+            sharing_program_id: sharing_program ? sharing_program_id : null
+        })
     }
 
     public async updateStatusDsibursementOfFund(uuid: string, status: number): Promise<void> {
