@@ -29,6 +29,7 @@ import WeightQuestion from "../service/apakah/weigthActivity/modelQustion"
 import WeightAnswer from "../service/apakah/weigthActivity/modelAnswer"
 import WeightActivity from "../service/apakah/weigthActivity/model"
 import Realization from "../service/apakah/realization/model"
+import AccountAutomation from "../service/cakepout/accountAutomation/model"
 
 
 export const Synchronize = async () => {
@@ -56,6 +57,7 @@ export const Synchronize = async () => {
         await WeightAnswer.sync({ alter: true })
         await WeightActivity.sync({ alter: true })
         await Realization.sync({ alter: true })
+        await AccountAutomation.sync({alter:true})
     } catch (err) {
         throw err
     }
