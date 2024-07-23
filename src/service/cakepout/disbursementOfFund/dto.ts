@@ -15,11 +15,11 @@ export default interface DisbursementOfFundAttributes {
     reference_of_jurnal: string | null;
     sharing_program_id: string | null
     sharing_programs?: SharingProgramAttributes;
-    rincian_kegiatan?: DetailOfActivityAttributes;
+    detail_of_activity?: DetailOfActivityAttributes;
 }
 
 export interface GroupingDisbursementOfFund {
-    uuid: string;
+    id: string;
     amount: number;
     sharing_program_id: string | null;
     sharing_program_name: string | null;
@@ -30,8 +30,8 @@ export interface GroupingDisbursementOfFund {
     receipient: string | null;
     reference_of_journal: string | null;
     uraian: string;
-    activity_id: string;
-    activity?: DisbursementOfFundAttributes[];
+    detail_of_activity_id: string;
+    detail_of_activities?: DetailOfActivityAttributes[];
 }
 
 export interface PaginationGroupingDisbursementOfFund {

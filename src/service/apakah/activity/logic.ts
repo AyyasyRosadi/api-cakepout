@@ -118,7 +118,6 @@ class ActivityLogic extends LogicBase {
         const academicYear = await YearActiveInSystem.findOne({ where: { name: "apakah" } });
         for (const detail of detail_of_activities) {
             const realization = await Realization.findOne({ where: { detail_of_activity_id: detail.id } })
-            console.log(realization,old_status,new_status)
             if ((old_status === 0 || old_status === 2) && new_status === 1 && !realization) {
                 // console.log('new')
                 await Realization.create({ academic_year: academicYear!.academic_year, total_budget: detail.total, total_realization: 0, detail_of_activity_id: detail.id })

@@ -165,7 +165,7 @@ class JournalLogic extends LogicBase {
             let finalAmount = 0
             if (checkGroup.length > 0) {
                 for (let i in checkGroup) {
-                    const createJournal = await this.createJournalDisbursementOfFund(fromAccount!, fromLedger! as LedgerAttributes, checkGroup[i]?.rincian_kegiatan!, transactionDate, activeYear!.tahun, checkGroup[i]?.uuid, checkGroup[i]?.amount, referenceNumber!, ptk_id, recepient, description)
+                    const createJournal = await this.createJournalDisbursementOfFund(fromAccount!, fromLedger! as LedgerAttributes, checkGroup[i]?.detail_of_activity!, transactionDate, activeYear!.tahun, checkGroup[i]?.uuid, checkGroup[i]?.amount, referenceNumber!, ptk_id, recepient, description)
                     if (createJournal.status !== 200) {
                         return this.message(createJournal.status, createJournal.data)
                     }
@@ -173,7 +173,7 @@ class JournalLogic extends LogicBase {
                 }
             } else {
                 const oneDisbursementOfFund = await disbursementOfFund.getDisbursementOfFundByUuid(id)
-                const createJournal = await this.createJournalDisbursementOfFund(fromAccount!, fromLedger! as LedgerAttributes, oneDisbursementOfFund?.rincian_kegiatan!, transactionDate!, activeYear!.tahun, oneDisbursementOfFund.uuid, oneDisbursementOfFund.amount, referenceNumber!, ptk_id, recepient, description)
+                const createJournal = await this.createJournalDisbursementOfFund(fromAccount!, fromLedger! as LedgerAttributes, oneDisbursementOfFund?.detail_of_activity!, transactionDate!, activeYear!.tahun, oneDisbursementOfFund.uuid, oneDisbursementOfFund.amount, referenceNumber!, ptk_id, recepient, description)
                 if (createJournal.status !== 200) {
                     return this.message(createJournal.status, createJournal.data)
                 }

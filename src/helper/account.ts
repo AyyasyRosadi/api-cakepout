@@ -39,11 +39,8 @@ class AccountHelper {
             let lastGroupAccountLabel:number =0
             if (group_account===5){
                 const institution = await Institution.findOne({where:{name:group_account_name}})
-                console.log(institution)
-                console.log(name)
                 if(institution){
                     lastGroupAccountLabel = institution.id
-                    console.log(lastGroupAccountLabel)
                 }
             }else{
                 lastGroupAccountLabel = await this.getLastLabelGroupAccountByGroup(group_account)

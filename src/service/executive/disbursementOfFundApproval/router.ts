@@ -7,7 +7,7 @@ class DisbursementOfFundApprovalRouter extends BaseRouter {
     routes(): void {
         this.router.get('/',
             async (req: Request, res: Response): Promise<Response> => {
-                const data = await logic.getDisbursementOfFund()
+                const data = await logic.getDisbursementOfFund(Number(req.query.institution_no))
                 return res.status(data.status).json(data.data)
             }
         )
