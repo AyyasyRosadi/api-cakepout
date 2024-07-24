@@ -321,5 +321,17 @@ Content-Type: application/json
 ###
 GET {{host}}/apakah/disbrusment-of-fund
 Authorization: Bearer {{token}}
+###
+POST {{host}}/cakepout/account-automation
+Content-Type: application/json
+
+{
+    "uuid_account_from":"arstarst",
+    "uuid_account_to": "bbbbbb",
+    "role":"apakah"
+}
+
+###
+GET {{host}}/cakepout/account-automation/account?group_account=1
 
 
