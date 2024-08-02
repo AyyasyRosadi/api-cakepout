@@ -59,6 +59,7 @@ class DisbursementOfFundHelper {
         return activity.map((e: any) => e.get({ plain: true }))
     }
 
+
     public async activityDisbrusmentOfFund(institution_no: number, status: number): Promise<ActivityAttributes[]> {
         const data: any = await this.getActivity(institution_no, status)
         let finalData: ActivityAttributes[] = []

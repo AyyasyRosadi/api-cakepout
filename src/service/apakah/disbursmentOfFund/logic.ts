@@ -1,4 +1,5 @@
 import disbursementOfFund from "../../../helper/disbursementOfFund";
+import monthConverter from "../../../helper/monthConverter";
 import realization from "../../../helper/realization";
 import { AddDisbursementOfFund } from "../../cakepout/disbursementOfFund/dto";
 import { defaultMessage, LogicBase, messageAttribute } from "../../logicBase";
@@ -27,7 +28,7 @@ class DisbrusmentOfFundLogicApakah extends LogicBase {
     public async activity(institution_no: number): Promise<messageAttribute<ActivityAttributes[]>> {
         const data: any = await this.getDetailOfActivity(institution_no)
         let finalData: ActivityAttributes[] = []
-        const monthNow = new Date().getMonth() + 1
+        const monthNow = monthConverter.transformMonth(new Date().getMonth() + 1)
         for (const a of data) {
             let detailOfActivity: DetailOfActivityAttributes[] = []
             // console.log(a.detail_of_activities)
