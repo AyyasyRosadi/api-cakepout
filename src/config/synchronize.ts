@@ -30,12 +30,16 @@ import WeightAnswer from "../service/apakah/weigthActivity/modelAnswer"
 import WeightActivity from "../service/apakah/weigthActivity/model"
 import Realization from "../service/apakah/realization/model"
 import AccountAutomation from "../service/cakepout/accountAutomation/model"
+import Santri from "../service/santri/santri/model";
+import StatusSantri from "../service/santri/santri/model"
 
 
 export const Synchronize = async () => {
     try {
         await db.authenticate()
         await Institution.sync()
+        await Santri.sync();
+        await StatusSantri.sync();
         await ProgramApakah.sync({ alter: true })
         await ComponentApakah.sync({ alter: true })
         await ActivityApakah.sync({ alter: true })

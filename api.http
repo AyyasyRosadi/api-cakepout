@@ -333,5 +333,7 @@ Content-Type: application/json
 
 ###
 GET {{host}}/cakepout/account-automation/account?group_account=1
+###
+GET {{host}}/executive/student
 
 

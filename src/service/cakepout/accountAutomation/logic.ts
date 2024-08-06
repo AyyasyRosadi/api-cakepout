@@ -16,7 +16,7 @@ class AccountAutomationLogic extends LogicBase{
     }
 
     public async getAccount(groupAccount:number):Promise<messageAttribute<GroupAccountAttributes|null|defaultMessage>>{
-        if(groupAccount!==0){
+        if(groupAccount!==0 && groupAccount<=5){
             const account = await GroupAccount.findOne({
                 where:{
                     group_account:groupAccount
