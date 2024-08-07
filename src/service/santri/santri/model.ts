@@ -2,6 +2,7 @@ import { Optional, Model, DataTypes } from "sequelize";
 import db from "../../../config/database";
 import SantriAttributes from "./dto";
 import StatusSantri from "../statusSantri/model";
+import Permission from "../../bordingSchool/permission/model";
 
 interface SantriCreationAttributes extends Optional<SantriAttributes, "uuid">{}
 interface SantriInstance extends Model<SantriAttributes, SantriCreationAttributes>, SantriAttributes{
@@ -86,5 +87,7 @@ const Santri = db.define<SantriInstance>("santri",{
 
 Santri.hasOne(StatusSantri, {foreignKey:"uuid_santri"})
 StatusSantri.belongsTo(Santri, {foreignKey:"uuid_santri"})
+Santri.hasMany(Permission, {foreignKey:"uuid_santri"})
+Permission.belongsTo(Santri, {foreignKey:"uuid_santri"})
 
 export default Santri;
